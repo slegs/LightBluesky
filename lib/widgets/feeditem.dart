@@ -1,11 +1,36 @@
-import 'package:bluesky/bluesky.dart';
+import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/widgets/icontext.dart';
 
+/// Card containing a FeedView (post)
 class FeedItem extends StatelessWidget {
   const FeedItem({super.key, required this.item});
 
-  final FeedView item;
+  final bsky.FeedView item;
+
+  Widget _handleEmbed() {
+    List<Widget> widgets = [];
+    final media = item.post.embed!;
+    if (media is bsky.UEmbedViewImages) {
+      for (var img in media.data.images) {
+        widgets.add(Image.network(img.fullsize));
+      }
+
+      return GridView.count(
+        shrinkWrap: true,
+        // Disable scrolling photos
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: media.data.images.length == 1 ? 1 : 2,
+        children: widgets,
+      );
+    }
+    return const IconText(
+      icon: Icons.warning,
+      text: 'Embed type not supported! :(',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -38,6 +63,7 @@ class FeedItem extends StatelessWidget {
                 item.post.record.text,
               ),
             ),
+            if (item.post.embed != null) _handleEmbed(),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
