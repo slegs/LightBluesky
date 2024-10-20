@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/widgets/feeditem.dart';
+import 'package:lightbluesky/widgets/maindrawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage> {
       length: 1,
       child: Scaffold(
         appBar: AppBar(
+          title: const Text('LightBluesky'),
           bottom: const TabBar(
             tabs: [
               Tab(
@@ -71,6 +73,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+        drawer: const MainDrawer(),
       ),
     );
   }
