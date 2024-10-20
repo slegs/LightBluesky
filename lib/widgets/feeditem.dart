@@ -14,16 +14,38 @@ class FeedItem extends StatelessWidget {
     final media = item.post.embed!;
     if (media is bsky.UEmbedViewImages) {
       for (var img in media.data.images) {
-        widgets.add(Image.network(img.fullsize));
+        final widget = Image.network(
+          img.thumbnail,
+
+          // Show progress while downloading image
+          loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent? loadingProgress) {
+            if (loadingProgress == null) {
+              return child;
+            }
+
+            return Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            );
+          },
+        );
+        widgets.add(widget);
       }
 
-      return GridView.count(
-        shrinkWrap: true,
-        // Disable scrolling photos
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: media.data.images.length == 1 ? 1 : 2,
-        children: widgets,
-      );
+      return media.data.images.length == 1
+          ? widgets[0]
+          : GridView.count(
+              shrinkWrap: true,
+              // Disable scrolling photos
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: media.data.images.length == 1 ? 1 : 2,
+              children: widgets,
+            );
     }
     return const IconText(
       icon: Icons.warning,

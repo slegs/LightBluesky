@@ -13,6 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _scrollController = ScrollController();
+
   List<bsky.FeedView> items = List.empty(
     growable: true,
   );
@@ -23,11 +25,20 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadMore();
+    _scrollController.addListener(_scrollHook);
   }
 
   @override
   void dispose() {
     super.dispose();
+    _scrollController.dispose();
+  }
+
+  void _scrollHook() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _loadMore();
+    }
   }
 
   Future<void> _loadMore() async {
@@ -52,7 +63,7 @@ class _HomePageState extends State<HomePage> {
           bottom: const TabBar(
             tabs: [
               Tab(
-                text: 'Discover',
+                text: 'Following',
               ),
             ],
           ),
@@ -67,6 +78,7 @@ class _HomePageState extends State<HomePage> {
           child: TabBarView(
             children: [
               ListView.builder(
+                controller: _scrollController,
                 itemCount: items.length,
                 itemBuilder: (context, i) => FeedItem(item: items[i]),
               ),
