@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bluesky/atproto.dart';
 import 'package:bluesky/bluesky.dart';
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
@@ -25,15 +26,31 @@ class _MyAppState extends State<MyApp> {
   /// Setups preferences for later usage.
   ///
   /// Checks if user has already loggedin and sets session if its the case
+  /// TODO: Move logic to separate file?
   Future<bool> setupApp() async {
     prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('session')) {
-      final data = prefs.getString('session')!;
-      api = Bluesky.fromSession(Session.fromJson(json.decode(data)));
-      return true;
+    if (!prefs.containsKey('session')) {
+      // New user
+      return false;
     }
 
-    return false;
+    final data = prefs.getString('session')!;
+    // Get old session data from storage
+    final oldSession = Session.fromJson(json.decode(data));
+    // Refresh session
+    // TODO: Check if it really is necessary to refresh the session!
+    final refreshedSession = await refreshSession(
+      refreshJwt: oldSession.refreshJwt,
+    );
+
+    if (refreshedSession.status.code != 200) {
+      // The session could not be refreshed,
+      // TODO: Fine-tune the reason it could not be refreshed.
+      return false;
+    }
+
+    api = Bluesky.fromSession(refreshedSession.data);
+    return true;
   }
 
   @override
@@ -58,6 +75,7 @@ class _MyAppState extends State<MyApp> {
             return Text('Error seting up app! ${snapshot.error}');
           }
 
+          // TODO: Make proper splashscreen
           return const Center(
             child: CircularProgressIndicator(),
           );
