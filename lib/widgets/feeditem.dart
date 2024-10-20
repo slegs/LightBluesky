@@ -15,25 +15,27 @@ class FeedItem extends StatelessWidget {
     if (media is bsky.UEmbedViewImages) {
       for (var img in media.data.images) {
         final widget = Center(
-          child: Image.network(
-            img.thumbnail,
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Image.network(
+              img.thumbnail,
+              // Show progress while downloading image
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
 
-            // Show progress while downloading image
-            loadingBuilder: (BuildContext context, Widget child,
-                ImageChunkEvent? loadingProgress) {
-              if (loadingProgress == null) {
-                return child;
-              }
-
-              return Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                      : null,
-                ),
-              );
-            },
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              },
+            ),
           ),
         );
         widgets.add(widget);
