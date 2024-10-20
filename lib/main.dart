@@ -28,7 +28,6 @@ class _MyAppState extends State<MyApp> {
   ///
   /// Checks if user has already loggedin and sets session if its the case
   /// TODO: Move logic to separate file?
-  /// TODO: Maybe a better way to handle sessions
   Future<bool> setupApp() async {
     prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('session')) {
@@ -40,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     // Get old session data from storage
     var session = Session.fromJson(json.decode(data));
 
-    final isExpired = await SkyApi.isExpired(session);
+    final isExpired = await SkyApi.isSessionExpired(session);
 
     if (isExpired) {
       // Refresh session
@@ -84,7 +83,6 @@ class _MyAppState extends State<MyApp> {
             return Text('Error seting up app! ${snapshot.error}');
           }
 
-          // TODO: Make proper splashscreen
           return const Center(
             child: CircularProgressIndicator(),
           );
