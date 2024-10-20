@@ -9,8 +9,11 @@ import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/pages/auth.dart';
 import 'package:lightbluesky/pages/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const MyApp());
 }
 
@@ -78,6 +81,7 @@ class _MyAppState extends State<MyApp> {
         future: _setupFuture,
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData) {
+            FlutterNativeSplash.remove();
             return snapshot.data! ? const HomePage() : const AuthPage();
           } else if (snapshot.hasError) {
             return Text('Error seting up app! ${snapshot.error}');
