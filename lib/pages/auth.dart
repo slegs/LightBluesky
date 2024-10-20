@@ -4,6 +4,8 @@ import 'package:bluesky/atproto.dart';
 import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/helpers/nav.dart';
+import 'package:lightbluesky/pages/home.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -26,6 +28,10 @@ class _AuthPageState extends State<AuthPage> {
       final data = session.data.toJson();
       api = Bluesky.fromSession(session.data);
       prefs.setString('session', json.encode(data));
+
+      // Redirect to home
+      if (!mounted) return;
+      Nav.push(context, const HomePage());
     }
   }
 
