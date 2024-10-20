@@ -25,8 +25,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: FutureBuilder(
         future: futureFeed,
-        builder: (BuildContext context,
-            AsyncSnapshot<XRPCResponse<bsky.Feed>> snapshot) {
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<XRPCResponse<bsky.Feed>> snapshot,
+        ) {
           if (snapshot.hasData) {
             final res = snapshot.data!;
 
@@ -40,9 +42,8 @@ class _HomePageState extends State<HomePage> {
               },
             );
           } else if (snapshot.hasError) {
-            final error = snapshot.error as XRPCError;
             return ApiError(
-              exception: error,
+              exception: snapshot.error as XRPCError,
             );
           }
 

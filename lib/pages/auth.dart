@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:bluesky/atproto.dart';
 import 'package:bluesky/bluesky.dart';
+import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/helpers/nav.dart';
+import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/home.dart';
 
 class AuthPage extends StatefulWidget {
@@ -24,15 +25,22 @@ class _AuthPageState extends State<AuthPage> {
       password: _passwordController.text,
     );
 
-    if (session.status.code == 200) {
+    if (!mounted) return;
+
+    try {
       // Save to memory and to local disk
       final data = session.data.toJson();
       api = Bluesky.fromSession(session.data);
       prefs.setString('session', json.encode(data));
 
       // Redirect to home
-      if (!mounted) return;
-      Nav.push(context, const HomePage());
+      Ui.nav(context, const HomePage());
+    } on XRPCException catch (e) {
+      // Something went wrong
+      Ui.snackbar(
+        context,
+        'Something went wrong! ${e.response.data.error}: ${e.response.data.message}',
+      );
     }
   }
 
