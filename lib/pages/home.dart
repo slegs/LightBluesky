@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/widgets/feeditem.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadMore() async {
     final res = await api.feed.getTimeline(
-      cursor: '',
+      cursor: cursor,
     );
 
     cursor = res.data.cursor;
@@ -52,12 +53,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: ListView.builder(
           itemCount: items.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(items[index].post.author.handle),
-              subtitle: Text(items[index].post.record.text),
-            );
-          },
+          itemBuilder: (context, i) => FeedItem(item: items[i]),
         ),
       ),
     );
