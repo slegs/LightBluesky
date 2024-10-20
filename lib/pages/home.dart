@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/widgets/apierror.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,7 +40,10 @@ class _HomePageState extends State<HomePage> {
               },
             );
           } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
+            final error = snapshot.error as XRPCError;
+            return ApiError(
+              exception: error,
+            );
           }
 
           return const CircularProgressIndicator();
