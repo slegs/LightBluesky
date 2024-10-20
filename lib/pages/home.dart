@@ -43,17 +43,33 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(
-          dragDevices: {
-            PointerDeviceKind.touch,
-            PointerDeviceKind.mouse,
-          },
+    return DefaultTabController(
+      length: 1,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: const TabBar(
+            tabs: [
+              Tab(
+                text: 'Discover',
+              ),
+            ],
+          ),
         ),
-        child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, i) => FeedItem(item: items[i]),
+        body: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+            },
+          ),
+          child: TabBarView(
+            children: [
+              ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, i) => FeedItem(item: items[i]),
+              ),
+            ],
+          ),
         ),
       ),
     );
