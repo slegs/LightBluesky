@@ -1,5 +1,6 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/widgets/apierror.dart';
@@ -20,6 +21,13 @@ class _HomePageState extends State<HomePage> {
     futureFeed = api.feed.getTimeline();
   }
 
+  Future<void> _handleRefresh() async {
+    final feed = await api.feed.getTimeline();
+    setState(() {
+      futureFeed = Future.value(feed);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +40,25 @@ class _HomePageState extends State<HomePage> {
           if (snapshot.hasData) {
             final res = snapshot.data!;
 
-            return ListView.builder(
-              itemCount: res.data.feed.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(res.data.feed[index].post.author.handle),
-                  subtitle: Text(res.data.feed[index].post.record.text),
-                );
-              },
+            return ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                },
+              ),
+              child: RefreshIndicator(
+                onRefresh: _handleRefresh,
+                child: ListView.builder(
+                  itemCount: res.data.feed.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(res.data.feed[index].post.author.handle),
+                      subtitle: Text(res.data.feed[index].post.record.text),
+                    );
+                  },
+                ),
+              ),
             );
           } else if (snapshot.hasError) {
             return ApiError(
