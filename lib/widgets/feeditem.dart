@@ -91,23 +91,26 @@ class FeedItem extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                IconButton(
+                TextButton.icon(
+                  icon: const Icon(Icons.reply),
+                  label: Text(item.post.replyCount.toString()),
                   onPressed: () {
                     Ui.snackbar(context, "TODO: Add reply");
                   },
-                  icon: const Icon(Icons.reply),
                 ),
-                IconButton(
+                TextButton.icon(
+                  icon: const Icon(Icons.autorenew),
+                  label: Text(item.post.repostCount.toString()),
                   onPressed: () {
                     Ui.snackbar(context, "TODO: Add repost");
                   },
-                  icon: const Icon(Icons.autorenew),
                 ),
-                IconButton(
+                TextButton.icon(
+                  icon: const Icon(Icons.favorite),
+                  label: Text(item.post.likeCount.toString()),
                   onPressed: () {
                     Ui.snackbar(context, "TODO: Add like");
                   },
-                  icon: const Icon(Icons.favorite),
                 ),
               ],
             )
