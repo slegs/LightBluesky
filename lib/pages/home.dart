@@ -1,9 +1,7 @@
 import 'package:bluesky/bluesky.dart' as bsky;
-import 'package:bluesky/core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/widgets/apierror.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,61 +11,54 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<XRPCResponse<bsky.Feed>> futureFeed;
+  List<bsky.FeedView> items = List.empty(
+    growable: true,
+  );
+
+  String? cursor;
 
   @override
   void initState() {
     super.initState();
-    futureFeed = api.feed.getTimeline();
+    _loadMore();
   }
 
-  Future<void> _handleRefresh() async {
-    final feed = await api.feed.getTimeline();
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<void> _loadMore() async {
+    final res = await api.feed.getTimeline(
+      cursor: '',
+    );
+
+    cursor = res.data.cursor;
+
     setState(() {
-      futureFeed = Future.value(feed);
+      items.addAll(res.data.feed);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: futureFeed,
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<XRPCResponse<bsky.Feed>> snapshot,
-        ) {
-          if (snapshot.hasData) {
-            final res = snapshot.data!;
-
-            return ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(
-                dragDevices: {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                },
-              ),
-              child: RefreshIndicator(
-                onRefresh: _handleRefresh,
-                child: ListView.builder(
-                  itemCount: res.data.feed.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(res.data.feed[index].post.author.handle),
-                      subtitle: Text(res.data.feed[index].post.record.text),
-                    );
-                  },
-                ),
-              ),
+      body: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(
+          dragDevices: {
+            PointerDeviceKind.touch,
+            PointerDeviceKind.mouse,
+          },
+        ),
+        child: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(items[index].post.author.handle),
+              subtitle: Text(items[index].post.record.text),
             );
-          } else if (snapshot.hasError) {
-            return ApiError(
-              exception: snapshot.error as XRPCError,
-            );
-          }
-
-          return const CircularProgressIndicator();
-        },
+          },
+        ),
       ),
     );
   }

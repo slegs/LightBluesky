@@ -9,8 +9,8 @@ class SkyApi {
     try {
       await tmpApi.atproto.server.getSession();
       return false;
-    } on InvalidRequestException catch (e) {
-      return e.response.data.error == 'ExpiredToken';
+    } on InvalidRequestException catch (_) {
+      return true;
     }
   }
 }

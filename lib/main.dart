@@ -45,19 +45,17 @@ class _MyAppState extends State<MyApp> {
     final isExpired = await SkyApi.isSessionExpired(session);
 
     if (isExpired) {
-      // Refresh session
-      final refreshedSession = await refreshSession(
-        refreshJwt: session.refreshJwt,
-      );
+      try {
+        // Refresh session
+        final refreshedSession = await refreshSession(
+          refreshJwt: session.refreshJwt,
+        );
+        prefs.setString('session', json.encode(refreshedSession.data.toJson()));
 
-      if (refreshedSession.status.code != 200) {
-        // The session could not be refreshed.
+        session = refreshedSession.data;
+      } on InvalidRequestException catch (_) {
         return false;
       }
-
-      prefs.setString('session', json.encode(refreshedSession.data.toJson()));
-
-      session = refreshedSession.data;
     }
 
     api = Bluesky.fromSession(session);
@@ -74,7 +72,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'LightBlueSky',
+      title: 'LightBluesky',
       theme: ThemeData.light(useMaterial3: true),
       darkTheme: ThemeData.dark(useMaterial3: true),
       home: FutureBuilder(
@@ -84,6 +82,7 @@ class _MyAppState extends State<MyApp> {
             FlutterNativeSplash.remove();
             return snapshot.data! ? const HomePage() : const AuthPage();
           } else if (snapshot.hasError) {
+            FlutterNativeSplash.remove();
             return Text('Error seting up app! ${snapshot.error}');
           }
 
