@@ -20,8 +20,9 @@ class _AuthPageState extends State<AuthPage> {
 
   void handleSession() async {
     final session = await createSession(
-        identifier: _identityController.text,
-        password: _passwordController.text);
+      identifier: _identityController.text,
+      password: _passwordController.text,
+    );
 
     if (session.status.code == 200) {
       // Save to memory and to local disk

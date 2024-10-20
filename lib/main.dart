@@ -5,6 +5,7 @@ import 'package:bluesky/bluesky.dart';
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/pages/auth.dart';
 import 'package:lightbluesky/pages/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,7 @@ class _MyAppState extends State<MyApp> {
   ///
   /// Checks if user has already loggedin and sets session if its the case
   /// TODO: Move logic to separate file?
+  /// TODO: Maybe a better way to handle sessions
   Future<bool> setupApp() async {
     prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('session')) {
@@ -36,20 +38,27 @@ class _MyAppState extends State<MyApp> {
 
     final data = prefs.getString('session')!;
     // Get old session data from storage
-    final oldSession = Session.fromJson(json.decode(data));
-    // Refresh session
-    // TODO: Check if it really is necessary to refresh the session!
-    final refreshedSession = await refreshSession(
-      refreshJwt: oldSession.refreshJwt,
-    );
+    var session = Session.fromJson(json.decode(data));
 
-    if (refreshedSession.status.code != 200) {
-      // The session could not be refreshed,
-      // TODO: Fine-tune the reason it could not be refreshed.
-      return false;
+    final isExpired = await SkyApi.isExpired(session);
+
+    if (isExpired) {
+      // Refresh session
+      final refreshedSession = await refreshSession(
+        refreshJwt: session.refreshJwt,
+      );
+
+      if (refreshedSession.status.code != 200) {
+        // The session could not be refreshed.
+        return false;
+      }
+
+      prefs.setString('session', json.encode(refreshedSession.data.toJson()));
+
+      session = refreshedSession.data;
     }
 
-    api = Bluesky.fromSession(refreshedSession.data);
+    api = Bluesky.fromSession(session);
     return true;
   }
 
