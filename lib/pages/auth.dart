@@ -37,9 +37,18 @@ class _AuthPageState extends State<AuthPage> {
       Ui.nav(context, const HomePage());
     } on XRPCException catch (e) {
       // Something went wrong
-      Ui.snackbar(
+      Ui.dialog(
         context,
-        'Something went wrong! ${e.response.data.error}: ${e.response.data.message}',
+        'Error ${e.response.data.error}',
+        e.response.data.message,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("OK"),
+          ),
+        ],
       );
     }
   }

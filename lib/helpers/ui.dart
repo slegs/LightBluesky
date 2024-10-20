@@ -9,6 +9,21 @@ class Ui {
     );
   }
 
+  static Future<void> dialog(BuildContext context, String title, String body,
+      {List<TextButton>? actions}) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(body),
+          actions: actions,
+        );
+      },
+    );
+  }
+
   static void snackbar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
