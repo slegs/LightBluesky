@@ -11,8 +11,8 @@ class IconText extends StatelessWidget {
     return Text.rich(
       TextSpan(
         children: [
-          TextSpan(text: text),
           WidgetSpan(child: Icon(icon)),
+          TextSpan(text: text),
         ],
       ),
     );
