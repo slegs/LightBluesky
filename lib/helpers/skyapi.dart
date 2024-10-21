@@ -1,9 +1,9 @@
 import 'package:bluesky/bluesky.dart';
 import 'package:bluesky/core.dart';
 
+/// Helper class for specific bluesky API functions
 class SkyApi {
-  /// Gets refreshed session or saved session
-  /// Depending on response data
+  /// Checks if a session has expired
   static Future<bool> isSessionExpired(Session oldSession) async {
     final tmpApi = Bluesky.fromSession(oldSession);
     try {

@@ -9,12 +9,13 @@ class PostPage extends StatefulWidget {
   State<PostPage> createState() => _PostPageState();
 }
 
+/// TODO: Implement individual post page
 class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text('Hi'),
+        child: Text('Post'),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 
+/// Shows an API error
 class ApiError extends StatelessWidget {
   const ApiError({super.key, required this.exception});
 

@@ -1,61 +1,14 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
+import 'package:lightbluesky/helpers/embedgen.dart';
 import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/widgets/icontext.dart';
+import 'package:lightbluesky/widgets/embed.dart';
 
 /// Card containing a FeedView (post)
 class FeedItem extends StatelessWidget {
   const FeedItem({super.key, required this.item});
 
   final bsky.FeedView item;
-
-  Widget _handleEmbed() {
-    List<Widget> widgets = [];
-    final media = item.post.embed!;
-    if (media is bsky.UEmbedViewImages) {
-      for (var img in media.data.images) {
-        final widget = Center(
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Image.network(
-              img.thumbnail,
-              // Show progress while downloading image
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent? loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                        : null,
-                  ),
-                );
-              },
-            ),
-          ),
-        );
-        widgets.add(widget);
-      }
-
-      return media.data.images.length == 1
-          ? widgets[0]
-          : GridView.count(
-              shrinkWrap: true,
-              // Disable scrolling photos
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: media.data.images.length == 1 ? 1 : 2,
-              children: widgets,
-            );
-    }
-    return const IconText(
-      icon: Icons.warning,
-      text: 'Embed type not supported! :(',
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +21,7 @@ class FeedItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            // START Author's data
             ListTile(
               leading: CircleAvatar(
                 backgroundImage: item.post.author.avatar != null
@@ -89,7 +43,13 @@ class FeedItem extends StatelessWidget {
                 item.post.record.text,
               ),
             ),
-            if (item.post.embed != null) _handleEmbed(),
+            // END Author's data
+            // Add embed if available
+            if (item.post.embed != null)
+              Embed(
+                wrap: EmbedGenerator.fromApi(item.post.embed!),
+              ),
+            // START interaction buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -115,7 +75,8 @@ class FeedItem extends StatelessWidget {
                   },
                 ),
               ],
-            )
+            ),
+            // END interaction buttons
           ],
         ),
       ),
