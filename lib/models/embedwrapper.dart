@@ -6,11 +6,15 @@ import 'package:lightbluesky/widgets/icontext.dart';
 
 /// Wraps embed data for easier usage
 class EmbedWrapper {
+  /// Root element for embed
   final bsky.EmbedView root;
+
+  /// Embed type
   final EmbedTypes type;
 
   const EmbedWrapper({required this.root, required this.type});
 
+  /// Setup embed from API EmbedView
   factory EmbedWrapper.fromApi({required bsky.EmbedView root}) {
     return EmbedWrapper(
       root: root,
@@ -18,6 +22,7 @@ class EmbedWrapper {
     );
   }
 
+  /// Build widgets from current data
   List<Widget> getChildren({bool full = false}) {
     if (type == EmbedTypes.images) {
       return _handleImages(root as bsky.UEmbedViewImages, full);
@@ -33,6 +38,7 @@ class EmbedWrapper {
     ];
   }
 
+  /// Guess embed type
   static EmbedTypes _getType(bsky.EmbedView root) {
     EmbedTypes type;
 
@@ -47,6 +53,7 @@ class EmbedWrapper {
     return type;
   }
 
+  /// Get widgets for images
   List<Widget> _handleImages(bsky.UEmbedViewImages typedRoot, bool full) {
     List<Widget> widgets = [];
 
@@ -80,6 +87,7 @@ class EmbedWrapper {
     return widgets;
   }
 
+  /// Get widgets for external (GIFs, Open Graph stuff...)
   List<Widget> _handleExternal(bsky.UEmbedViewExternal typedRoot) {
     final external = typedRoot.data.external;
 

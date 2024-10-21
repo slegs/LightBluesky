@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bluesky/atproto.dart';
 import 'package:bluesky/bluesky.dart';
 import 'package:bluesky/core.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/skyapi.dart';
@@ -71,26 +72,36 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'LightBluesky',
-      theme: ThemeData.light(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
-      home: FutureBuilder(
-        future: _setupFuture,
-        builder: (context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.hasData) {
-            FlutterNativeSplash.remove();
-            return snapshot.data! ? const HomePage() : const AuthPage();
-          } else if (snapshot.hasError) {
-            FlutterNativeSplash.remove();
-            return Text('Error seting up app! ${snapshot.error}');
-          }
+    return DynamicColorBuilder(
+      builder: (lightColorScheme, darkColorScheme) {
+        return MaterialApp(
+          title: 'LightBluesky',
+          theme: ThemeData(
+            colorScheme: lightColorScheme ?? const ColorScheme.light(),
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: darkColorScheme ?? const ColorScheme.dark(),
+            useMaterial3: true,
+          ),
+          home: FutureBuilder(
+            future: _setupFuture,
+            builder: (context, AsyncSnapshot<bool> snapshot) {
+              if (snapshot.hasData) {
+                FlutterNativeSplash.remove();
+                return snapshot.data! ? const HomePage() : const AuthPage();
+              } else if (snapshot.hasError) {
+                FlutterNativeSplash.remove();
+                return Text('Error seting up app! ${snapshot.error}');
+              }
 
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      ),
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

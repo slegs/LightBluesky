@@ -10,11 +10,11 @@ class MainDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.lightBlue,
+              color: Theme.of(context).colorScheme.inversePrimary,
             ),
-            child: Text('LightBluesky'),
+            child: const Text('LightBluesky'),
           ),
           ListTile(
             title: const Text('Settings'),
