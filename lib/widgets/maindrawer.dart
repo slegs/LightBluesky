@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/pages/profile.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -20,6 +22,20 @@ class MainDrawer extends StatelessWidget {
             title: const Text('Settings'),
             onTap: () {
               Ui.snackbar(context, "TODO: Add settings");
+            },
+          ),
+          ListTile(
+            title: const Text('Profile'),
+            onTap: () {
+              if (api.session == null) {
+                Ui.snackbar(context, 'Not logged in!');
+                return;
+              }
+
+              Ui.nav(
+                context,
+                ProfilePage(did: api.session!.did),
+              );
             },
           ),
           ListTile(

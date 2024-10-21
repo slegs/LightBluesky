@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/embedwrapper.dart';
 import 'package:lightbluesky/pages/post.dart';
+import 'package:lightbluesky/pages/profile.dart';
 import 'package:lightbluesky/widgets/embed.dart';
 import 'package:lightbluesky/widgets/icontext.dart';
 
@@ -50,6 +51,9 @@ class PostItem extends StatelessWidget {
             if (reason != null) _handleReason(),
             // START Author's data
             ListTile(
+              onTap: () {
+                Ui.nav(context, ProfilePage(did: item.author.did));
+              },
               leading: CircleAvatar(
                 backgroundImage: item.author.avatar != null
                     ? NetworkImage(item.author.avatar!)

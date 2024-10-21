@@ -48,6 +48,7 @@ class _CustomPlayerState extends State<CustomPlayer> {
         controller: controller,
         width: (widget.aspectRatio['width'] as int).toDouble(),
         height: (widget.aspectRatio['height'] as int).toDouble(),
+        wakelock: false,
       ),
     );
   }
