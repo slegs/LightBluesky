@@ -3,12 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/helpers/embedgen.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/widgets/embed.dart';
+import 'package:lightbluesky/widgets/icontext.dart';
 
 /// Card containing a FeedView (post)
 class FeedItem extends StatelessWidget {
   const FeedItem({super.key, required this.item});
 
   final bsky.FeedView item;
+
+  Widget _handleReason() {
+    String text;
+    IconData icon;
+
+    final reason = item.reason!;
+
+    if (reason.data is bsky.ReasonRepost) {
+      final repost = reason.data as bsky.ReasonRepost;
+
+      text = 'Reposted by ${repost.by.displayName ?? "@${repost.by.handle}"}';
+      icon = Icons.autorenew;
+    } else {
+      text = "Unsuported reason!";
+      icon = Icons.warning;
+    }
+
+    return IconText(
+      icon: icon,
+      text: text,
+    );
+  }
+
+  List<Widget> _handleReply() {
+    return [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +48,8 @@ class FeedItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (item.reply != null) ..._handleReply(),
+            if (item.reason != null) _handleReason(),
             // START Author's data
             ListTile(
               leading: CircleAvatar(
