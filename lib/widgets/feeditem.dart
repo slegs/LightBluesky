@@ -1,7 +1,7 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
-import 'package:lightbluesky/helpers/embedgen.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/models/embedwrapper.dart';
 import 'package:lightbluesky/widgets/embed.dart';
 import 'package:lightbluesky/widgets/icontext.dart';
 
@@ -76,7 +76,7 @@ class FeedItem extends StatelessWidget {
             // Add embed if available
             if (item.post.embed != null)
               Embed(
-                wrap: EmbedGenerator.fromApi(item.post.embed!),
+                wrap: EmbedWrapper.fromApi(item.post.embed!),
               ),
             // START interaction buttons
             Row(

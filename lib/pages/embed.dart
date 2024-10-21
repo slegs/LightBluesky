@@ -4,11 +4,9 @@ import 'package:lightbluesky/models/embedwrapper.dart';
 import 'package:lightbluesky/enums/embedtypes.dart';
 
 class EmbedPage extends StatelessWidget {
-  EmbedPage({super.key, required this.wrap});
+  const EmbedPage({super.key, required this.wrap});
 
   final EmbedWrapper wrap;
-
-  final _controller = PageController();
 
   Widget _handleRoot() {
     Widget root;
@@ -19,7 +17,6 @@ class EmbedPage extends StatelessWidget {
             : PageView.builder(
                 itemCount: wrap.widgets.length,
                 pageSnapping: true,
-                controller: _controller,
                 itemBuilder: (context, i) {
                   return wrap.widgets[i];
                 },
@@ -50,7 +47,12 @@ class EmbedPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Ui.snackbar(context, "TODO: Add download");
+              if (wrap.downloadUrls == null) {
+                Ui.snackbar(context, "Embed type not valid for download!");
+                return;
+              }
+
+              Ui.snackbar(context, 'TODO: Add download');
             },
             icon: const Icon(Icons.download),
           )
