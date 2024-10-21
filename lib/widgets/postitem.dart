@@ -83,21 +83,28 @@ class PostItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 TextButton.icon(
-                  icon: const Icon(Icons.reply),
+                  icon: const Icon(Icons.reply_outlined),
                   label: Text(item.replyCount.toString()),
                   onPressed: () {
-                    Ui.snackbar(context, "TODO: Add reply");
+                    Ui.nav(
+                      context,
+                      PostPage(uri: item.uri, autoReply: true),
+                    );
                   },
                 ),
                 TextButton.icon(
-                  icon: const Icon(Icons.autorenew),
+                  icon: item.isReposted
+                      ? const Icon(Icons.autorenew)
+                      : const Icon(Icons.autorenew_outlined),
                   label: Text(item.repostCount.toString()),
                   onPressed: () {
                     Ui.snackbar(context, "TODO: Add repost");
                   },
                 ),
                 TextButton.icon(
-                  icon: const Icon(Icons.favorite),
+                  icon: item.isLiked
+                      ? const Icon(Icons.favorite)
+                      : const Icon(Icons.favorite_outline),
                   label: Text(item.likeCount.toString()),
                   onPressed: () {
                     Ui.snackbar(context, "TODO: Add like");

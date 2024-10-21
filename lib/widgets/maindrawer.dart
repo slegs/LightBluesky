@@ -25,6 +25,7 @@ class MainDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Source'),
             onTap: () {
+              /// TODO: Get source URL from pubspec.yml instead of hardcode??
               Ui.openUrl('https://github.com/pablouser1/LightBluesky');
             },
           )
