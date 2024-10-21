@@ -82,15 +82,25 @@ class EmbedWrapper {
 
   List<Widget> _handleExternal(bsky.UEmbedViewExternal typedRoot) {
     final external = typedRoot.data.external;
+
+    // Handle GIFs from tenor
+    var thumb = external.thumbnail;
+
+    final uri = Uri.parse(external.uri);
+
+    if (uri.host == 'media.tenor.com') {
+      thumb = external.uri;
+    }
+
     return [
       InkWell(
         child: Card(
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: Column(
             children: [
-              if (external.thumbnail != null)
+              if (thumb != null)
                 Image.network(
-                  external.thumbnail!,
+                  thumb,
                   fit: BoxFit.fill,
                 ),
               Text(
