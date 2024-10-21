@@ -25,9 +25,7 @@ class EmbedPage extends StatelessWidget {
               );
         break;
       case EmbedTypes.videos:
-        // TODO: Add video support
-        root = widgets[0];
-        break;
+      case EmbedTypes.external:
       case EmbedTypes.unsupported:
         root = widgets[0];
         break;

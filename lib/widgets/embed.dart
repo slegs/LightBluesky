@@ -26,8 +26,7 @@ class Embed extends StatelessWidget {
               );
         break;
       case EmbedTypes.videos:
-        root = widgets[0];
-        break;
+      case EmbedTypes.external:
       case EmbedTypes.unsupported:
         root = widgets[0];
         break;

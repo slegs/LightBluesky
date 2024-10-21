@@ -1,6 +1,7 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/enums/embedtypes.dart';
+import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/widgets/icontext.dart';
 
 /// Wraps embed data for easier usage
@@ -20,6 +21,8 @@ class EmbedWrapper {
   List<Widget> getChildren({bool full = false}) {
     if (type == EmbedTypes.images) {
       return _handleImages(root as bsky.UEmbedViewImages, full);
+    } else if (type == EmbedTypes.external) {
+      return _handleExternal(root as bsky.UEmbedViewExternal);
     }
 
     return [
@@ -35,6 +38,8 @@ class EmbedWrapper {
 
     if (root is bsky.UEmbedViewImages) {
       type = EmbedTypes.images;
+    } else if (root is bsky.UEmbedViewExternal) {
+      type = EmbedTypes.external;
     } else {
       type = EmbedTypes.unsupported;
     }
@@ -73,5 +78,35 @@ class EmbedWrapper {
     }
 
     return widgets;
+  }
+
+  List<Widget> _handleExternal(bsky.UEmbedViewExternal typedRoot) {
+    final external = typedRoot.data.external;
+    return [
+      InkWell(
+        child: Card(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: Column(
+            children: [
+              if (external.thumbnail != null)
+                Image.network(
+                  external.thumbnail!,
+                  fit: BoxFit.fill,
+                ),
+              Text(
+                external.title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(external.description),
+            ],
+          ),
+        ),
+        onTap: () {
+          Ui.openUrl(external.uri);
+        },
+      ),
+    ];
   }
 }
