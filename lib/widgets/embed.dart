@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/models/embedwrapper.dart';
 import 'package:lightbluesky/pages/embed.dart';
 
@@ -12,23 +12,24 @@ class Embed extends StatelessWidget {
 
   Widget _handleRoot() {
     Widget root;
+    final widgets = wrap.getChildren(full: false);
     switch (wrap.type) {
       case EmbedTypes.images:
-        root = wrap.widgets.length == 1
-            ? wrap.widgets[0]
+        root = widgets.length == 1
+            ? widgets[0]
             : GridView.count(
                 shrinkWrap: true,
                 // Disable scrolling photos
                 physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: wrap.widgets.length == 1 ? 1 : 2,
-                children: wrap.widgets,
+                crossAxisCount: widgets.length == 1 ? 1 : 2,
+                children: widgets,
               );
         break;
       case EmbedTypes.videos:
-        root = wrap.widgets[0];
+        root = widgets[0];
         break;
       case EmbedTypes.unsupported:
-        root = wrap.widgets[0];
+        root = widgets[0];
         break;
     }
 

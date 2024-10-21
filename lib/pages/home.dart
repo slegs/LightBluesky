@@ -81,6 +81,7 @@ class _HomePageState extends State<HomePage> {
           child: TabBarView(
             children: [
               ListView.builder(
+                shrinkWrap: true,
                 controller: _scrollController,
                 itemCount: items.length,
                 itemBuilder: (context, i) => FeedItem(item: items[i]),

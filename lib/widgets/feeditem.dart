@@ -76,7 +76,9 @@ class FeedItem extends StatelessWidget {
             // Add embed if available
             if (item.post.embed != null)
               Embed(
-                wrap: EmbedWrapper.fromApi(item.post.embed!),
+                wrap: EmbedWrapper.fromApi(
+                  root: item.post.embed!,
+                ),
               ),
             // START interaction buttons
             Row(

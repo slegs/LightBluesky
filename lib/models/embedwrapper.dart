@@ -5,34 +5,51 @@ import 'package:lightbluesky/widgets/icontext.dart';
 
 /// Wraps embed data for easier usage
 class EmbedWrapper {
-  final List<Widget> widgets;
-  final List<String>? downloadUrls;
+  final bsky.EmbedView root;
   final EmbedTypes type;
 
-  const EmbedWrapper({
-    required this.widgets,
-    required this.type,
-    this.downloadUrls,
-  });
+  const EmbedWrapper({required this.root, required this.type});
 
-  /// Handles widgets usage for embed from API data
-  factory EmbedWrapper.fromApi(bsky.EmbedView embed) {
-    if (embed is bsky.UEmbedViewImages) {
-      return _handleImages(embed);
-    }
-
-    return _handleUnsupported();
+  factory EmbedWrapper.fromApi({required bsky.EmbedView root}) {
+    return EmbedWrapper(
+      root: root,
+      type: _getType(root),
+    );
   }
 
-  static EmbedWrapper _handleImages(bsky.UEmbedViewImages embed) {
-    List<Widget> widgets = [];
-    List<String> downloadUrls = [];
+  List<Widget> getChildren({bool full = false}) {
+    if (type == EmbedTypes.images) {
+      return _handleImages(root as bsky.UEmbedViewImages, full);
+    }
 
-    for (var img in embed.data.images) {
+    return [
+      const IconText(
+        icon: Icons.warning,
+        text: 'Embed type not supported! :(',
+      ),
+    ];
+  }
+
+  static EmbedTypes _getType(bsky.EmbedView root) {
+    EmbedTypes type;
+
+    if (root is bsky.UEmbedViewImages) {
+      type = EmbedTypes.images;
+    } else {
+      type = EmbedTypes.unsupported;
+    }
+
+    return type;
+  }
+
+  List<Widget> _handleImages(bsky.UEmbedViewImages typedRoot, bool full) {
+    List<Widget> widgets = [];
+
+    for (var img in typedRoot.data.images) {
       final widget = Padding(
         padding: const EdgeInsets.all(5.0),
         child: Image.network(
-          img.thumbnail,
+          full ? img.fullsize : img.thumbnail,
           // Show progress while downloading image
           loadingBuilder: (BuildContext context, Widget child,
               ImageChunkEvent? loadingProgress) {
@@ -53,25 +70,8 @@ class EmbedWrapper {
       );
 
       widgets.add(widget);
-      downloadUrls.add(img.fullsize);
     }
 
-    return EmbedWrapper(
-      widgets: widgets,
-      downloadUrls: downloadUrls,
-      type: EmbedTypes.images,
-    );
-  }
-
-  static EmbedWrapper _handleUnsupported() {
-    return const EmbedWrapper(
-      widgets: [
-        IconText(
-          icon: Icons.warning,
-          text: 'Embed type not supported! :(',
-        ),
-      ],
-      type: EmbedTypes.unsupported,
-    );
+    return widgets;
   }
 }
