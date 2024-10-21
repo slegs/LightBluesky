@@ -2,23 +2,23 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/embedwrapper.dart';
+import 'package:lightbluesky/pages/post.dart';
 import 'package:lightbluesky/widgets/embed.dart';
 import 'package:lightbluesky/widgets/icontext.dart';
 
 /// Card containing a FeedView (post)
-class FeedItem extends StatelessWidget {
-  const FeedItem({super.key, required this.item});
+class PostItem extends StatelessWidget {
+  const PostItem({super.key, required this.item, this.reason});
 
-  final bsky.FeedView item;
+  final bsky.Post item;
+  final bsky.Reason? reason;
 
   Widget _handleReason() {
     String text;
     IconData icon;
 
-    final reason = item.reason!;
-
-    if (reason.data is bsky.ReasonRepost) {
-      final repost = reason.data as bsky.ReasonRepost;
+    if (reason!.data is bsky.ReasonRepost) {
+      final repost = reason!.data as bsky.ReasonRepost;
 
       text = 'Reposted by ${repost.by.displayName ?? "@${repost.by.handle}"}';
       icon = Icons.autorenew;
@@ -33,35 +33,33 @@ class FeedItem extends StatelessWidget {
     );
   }
 
-  List<Widget> _handleReply() {
-    return [];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
         onTap: () {
-          Ui.snackbar(context, "TODO: Implement full post");
+          Ui.nav(
+            context,
+            PostPage(uri: item.uri),
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (item.reply != null) ..._handleReply(),
-            if (item.reason != null) _handleReason(),
+            if (reason != null) _handleReason(),
             // START Author's data
             ListTile(
               leading: CircleAvatar(
-                backgroundImage: item.post.author.avatar != null
-                    ? NetworkImage(item.post.author.avatar!)
+                backgroundImage: item.author.avatar != null
+                    ? NetworkImage(item.author.avatar!)
                     : null,
               ),
-              title: Text(item.post.author.displayName != null
-                  ? item.post.author.displayName!
-                  : '@${item.post.author.handle}'),
-              subtitle: item.post.author.displayName != null
-                  ? Text('@${item.post.author.handle}')
+              title: Text(item.author.displayName != null
+                  ? item.author.displayName!
+                  : '@${item.author.handle}'),
+              subtitle: item.author.displayName != null
+                  ? Text('@${item.author.handle}')
                   : null,
             ),
             Padding(
@@ -69,15 +67,15 @@ class FeedItem extends StatelessWidget {
                 left: 10.0,
               ),
               child: Text(
-                item.post.record.text,
+                item.record.text,
               ),
             ),
             // END Author's data
             // Add embed if available
-            if (item.post.embed != null)
+            if (item.embed != null)
               Embed(
                 wrap: EmbedWrapper.fromApi(
-                  root: item.post.embed!,
+                  root: item.embed!,
                 ),
               ),
             // START interaction buttons
@@ -86,21 +84,21 @@ class FeedItem extends StatelessWidget {
               children: [
                 TextButton.icon(
                   icon: const Icon(Icons.reply),
-                  label: Text(item.post.replyCount.toString()),
+                  label: Text(item.replyCount.toString()),
                   onPressed: () {
                     Ui.snackbar(context, "TODO: Add reply");
                   },
                 ),
                 TextButton.icon(
                   icon: const Icon(Icons.autorenew),
-                  label: Text(item.post.repostCount.toString()),
+                  label: Text(item.repostCount.toString()),
                   onPressed: () {
                     Ui.snackbar(context, "TODO: Add repost");
                   },
                 ),
                 TextButton.icon(
                   icon: const Icon(Icons.favorite),
-                  label: Text(item.post.likeCount.toString()),
+                  label: Text(item.likeCount.toString()),
                   onPressed: () {
                     Ui.snackbar(context, "TODO: Add like");
                   },

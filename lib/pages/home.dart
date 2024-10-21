@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/skyapi.dart';
-import 'package:lightbluesky/widgets/feeditem.dart';
+import 'package:lightbluesky/widgets/postitem.dart';
 import 'package:lightbluesky/widgets/maindrawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                 shrinkWrap: true,
                 controller: _scrollController,
                 itemCount: items.length,
-                itemBuilder: (context, i) => FeedItem(item: items[i]),
+                itemBuilder: (context, i) => PostItem(item: items[i].post),
               ),
             ],
           ),
