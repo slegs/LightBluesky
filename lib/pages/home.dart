@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/widgets/feeditem.dart';
 import 'package:lightbluesky/widgets/maindrawer.dart';
 
@@ -46,10 +47,12 @@ class _HomePageState extends State<HomePage> {
       cursor: cursor,
     );
 
+    final filteredFeed = SkyApi.filterFeed(res.data.feed);
+
     cursor = res.data.cursor;
 
     setState(() {
-      items.addAll(res.data.feed);
+      items.addAll(filteredFeed);
     });
   }
 

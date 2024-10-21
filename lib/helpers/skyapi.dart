@@ -13,4 +13,11 @@ class SkyApi {
       return true;
     }
   }
+
+  static List<FeedView> filterFeed(List<FeedView> items) {
+    return items
+        .where((item) =>
+            item.post.author.isNotBlocking && item.post.author.isNotMuted)
+        .toList();
+  }
 }
