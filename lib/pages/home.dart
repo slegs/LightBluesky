@@ -84,7 +84,10 @@ class _HomePageState extends State<HomePage> {
                 shrinkWrap: true,
                 controller: _scrollController,
                 itemCount: items.length,
-                itemBuilder: (context, i) => PostItem(item: items[i].post),
+                itemBuilder: (context, i) => PostItem(
+                  item: items[i].post,
+                  reason: items[i].reason,
+                ),
               ),
             ],
           ),
