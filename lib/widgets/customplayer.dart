@@ -30,7 +30,14 @@ class _CustomPlayerState extends State<CustomPlayer> {
 
     player.open(
       Media(widget.playlist),
+      play: false,
     );
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   @override

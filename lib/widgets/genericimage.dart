@@ -42,8 +42,6 @@ class GenericImage extends StatelessWidget {
       },
     );
 
-    return aspectRatio != null
-        ? AspectRatio(aspectRatio: aspectRatio!.width / aspectRatio!.height)
-        : widget;
+    return widget;
   }
 }
