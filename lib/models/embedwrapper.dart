@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/widgets/icontext.dart';
+import 'package:lightbluesky/widgets/genericimage.dart';
+import 'package:lightbluesky/widgets/customplayer.dart';
 
 /// Wraps embed data for easier usage
 class EmbedWrapper {
@@ -26,6 +28,8 @@ class EmbedWrapper {
   List<Widget> getChildren({bool full = false}) {
     if (type == EmbedTypes.images) {
       return _handleImages(root as bsky.UEmbedViewImages, full);
+    } else if (type == EmbedTypes.videos) {
+      return _handleVideos(root as bsky.UEmbedViewUnknown);
     } else if (type == EmbedTypes.external) {
       return _handleExternal(root as bsky.UEmbedViewExternal);
     }
@@ -46,6 +50,9 @@ class EmbedWrapper {
       type = EmbedTypes.images;
     } else if (root is bsky.UEmbedViewExternal) {
       type = EmbedTypes.external;
+    } else if (root is bsky.UEmbedViewUnknown &&
+        root.data.containsKey("playlist")) {
+      type = EmbedTypes.videos;
     } else {
       type = EmbedTypes.unsupported;
     }
@@ -60,24 +67,9 @@ class EmbedWrapper {
     for (var img in typedRoot.data.images) {
       final widget = Padding(
         padding: const EdgeInsets.all(5.0),
-        child: Image.network(
-          full ? img.fullsize : img.thumbnail,
-          // Show progress while downloading image
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            );
-          },
+        child: GenericImage(
+          src: full ? img.fullsize : img.thumbnail,
+          aspectRatio: img.aspectRatio,
         ),
       );
 
@@ -85,6 +77,24 @@ class EmbedWrapper {
     }
 
     return widgets;
+  }
+
+  // Get widgets for videos
+  List<Widget> _handleVideos(bsky.UEmbedViewUnknown typedRoot) {
+    if (!typedRoot.data.keys
+        .toSet()
+        .containsAll(["playlist", "thumbnail", "aspectRatio"])) {
+      return [const Text("Unable to process video!")];
+    }
+
+    return [
+      CustomPlayer(
+        cid: typedRoot.data['cid'],
+        playlist: typedRoot.data['playlist'],
+        thumbnail: typedRoot.data['thumbnail'],
+        aspectRatio: typedRoot.data['aspectRatio'],
+      ),
+    ];
   }
 
   /// Get widgets for external (GIFs, Open Graph stuff...)
@@ -107,8 +117,8 @@ class EmbedWrapper {
           child: Column(
             children: [
               if (thumb != null)
-                Image.network(
-                  thumb,
+                GenericImage(
+                  src: thumb,
                   fit: BoxFit.fill,
                 ),
               Text(

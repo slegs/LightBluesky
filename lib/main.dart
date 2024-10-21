@@ -9,11 +9,13 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/pages/auth.dart';
 import 'package:lightbluesky/pages/home.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const MyApp());
 }
