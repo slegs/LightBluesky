@@ -32,7 +32,6 @@ dependencies:
     sdk: flutter
   bluesky: ^0.16.12
   shared_preferences: ^2.3.2
-  flutter_native_splash: ^2.4.1
   url_launcher: ^6.3.1
   dynamic_color: ^1.7.0
   media_kit: ^1.1.11
@@ -56,6 +55,3 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
-
-flutter_native_splash:
-  color: "#42a5f5"

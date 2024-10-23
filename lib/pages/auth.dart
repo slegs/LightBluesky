@@ -16,18 +16,28 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
+  bool _isLoading = false;
+  bool _needsFactor = false;
+
   final _identityController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _authFactorController = TextEditingController();
 
-  void handleSession() async {
-    final session = await createSession(
-      identifier: _identityController.text,
-      password: _passwordController.text,
-    );
-
-    if (!mounted) return;
+  void _handleSession() async {
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
+      final session = await createSession(
+        identifier: _identityController.text,
+        password: _passwordController.text,
+        authFactorToken: _authFactorController.value.text != ''
+            ? _authFactorController.value.text
+            : null,
+      );
+
+      if (!mounted) return;
       // Save to memory and to local disk
       final data = session.data.toJson();
       api = Bluesky.fromSession(session.data);
@@ -37,20 +47,33 @@ class _AuthPageState extends State<AuthPage> {
       Ui.nav(context, const HomePage());
     } on XRPCException catch (e) {
       // Something went wrong
-      Ui.dialog(
-        context,
-        'Error ${e.response.data.error}',
-        e.response.data.message,
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text("OK"),
-          ),
-        ],
-      );
+      if (e.response.data.error == 'AuthFactorTokenRequired') {
+        // Server is asking for 2FA
+        Ui.snackbar(context, e.response.data.message);
+
+        setState(() {
+          _needsFactor = true;
+        });
+      } else {
+        Ui.dialog(
+          context,
+          'Error ${e.response.data.error}',
+          e.response.data.message,
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      }
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -85,9 +108,24 @@ class _AuthPageState extends State<AuthPage> {
                 ),
               ),
             ),
-            OutlinedButton(
-              onPressed: handleSession,
-              child: const Text(
+            // 2FA field, hidden by default
+            Visibility(
+              visible: _needsFactor,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  controller: _authFactorController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: '2FA code',
+                  ),
+                ),
+              ),
+            ),
+            OutlinedButton.icon(
+              onPressed: !_isLoading ? _handleSession : null,
+              icon: const Icon(Icons.login),
+              label: const Text(
                 'Login',
               ),
             ),
