@@ -1,4 +1,8 @@
+import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
+import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/pages/profile.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -10,9 +14,36 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   bool _isLoading = false;
 
-  final _queryController = TextEditingController();
+  List<bsky.ActorBasic> actors = List.empty(
+    growable: true,
+  );
 
-  void _handleSearch() {}
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _makeSearch(String term) async {
+    final res = await api.actor.searchActorsTypeahead(
+      term: term,
+    );
+
+    setState(() {
+      actors = res.data.actors;
+    });
+  }
+
+  void _handleSearch(String term) {
+    setState(() {
+      _isLoading = true;
+    });
+
+    _makeSearch(term);
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,22 +52,39 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Search"),
       ),
-      body: Row(
+      body: Column(
         children: [
-          Flexible(
-            child: TextField(
-              controller: _queryController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Query',
-              ),
+          TextField(
+            onChanged: (val) {
+              _handleSearch(val);
+            },
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Query',
             ),
           ),
-          ElevatedButton.icon(
-            onPressed: !_isLoading ? _handleSearch : null,
-            icon: const Icon(Icons.search),
-            label: const Text(
-              'Go',
+          if (_isLoading) const CircularProgressIndicator(),
+          Expanded(
+            child: ListView.builder(
+              itemCount: actors.length,
+              itemBuilder: (context, i) {
+                return ListTile(
+                  onTap: () {
+                    Ui.nav(context, ProfilePage(did: actors[i].did));
+                  },
+                  leading: CircleAvatar(
+                    backgroundImage: actors[i].avatar != null
+                        ? NetworkImage(actors[i].avatar!)
+                        : null,
+                  ),
+                  title: Text(actors[i].displayName != null
+                      ? actors[i].displayName!
+                      : '@${actors[i].handle}'),
+                  subtitle: actors[i].displayName != null
+                      ? Text('@${actors[i].handle}')
+                      : null,
+                );
+              },
             ),
           ),
         ],
