@@ -97,11 +97,6 @@ class _ProfilePageState extends State<ProfilePage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (actor.banner != null)
-            Image.network(
-              actor.banner!,
-              fit: BoxFit.fitWidth,
-            ),
           ListTile(
             leading: CircleAvatar(
               backgroundImage:
@@ -175,17 +170,31 @@ class _ProfilePageState extends State<ProfilePage>
         future: _futureProfile,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            final actor = snapshot.data!.data;
             return NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverToBoxAdapter(
-                    child: _makeProfileCard(snapshot.data!.data),
+                    child: actor.banner != null
+                        ? Image.network(
+                            actor.banner!,
+                            fit: BoxFit.fitWidth,
+                          )
+                        : null,
+                  ),
+                  SliverToBoxAdapter(
+                    child: _makeProfileCard(actor),
                   ),
                 ];
               },
-              body: TabBarView(
-                controller: _tabController,
-                children: _makeTabViews(),
+              body: Padding(
+                padding: const EdgeInsets.only(
+                  top: 20.0,
+                ),
+                child: TabBarView(
+                  controller: _tabController,
+                  children: _makeTabViews(),
+                ),
               ),
             );
           } else if (snapshot.hasError) {
