@@ -53,22 +53,24 @@ class _AuthPageState extends State<AuthPage> {
 
         setState(() {
           _needsFactor = true;
+          _isLoading = false;
         });
-      } else {
-        Ui.dialog(
-          context,
-          'Error ${e.response.data.error}',
-          e.response.data.message,
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        );
+        return;
       }
+
+      Ui.dialog(
+        context,
+        'Error ${e.response.data.error}',
+        e.response.data.message,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("OK"),
+          ),
+        ],
+      );
     }
 
     setState(() {
