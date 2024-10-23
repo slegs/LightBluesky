@@ -171,29 +171,31 @@ class _ProfilePageState extends State<ProfilePage>
         controller: _tabController,
         isScrollable: true,
       ),
-      body: Column(
-        children: [
-          // User data
-          FutureBuilder(
-            future: _futureProfile,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return _makeProfileCard(snapshot.data!.data);
-              } else if (snapshot.hasError) {
-                return ApiError(exception: snapshot.error as XRPCError);
-              }
+      body: FutureBuilder(
+        future: _futureProfile,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  SliverToBoxAdapter(
+                    child: _makeProfileCard(snapshot.data!.data),
+                  ),
+                ];
+              },
+              body: TabBarView(
+                controller: _tabController,
+                children: _makeTabViews(),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return ApiError(exception: snapshot.error as XRPCError);
+          }
 
-              return const CircularProgressIndicator();
-            },
-          ),
-          const Divider(),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: _makeTabViews(),
-            ),
-          ),
-        ],
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }

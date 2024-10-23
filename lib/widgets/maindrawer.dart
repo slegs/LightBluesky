@@ -44,7 +44,7 @@ class MainDrawer extends StatelessWidget {
               /// TODO: Get source URL from pubspec.yml instead of hardcode??
               Ui.openUrl('https://github.com/pablouser1/LightBluesky');
             },
-          )
+          ),
         ],
       ),
     );
