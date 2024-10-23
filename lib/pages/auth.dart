@@ -40,6 +40,7 @@ class _AuthPageState extends State<AuthPage> {
       if (!mounted) return;
       // Save to memory and to local disk
       final data = session.data.toJson();
+
       api = Bluesky.fromSession(session.data);
       prefs.setString('session', json.encode(data));
 
