@@ -10,9 +10,9 @@ class Embed extends StatelessWidget {
 
   final EmbedWrapper wrap;
 
-  Widget _handleRoot() {
+  Widget _handleRoot(BuildContext context) {
     Widget root;
-    final widgets = wrap.getChildren(full: false);
+    final widgets = wrap.getChildren(full: false, context: context);
     switch (wrap.type) {
       case EmbedTypes.images:
         root = widgets.length == 1
@@ -25,9 +25,7 @@ class Embed extends StatelessWidget {
                 children: widgets,
               );
         break;
-      case EmbedTypes.videos:
-      case EmbedTypes.external:
-      case EmbedTypes.unsupported:
+      default:
         root = widgets[0];
         break;
     }
@@ -41,7 +39,7 @@ class Embed extends StatelessWidget {
       onTap: () {
         Ui.nav(context, EmbedPage(wrap: wrap));
       },
-      child: _handleRoot(),
+      child: _handleRoot(context),
     );
   }
 }

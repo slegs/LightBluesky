@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/pages/post.dart';
 import 'package:lightbluesky/widgets/icontext.dart';
 import 'package:lightbluesky/widgets/genericimage.dart';
 import 'package:lightbluesky/widgets/customplayer.dart';
@@ -25,13 +26,15 @@ class EmbedWrapper {
   }
 
   /// Build widgets from current data
-  List<Widget> getChildren({bool full = false}) {
+  List<Widget> getChildren({bool full = false, BuildContext? context}) {
     if (type == EmbedTypes.images) {
       return _handleImages(root as bsky.UEmbedViewImages, full);
     } else if (type == EmbedTypes.videos) {
       return _handleVideos(root as bsky.UEmbedViewUnknown);
     } else if (type == EmbedTypes.external) {
       return _handleExternal(root as bsky.UEmbedViewExternal);
+    } else if (type == EmbedTypes.quote) {
+      return _handleQuote(root as bsky.UEmbedViewRecord, context);
     }
 
     return [
@@ -53,6 +56,8 @@ class EmbedWrapper {
     } else if (root is bsky.UEmbedViewUnknown &&
         root.data.containsKey("playlist")) {
       type = EmbedTypes.videos;
+    } else if (root is bsky.UEmbedViewRecord) {
+      type = EmbedTypes.quote;
     } else {
       type = EmbedTypes.unsupported;
     }
@@ -134,6 +139,59 @@ class EmbedWrapper {
         onTap: () {
           Ui.openUrl(external.uri);
         },
+      ),
+    ];
+  }
+
+  List<Widget> _handleQuote(
+    bsky.UEmbedViewRecord typedRoot,
+    BuildContext? context,
+  ) {
+    if (context == null) {
+      return const [
+        Text("BuildContext not set!"),
+      ];
+    }
+
+    final record =
+        (typedRoot.data.record as bsky.UEmbedViewRecordViewRecord).data;
+
+    return [
+      Card.outlined(
+        child: InkWell(
+          onTap: () {
+            Ui.nav(
+              context,
+              PostPage(uri: record.uri),
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: record.author.avatar != null
+                      ? NetworkImage(record.author.avatar!)
+                      : null,
+                ),
+                title: Text(record.author.displayName != null
+                    ? record.author.displayName!
+                    : '@${record.author.handle}'),
+                subtitle: record.author.displayName != null
+                    ? Text('@${record.author.handle}')
+                    : null,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 10.0,
+                ),
+                child: Text(
+                  record.value.text,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     ];
   }
