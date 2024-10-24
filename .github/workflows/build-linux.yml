@@ -34,12 +34,12 @@ jobs:
     - name: Build Linux
       run: flutter build linux --split-debug-info build/app/outputs/symbols
     - name: Zip Linux build
-      run: zip -qq -r ./build/linux/x64/release/linux-x84.zip *
-      working-directory: build/linux/x64/release/bundle
+      run: zip -qq -r linux-x64.zip *
+      working-directory: ./build/linux/x64/release/bundle
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ./build/linux/x64/release/linux-x84.zip
+        artifacts: ./build/linux/x64/release/linux-x64.zip
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: v${{ steps.yaml.outputs.data }}
         skipIfReleaseExists: true
