@@ -35,4 +35,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: linux-artifact
-        path: ./build/linux/x64/release/linux-x64.zip
+        path: ./build/linux/x64/release/bundle/linux-x64.zip
