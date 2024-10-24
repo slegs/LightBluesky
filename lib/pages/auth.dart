@@ -23,12 +23,14 @@ class _AuthPageState extends State<AuthPage> {
   final _passwordController = TextEditingController();
   final _authFactorController = TextEditingController();
 
+  // Run login attempt
   void _handleSession() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
+      // Try login
       final session = await createSession(
         identifier: _identityController.text,
         password: _passwordController.text,
@@ -38,10 +40,12 @@ class _AuthPageState extends State<AuthPage> {
       );
 
       if (!mounted) return;
-      // Save to memory and to local disk
+
       final data = session.data.toJson();
 
+      // Save in memory
       api = Bluesky.fromSession(session.data);
+      // Save in disk
       prefs.setString('session', json.encode(data));
 
       // Redirect to home
@@ -59,6 +63,7 @@ class _AuthPageState extends State<AuthPage> {
         return;
       }
 
+      // Unexpected error happened
       Ui.dialog(
         context,
         'Error ${e.response.data.error}',
@@ -125,6 +130,7 @@ class _AuthPageState extends State<AuthPage> {
                 ),
               ),
             ),
+            // Login button
             OutlinedButton.icon(
               onPressed: !_isLoading ? _handleSession : null,
               icon: const Icon(Icons.login),
