@@ -15,10 +15,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _scrollController = ScrollController();
 
+  /// List of items available
   List<bsky.FeedView> items = List.empty(
     growable: true,
   );
 
+  /// Current cursor
   String? cursor;
 
   @override
@@ -34,6 +36,7 @@ class _HomePageState extends State<HomePage> {
     _scrollController.dispose();
   }
 
+  /// Runs when reached bottom of scroll
   void _scrollHook() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
@@ -41,6 +44,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /// Add more items to list
   Future<void> _loadMore() async {
     final res = await api.feed.getTimeline(
       cursor: cursor,
