@@ -25,11 +25,10 @@ jobs:
         with:
           path: /tmp/artifacts
           run_id: ${{ github.event.workflow_run.id }}
-          merge-multiple: true
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: /tmp/artifacts/*
+          artifacts: /tmp/artifacts/**/*
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: v${{ steps.yaml.outputs.data }}
           skipIfReleaseExists: true
