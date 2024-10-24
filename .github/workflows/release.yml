@@ -2,7 +2,7 @@ name: Create Release
 
 on:
   workflow_run:
-    workflows: [Build Android, Build Linux]
+    workflows: [Build]
     types:
       - completed
 
@@ -19,10 +19,12 @@ jobs:
         with:
           file: './pubspec.yaml'
           key-path: '["version"]'
-      - name: Get artifacts
-        uses: actions/download-artifact@v4
+      - name: Download artifacts
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v6
         with:
           path: /tmp/artifacts
+          run_id: ${{ github.event.workflow_run.id }}
           merge-multiple: true
       - name: Create Release
         uses: ncipollo/release-action@v1

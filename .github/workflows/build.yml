@@ -1,8 +1,9 @@
-name: Build Android
+name: Build
 on: [push]
 
 jobs:
-  build:
+  # Android build
+  android:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -41,3 +42,36 @@ jobs:
       with:
         name: android-artifact
         path: ./build/app/outputs/flutter-apk/app-*-release.apk
+  # Linux build
+  linux:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup Linux build deps
+      uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: ninja-build libgtk-3-dev libmpv-dev
+        version: 1.0
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        cache: true
+        cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+        cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+        pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:"
+    - name: Get Flutter pubs
+      run: flutter pub get
+    - name: Build Linux
+      run: flutter build linux --split-debug-info build/app/outputs/symbols
+    - name: Zip Linux build
+      run: zip -qq -r linux-x64.zip *
+      working-directory: ./build/linux/x64/release/bundle
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-artifact
+        path: ./build/linux/x64/release/bundle/linux-x64.zip
