@@ -2,9 +2,7 @@ name: Create Release
 
 on:
   workflow_run:
-    workflows: 
-      - build-linux.yml
-      - build-android.yml
+    workflows: [Build Android, Build Linux]
     types:
       - completed
 
