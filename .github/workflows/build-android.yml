@@ -31,7 +31,7 @@ jobs:
         cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
         pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:"
     - name: Setup Android platform tools
-    - uses: maxim-lobanov/setup-android-tools@v1
+      uses: maxim-lobanov/setup-android-tools@v1
       with:
         packages: platform-tools
         cache: true
