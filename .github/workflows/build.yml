@@ -106,9 +106,9 @@ jobs:
       run: flutter build windows --split-debug-info build\app\outputs\symbols
     - name: Zip Windows build
       run: zip -qq -r windows-x64.zip *
-      working-directory: .\build\windows\runner\Release
+      working-directory: .\build\windows\x64\runner\Release
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
         name: windows-artifact
-        path: .\build\windows\runner\Release\windows-x64.zip
+        path: .\build\windows\x64\runner\Release\windows-x64.zip
