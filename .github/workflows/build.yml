@@ -1,5 +1,14 @@
 name: Build
-on: [push]
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - lib/**
+      - android/**
+      - linux/**
+      - pubspec.yaml
+      - pubspec.lock
 
 jobs:
   # Android build
