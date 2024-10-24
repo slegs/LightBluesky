@@ -11,12 +11,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Run read-yaml action
-      id: yaml
-      uses: jbutcher5/read-yaml@main
-      with:
-        file: './pubspec.yaml' # File to read from
-        key-path: '["version"]' # Access the runs key then the using key and retuns the value.
     - name: Setup Linux build deps
       uses: awalsh128/cache-apt-pkgs-action@latest
       with:
@@ -37,10 +31,8 @@ jobs:
     - name: Zip Linux build
       run: zip -qq -r linux-x64.zip *
       working-directory: ./build/linux/x64/release/bundle
-    - name: Create Release
-      uses: ncipollo/release-action@v1
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
       with:
-        artifacts: ./build/linux/x64/release/linux-x64.zip
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag: v${{ steps.yaml.outputs.data }}
-        skipIfReleaseExists: true
+        name: linux-artifact
+        path: ./linux-x64.zip

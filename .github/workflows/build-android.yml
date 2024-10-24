@@ -11,12 +11,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Run read-yaml action
-      id: yaml
-      uses: jbutcher5/read-yaml@main
-      with:
-        file: './pubspec.yaml' # File to read from
-        key-path: '["version"]' # Access the runs key then the using key and retuns the value.
     - name: Setup Java
       uses: actions/setup-java@v3
       with:
@@ -42,11 +36,8 @@ jobs:
       run: flutter pub get
     - name: Build Android
       run: flutter build apk --split-per-abi --target-platform android-arm64,android-arm --split-debug-info build/app/outputs/symbols
-    - name: Create Release
-      uses: ncipollo/release-action@v1
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
       with:
-        artifacts: ./build/app/outputs/flutter-apk/app-*-release.apk
-        artifactContentType: application/vnd.android.package-archive
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag: v${{ steps.yaml.outputs.data }}
-        skipIfReleaseExists: true
+        name: android-artifact
+        path: ./build/app/outputs/flutter-apk/app-*-release.apk
