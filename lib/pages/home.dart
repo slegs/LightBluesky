@@ -1,5 +1,4 @@
 import 'package:bluesky/bluesky.dart' as bsky;
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/skyapi.dart';
@@ -72,26 +71,18 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        body: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(
-            dragDevices: {
-              PointerDeviceKind.touch,
-              PointerDeviceKind.mouse,
-            },
-          ),
-          child: TabBarView(
-            children: [
-              ListView.builder(
-                shrinkWrap: true,
-                controller: _scrollController,
-                itemCount: items.length,
-                itemBuilder: (context, i) => PostItem(
-                  item: items[i].post,
-                  reason: items[i].reason,
-                ),
+        body: TabBarView(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              controller: _scrollController,
+              itemCount: items.length,
+              itemBuilder: (context, i) => PostItem(
+                item: items[i].post,
+                reason: items[i].reason,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         drawer: const MainDrawer(),
       ),

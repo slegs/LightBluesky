@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
@@ -83,23 +81,15 @@ class _PostPageState extends State<PostPage> {
             final thread =
                 snapshot.data!.data.thread as bsky.UPostThreadViewRecord;
 
-            return ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(
-                dragDevices: {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                },
-              ),
-              child: ListView(
-                children: [
-                  // Parent
-                  if (thread.data.parent != null) ..._handleParent(thread),
-                  // Main
-                  PostItem(item: thread.data.post),
-                  // Children
-                  if (thread.data.replies != null) ..._handleChildren(thread),
-                ],
-              ),
+            return ListView(
+              children: [
+                // Parent
+                if (thread.data.parent != null) ..._handleParent(thread),
+                // Main
+                PostItem(item: thread.data.post),
+                // Children
+                if (thread.data.replies != null) ..._handleChildren(thread),
+              ],
             );
           } else if (snapshot.hasError) {
             return ApiError(
