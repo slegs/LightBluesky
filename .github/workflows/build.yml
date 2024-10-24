@@ -75,31 +75,3 @@ jobs:
       with:
         name: linux-artifact
         path: ./build/linux/x64/release/bundle/linux-x64.zip
-  # Windows build
-  windows:
-    runs-on: windows-latest
-    permissions:
-      contents: write
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        channel: stable
-        cache: true
-        cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
-        cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
-        pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:"
-    - name: Get Flutter pubs
-      run: flutter pub get
-    - name: Build Windows
-      run: flutter build windows --split-debug-info build/app/outputs/symbols
-    - name: Zip Windows build
-      run: zip -qq -r windows-x64.zip *
-      working-directory: ./build/windows/x64/release/bundle
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: windows-artifact
-        path: ./build/windows/x64/release/bundle/windows-x64.zip
