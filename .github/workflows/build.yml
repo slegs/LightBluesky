@@ -33,12 +33,13 @@ jobs:
         pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
     - name: Build KeyStore
       run: echo ${{ secrets.STORE_BASE64 }} | base64 -d > ${{ env.STORE_FILE }}
+    - name: Write key.properties
+      run: |
+        echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
+        echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+        echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+        echo "storeFile=${{ env.STORE_FILE }}" >> android/key.properties
     - name: Build Flutter
-      env:
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-        STORE_FILE: ${{ env.STORE_FILE }}
       run: flutter build apk --split-per-abi --target-platform android-arm64,android-arm --split-debug-info build/app/outputs/symbols
     - name: Create Release
       uses: ncipollo/release-action@v1
