@@ -30,7 +30,6 @@ jobs:
         cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
         cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
         pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:"
-        pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
     - name: Build KeyStore
       run: echo ${{ secrets.STORE_BASE64 }} | base64 -d > ${{ env.STORE_FILE }}
     - name: Write key.properties
