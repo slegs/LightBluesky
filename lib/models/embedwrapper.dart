@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/post.dart';
+import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/widgets/icontext.dart';
-import 'package:lightbluesky/widgets/genericimage.dart';
+import 'package:lightbluesky/partials/customimage.dart';
 import 'package:lightbluesky/widgets/customplayer.dart';
 
 /// Wraps embed data for easier usage
@@ -72,8 +73,8 @@ class EmbedWrapper {
     for (var img in typedRoot.data.images) {
       final widget = Padding(
         padding: const EdgeInsets.all(5.0),
-        child: GenericImage(
-          src: full ? img.fullsize : img.thumbnail,
+        child: CustomImage(
+          full ? img.fullsize : img.thumbnail,
           aspectRatio: img.aspectRatio,
         ),
       );
@@ -122,8 +123,8 @@ class EmbedWrapper {
           child: Column(
             children: [
               if (thumb != null)
-                GenericImage(
-                  src: thumb,
+                CustomImage(
+                  thumb,
                   fit: BoxFit.fill,
                 ),
               Text(
@@ -168,18 +169,8 @@ class EmbedWrapper {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: record.author.avatar != null
-                      ? NetworkImage(record.author.avatar!)
-                      : null,
-                ),
-                title: Text(record.author.displayName != null
-                    ? record.author.displayName!
-                    : '@${record.author.handle}'),
-                subtitle: record.author.displayName != null
-                    ? Text('@${record.author.handle}')
-                    : null,
+              Actor(
+                actor: record.author,
               ),
               Padding(
                 padding: const EdgeInsets.only(

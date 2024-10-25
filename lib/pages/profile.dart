@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/models/feedwithcursor.dart';
+import 'package:lightbluesky/partials/actor.dart';
+import 'package:lightbluesky/partials/customimage.dart';
 import 'package:lightbluesky/widgets/apierror.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 
@@ -97,16 +99,16 @@ class _ProfilePageState extends State<ProfilePage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            leading: CircleAvatar(
-              backgroundImage:
-                  actor.avatar != null ? NetworkImage(actor.avatar!) : null,
+          Actor(
+            actor: bsky.ActorBasic(
+              did: actor.did,
+              handle: actor.handle,
+              displayName: actor.displayName,
+              avatar: actor.avatar,
+              associated: actor.associated,
+              viewer: actor.viewer,
+              labels: actor.labels,
             ),
-            title: Text(actor.displayName != null
-                ? actor.displayName!
-                : '@${actor.handle}'),
-            subtitle:
-                actor.displayName != null ? Text('@${actor.handle}') : null,
           ),
           if (actor.description != null)
             Text(
@@ -179,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                     flexibleSpace: FlexibleSpaceBar(
                       background: actor.banner != null
-                          ? Image.network(
+                          ? CustomImage(
                               actor.banner!,
                               fit: BoxFit.cover,
                             )

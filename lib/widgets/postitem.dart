@@ -5,7 +5,7 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/embedwrapper.dart';
 import 'package:lightbluesky/pages/post.dart';
-import 'package:lightbluesky/pages/profile.dart';
+import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/widgets/embed.dart';
 import 'package:lightbluesky/widgets/icontext.dart';
 
@@ -124,21 +124,8 @@ class _PostItemState extends State<PostItem> {
           children: [
             if (widget.reason != null) _handleReason(),
             // START Author's data
-            ListTile(
-              onTap: () {
-                Ui.nav(context, ProfilePage(did: widget.item.author.did));
-              },
-              leading: CircleAvatar(
-                backgroundImage: widget.item.author.avatar != null
-                    ? NetworkImage(widget.item.author.avatar!)
-                    : null,
-              ),
-              title: Text(widget.item.author.displayName != null
-                  ? widget.item.author.displayName!
-                  : '@${widget.item.author.handle}'),
-              subtitle: widget.item.author.displayName != null
-                  ? Text('@${widget.item.author.handle}')
-                  : null,
+            Actor(
+              actor: widget.item.author,
             ),
             Padding(
               padding: const EdgeInsets.only(

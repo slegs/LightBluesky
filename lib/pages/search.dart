@@ -1,8 +1,7 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/pages/profile.dart';
+import 'package:lightbluesky/partials/actor.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -68,21 +67,8 @@ class _SearchPageState extends State<SearchPage> {
             child: ListView.builder(
               itemCount: actors.length,
               itemBuilder: (context, i) {
-                return ListTile(
-                  onTap: () {
-                    Ui.nav(context, ProfilePage(did: actors[i].did));
-                  },
-                  leading: CircleAvatar(
-                    backgroundImage: actors[i].avatar != null
-                        ? NetworkImage(actors[i].avatar!)
-                        : null,
-                  ),
-                  title: Text(actors[i].displayName != null
-                      ? actors[i].displayName!
-                      : '@${actors[i].handle}'),
-                  subtitle: actors[i].displayName != null
-                      ? Text('@${actors[i].handle}')
-                      : null,
+                return Actor(
+                  actor: actors[i],
                 );
               },
             ),

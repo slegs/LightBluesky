@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 /// Provides some standard functions to Image
 /// Adds loading indicator and error
-class GenericImage extends StatelessWidget {
-  const GenericImage({
+class CustomImage extends StatelessWidget {
+  const CustomImage(
+    this.src, {
     super.key,
-    required this.src,
     this.aspectRatio,
     this.fit,
   });
