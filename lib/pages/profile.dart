@@ -152,15 +152,6 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-      ),
       bottomNavigationBar: TabBar(
         tabs: _makeTabs(),
         controller: _tabController,
@@ -174,17 +165,33 @@ class _ProfilePageState extends State<ProfilePage>
             return NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
-                  SliverToBoxAdapter(
-                    child: actor.banner != null
-                        ? Image.network(
-                            actor.banner!,
-                            fit: BoxFit.fitWidth,
-                          )
-                        : null,
+                  SliverAppBar(
+                    primary: true,
+                    pinned: true,
+                    expandedHeight: 150.0,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.inversePrimary,
+                    leading: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: actor.banner != null
+                          ? Image.network(
+                              actor.banner!,
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
                   ),
                   SliverToBoxAdapter(
                     child: _makeProfileCard(actor),
                   ),
+                  const SliverToBoxAdapter(
+                    child: Divider(),
+                  )
                 ];
               },
               body: Padding(
