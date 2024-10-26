@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/models/embedwrapper.dart';
-import 'package:lightbluesky/pages/embed.dart';
+import 'package:lightbluesky/partials/embed.dart';
 
 /// Embed widget, used on posts that contain embeded data
 class Embed extends StatelessWidget {
@@ -37,7 +36,12 @@ class Embed extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Ui.nav(context, EmbedPage(wrap: wrap));
+        showDialog(
+          context: context,
+          builder: (_) => EmbedDialog(
+            wrap: wrap,
+          ),
+        );
       },
       child: _handleRoot(context),
     );
