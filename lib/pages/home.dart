@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/models/feedwithcursor.dart';
 import 'package:lightbluesky/partials/dialogs/publish.dart';
-import 'package:lightbluesky/widgets/postitem.dart';
 import 'package:lightbluesky/widgets/maindrawer.dart';
+import 'package:lightbluesky/widgets/postitem.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,50 +16,152 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   final _scrollController = ScrollController();
+  late TabController _tabController;
+  bool _loading = true;
 
-  /// List of items available
-  List<bsky.FeedView> items = List.empty(
+  /// Feed generators data
+  List<bsky.FeedGeneratorView> generators = List.empty(
     growable: true,
   );
 
-  /// Current cursor
-  String? cursor;
+  /// All feeds available (+ following!)
+  late List<FeedWithCursor> feeds;
 
-  @override
-  void initState() {
-    super.initState();
+  /// Init widget
+  Future<void> _init() async {
+    setState(() {
+      _loading = true;
+    });
+
+    // Get feed generators pinned by user
+    final data = await _getFeedGenerators();
+    _tabController = TabController(
+      length: data.length + 1, // +1 for following (timeline)
+      vsync: this,
+    );
+    _tabController.addListener(_onTabChange);
+    _scrollController.addListener(_onScroll);
+
+    generators.addAll(data);
+    feeds = [
+      FeedWithCursor(
+        items: List.empty(
+          growable: true,
+        ),
+      ),
+      ...data.map(
+        (_) => FeedWithCursor(
+          items: List<bsky.FeedView>.empty(
+            growable: true,
+          ),
+          cursor: '',
+        ),
+      ),
+    ];
+
     _loadMore();
-    _scrollController.addListener(_scrollHook);
+
+    setState(() {
+      _loading = false;
+    });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
+  /// Gets all feed generators pinned by user
+  Future<List<bsky.FeedGeneratorView>> _getFeedGenerators() async {
+    final actorPrefs = await api.actor.getPreferences();
 
-  /// Runs when reached bottom of scroll
-  void _scrollHook() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      _loadMore();
+    List<AtUri> data = [];
+    var found = false;
+    var i = 0;
+    while (!found && i < actorPrefs.data.preferences.length) {
+      final p = actorPrefs.data.preferences[i];
+      if (p is bsky.UPreferenceSavedFeedsV2) {
+        for (var item in p.data.items) {
+          if (item.pinned && item.type == 'feed') {
+            data.add(AtUri(item.value));
+          }
+        }
+        found = true;
+      }
+      i++;
     }
+
+    final res = await api.feed.getFeedGenerators(
+      uris: data,
+    );
+
+    return res.data.feeds;
   }
 
-  /// Add more items to list
-  Future<void> _loadMore() async {
-    try {
-      final res = await api.feed.getTimeline(
-        cursor: cursor,
+  /// Generate tabs from generators + preset following
+  List<Widget> _handleTabs() {
+    List<Widget> widgets = [
+      const Tab(
+        text: 'Following',
+      )
+    ];
+
+    for (var feed in generators) {
+      Widget? icon;
+
+      if (feed.avatar != null) {
+        icon = CircleAvatar(
+          backgroundImage: NetworkImage(
+            feed.avatar!,
+          ),
+        );
+      }
+
+      widgets.add(
+        Tab(
+          text: feed.displayName,
+          icon: icon,
+        ),
       );
-      final filteredFeed = SkyApi.filterFeed(res.data.feed);
+    }
 
-      cursor = res.data.cursor;
+    return widgets;
+  }
 
+  /// Generate listviews from all feeds available
+  List<Widget> _handleTabChildren() {
+    List<Widget> widgets = [];
+
+    for (var i = 0; i < feeds.length; i++) {
+      widgets.add(
+        ListView.builder(
+          itemCount: feeds[i].items.length,
+          itemBuilder: (context, j) => PostItem(
+            item: feeds[i].items[j].post,
+            reason: feeds[i].items[j].reason,
+          ),
+        ),
+      );
+    }
+
+    return widgets;
+  }
+
+  /// Get feed items from server
+  Future<void> _loadMore() async {
+    final index = _tabController.index;
+
+    try {
+      XRPCResponse<bsky.Feed> res;
+      if (index == 0) {
+        res = await api.feed.getTimeline();
+      } else {
+        res = await api.feed.getFeed(
+          generatorUri: generators[index - 1].uri,
+        );
+      }
+
+      feeds[index].cursor = res.data.cursor;
       setState(() {
-        items.addAll(filteredFeed);
+        feeds[index].items.addAll(SkyApi.filterFeed(res.data.feed));
       });
     } on XRPCException catch (e) {
       if (!mounted) return;
@@ -66,45 +169,76 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /// Tab change hook, loads data if tab being changed does not have any items.
+  void _onTabChange() {
+    if (!_tabController.indexIsChanging) {
+      return;
+    }
+
+    final newIndex = _tabController.index;
+
+    if (feeds.length < newIndex) {
+      // Out of bounds
+      return;
+    }
+
+    if (feeds[newIndex].items.isEmpty) {
+      _loadMore();
+    }
+  }
+
+  /// Scroll hook, loads data if scroll close to bottom
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _loadMore();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 1,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('LightBluesky'),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          bottom: const TabBar(
-            tabs: [
-              Tab(
-                text: 'Following',
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              controller: _scrollController,
-              itemCount: items.length,
-              itemBuilder: (context, i) => PostItem(
-                item: items[i].post,
-                reason: items[i].reason,
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('LightBluesky'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        bottom: !_loading
+            ? TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                tabs: _handleTabs(),
+              )
+            : null,
+      ),
+      body: !_loading
+          ? TabBarView(
+              controller: _tabController,
+              children: _handleTabChildren(),
+            )
+          : const Center(
+              child: CircularProgressIndicator(),
             ),
-          ],
-        ),
-        drawer: const MainDrawer(),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.edit),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (_) => const PublishDialog(),
-            );
-          },
-        ),
+      drawer: const MainDrawer(),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.edit),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) => const PublishDialog(),
+          );
+        },
       ),
     );
   }
