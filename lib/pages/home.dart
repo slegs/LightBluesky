@@ -211,26 +211,37 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('LightBluesky'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        bottom: !_loading
-            ? TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabs: _handleTabs(),
-              )
-            : null,
-      ),
-      body: !_loading
-          ? TabBarView(
-              controller: _tabController,
-              children: _handleTabChildren(),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
       drawer: const MainDrawer(),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              title: const Text('LightBluesky'),
+              primary: true,
+              pinned: true,
+              forceElevated: innerBoxIsScrolled,
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            SliverToBoxAdapter(
+              child: !_loading
+                  ? TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      tabs: _handleTabs(),
+                    )
+                  : null,
+            )
+          ];
+        },
+        body: !_loading
+            ? TabBarView(
+                controller: _tabController,
+                children: _handleTabChildren(),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
+      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () {
