@@ -15,15 +15,12 @@ You will need `libmpv` for handling video playback.
 
 ## TODO
 * Implement feeds
-* Implement interactions (like, comment)
-* Implement writing comment to post
 * Allow using different domain for login
 * Add documentation
 * Make tests
 * Use SecureStorage for session data
 * Better error handling
 * Improve UI
-
 
 ## Credits
 This project wouldn't have been posible without the help of these third-party projects:
