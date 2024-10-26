@@ -1,7 +1,9 @@
 import 'package:bluesky/bluesky.dart' as bsky;
+import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/skyapi.dart';
+import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 import 'package:lightbluesky/widgets/maindrawer.dart';
 
@@ -46,17 +48,21 @@ class _HomePageState extends State<HomePage> {
 
   /// Add more items to list
   Future<void> _loadMore() async {
-    final res = await api.feed.getTimeline(
-      cursor: cursor,
-    );
+    try {
+      final res = await api.feed.getTimeline(
+        cursor: cursor,
+      );
+      final filteredFeed = SkyApi.filterFeed(res.data.feed);
 
-    final filteredFeed = SkyApi.filterFeed(res.data.feed);
+      cursor = res.data.cursor;
 
-    cursor = res.data.cursor;
-
-    setState(() {
-      items.addAll(filteredFeed);
-    });
+      setState(() {
+        items.addAll(filteredFeed);
+      });
+    } on XRPCException catch (e) {
+      if (!mounted) return;
+      Ui.snackbar(context, e.toString());
+    }
   }
 
   @override

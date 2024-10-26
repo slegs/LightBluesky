@@ -2,7 +2,7 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/widgets/apierror.dart';
+import 'package:lightbluesky/widgets/exceptionhandler.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 
 class PostPage extends StatefulWidget {
@@ -92,8 +92,8 @@ class _PostPageState extends State<PostPage> {
               ],
             );
           } else if (snapshot.hasError) {
-            return ApiError(
-              exception: snapshot.error as XRPCError,
+            return ExceptionHandler(
+              exception: snapshot.error!,
             );
           }
 

@@ -1,6 +1,8 @@
 import 'package:bluesky/bluesky.dart' as bsky;
+import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/partials/actor.dart';
 
 class SearchPage extends StatefulWidget {
@@ -23,13 +25,18 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _makeSearch(String term) async {
-    final res = await api.actor.searchActorsTypeahead(
-      term: term,
-    );
+    try {
+      final res = await api.actor.searchActorsTypeahead(
+        term: term,
+      );
 
-    setState(() {
-      actors = res.data.actors;
-    });
+      setState(() {
+        actors = res.data.actors;
+      });
+    } on XRPCException catch (e) {
+      if (!mounted) return;
+      Ui.snackbar(context, e.toString());
+    }
   }
 
   void _handleSearch(String term) {

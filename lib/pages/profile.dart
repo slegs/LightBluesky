@@ -6,7 +6,7 @@ import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/models/feedwithcursor.dart';
 import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/partials/customimage.dart';
-import 'package:lightbluesky/widgets/apierror.dart';
+import 'package:lightbluesky/widgets/exceptionhandler.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -207,7 +207,9 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             );
           } else if (snapshot.hasError) {
-            return ApiError(exception: snapshot.error as XRPCError);
+            return ExceptionHandler(
+              exception: snapshot.error!,
+            );
           }
 
           return const Center(

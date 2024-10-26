@@ -1,11 +1,10 @@
-import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 
-/// Shows an API error
-class ApiError extends StatelessWidget {
-  const ApiError({super.key, required this.exception});
+/// Shows a thrown exception
+class ExceptionHandler extends StatelessWidget {
+  const ExceptionHandler({super.key, required this.exception});
 
-  final XRPCError exception;
+  final Object exception;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +13,7 @@ class ApiError extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(Icons.error),
-          Text('${exception.error}: ${exception.message}'),
+          Text(exception.toString()),
         ],
       ),
     );
