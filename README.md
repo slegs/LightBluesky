@@ -14,7 +14,6 @@ You will need flutter, it is tested for the "stable" version.
 You will need `libmpv` for handling video playback.
 
 ## TODO
-* Implement feeds
 * Allow using different domain for login
 * Add documentation
 * Make tests
