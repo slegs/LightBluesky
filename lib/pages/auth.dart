@@ -19,6 +19,9 @@ class _AuthPageState extends State<AuthPage> {
   bool _isLoading = false;
   bool _needsFactor = false;
 
+  final _serviceController = TextEditingController(
+    text: 'bsky.social',
+  );
   final _identityController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authFactorController = TextEditingController();
@@ -32,6 +35,7 @@ class _AuthPageState extends State<AuthPage> {
     try {
       // Try login
       final session = await createSession(
+        service: _serviceController.text,
         identifier: _identityController.text,
         password: _passwordController.text,
         authFactorToken: _authFactorController.value.text != ''
@@ -95,6 +99,16 @@ class _AuthPageState extends State<AuthPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
+                controller: _serviceController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Service',
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(10),
               child: TextField(

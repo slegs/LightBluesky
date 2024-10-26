@@ -14,12 +14,12 @@ You will need flutter, it is tested for the "stable" version.
 You will need `libmpv` for handling video playback.
 
 ## TODO
-* Allow using different domain for login
+* Better search
+* Allow adding media in posts
+* Allow swipe up to refresh list of items
 * Add documentation
 * Make tests
 * Use SecureStorage for session data
-* Better error handling
-* Improve UI
 
 ## Credits
 This project wouldn't have been posible without the help of these third-party projects:
