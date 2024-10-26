@@ -7,7 +7,7 @@ import 'package:lightbluesky/models/embedwrapper.dart';
 import 'package:lightbluesky/pages/post.dart';
 import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/widgets/embed.dart';
-import 'package:lightbluesky/widgets/icontext.dart';
+import 'package:lightbluesky/partials/icontext.dart';
 
 /// Card containing a FeedView (post)
 class PostItem extends StatefulWidget {

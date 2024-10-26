@@ -4,7 +4,7 @@ import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/post.dart';
 import 'package:lightbluesky/partials/actor.dart';
-import 'package:lightbluesky/widgets/icontext.dart';
+import 'package:lightbluesky/partials/icontext.dart';
 import 'package:lightbluesky/partials/customimage.dart';
 import 'package:lightbluesky/widgets/customplayer.dart';
 
