@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/partials/dialogs/publish.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 import 'package:lightbluesky/widgets/maindrawer.dart';
 
@@ -95,6 +96,15 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         drawer: const MainDrawer(),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.edit),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) => const PublishDialog(),
+            );
+          },
+        ),
       ),
     );
   }

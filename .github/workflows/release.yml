@@ -33,4 +33,5 @@ jobs:
           artifacts: /tmp/artifacts/**/*
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: v${{ steps.yaml.outputs.data }}
+          generateReleaseNotes: true
           skipIfReleaseExists: true

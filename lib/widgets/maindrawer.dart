@@ -68,16 +68,10 @@ class MainDrawer extends StatelessWidget {
 
               if (!context.mounted) return;
 
-              Ui.dialog(
-                context,
-                'App info',
-                'Version: ${packageInfo.version}',
-                actions: [
-                  TextButton.icon(
-                    onPressed: () => Navigator.pop(context),
-                    label: const Text('Ok'),
-                  )
-                ],
+              showAboutDialog(
+                context: context,
+                applicationName: 'LightBluesky',
+                applicationVersion: packageInfo.version,
               );
             },
           ),

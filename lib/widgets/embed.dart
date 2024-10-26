@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/models/embedwrapper.dart';
-import 'package:lightbluesky/partials/embed.dart';
+import 'package:lightbluesky/partials/dialogs/embed.dart';
 
 /// Embed widget, used on posts that contain embeded data
 class Embed extends StatelessWidget {
