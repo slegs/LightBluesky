@@ -15,6 +15,8 @@ You will need `libmpv` for handling video playback.
 
 ## TODO
 * Better search
+* Feeds (all, not only pinned by user)
+* Notifications
 * Allow adding media in posts
 * Allow swipe up to refresh list of items
 * Add documentation
