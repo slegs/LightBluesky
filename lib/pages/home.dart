@@ -171,16 +171,12 @@ class _HomePageState extends State<HomePage>
 
   /// Tab change hook, loads data if tab being changed does not have any items.
   void _onTabChange() {
-    if (!_tabController.indexIsChanging) {
+    if (!(_tabController.indexIsChanging ||
+        _tabController.index != _tabController.previousIndex)) {
       return;
     }
 
     final newIndex = _tabController.index;
-
-    if (feeds.length < newIndex) {
-      // Out of bounds
-      return;
-    }
 
     if (feeds[newIndex].items.isEmpty) {
       _loadMore();

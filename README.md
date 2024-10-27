@@ -1,6 +1,6 @@
 # LightBluesky
 <p align="center">
-    <img alt="LightBluesky profile screenshot" src=".github/screenshots/profile.png" height="400" />
+  <img alt="LightBluesky profile screenshot" src=".github/screenshots/profile.png" height="400" />
 </p>
 
 A Bluesky client made using Flutter, design to be lightweight and easy to use.
