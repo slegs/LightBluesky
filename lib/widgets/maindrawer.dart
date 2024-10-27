@@ -70,7 +70,7 @@ class MainDrawer extends StatelessWidget {
 
               showAboutDialog(
                 context: context,
-                applicationName: 'LightBluesky',
+                applicationName: packageInfo.appName,
                 applicationVersion: packageInfo.version,
               );
             },
