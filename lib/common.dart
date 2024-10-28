@@ -1,6 +1,5 @@
-import 'package:bluesky/bluesky.dart';
+import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Initial value is anonymous
-var api = Bluesky.anonymous();
+final api = SkyApi();
 late SharedPreferences prefs;

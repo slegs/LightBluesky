@@ -2,7 +2,6 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/feedwithcursor.dart';
 import 'package:lightbluesky/partials/dialogs/publish.dart';
@@ -71,7 +70,7 @@ class _HomePageState extends State<HomePage>
 
   /// Gets all feed generators pinned by user
   Future<List<bsky.FeedGeneratorView>> _getFeedGenerators() async {
-    final actorPrefs = await api.actor.getPreferences();
+    final actorPrefs = await api.c.actor.getPreferences();
 
     List<AtUri> data = [];
     var found = false;
@@ -89,7 +88,7 @@ class _HomePageState extends State<HomePage>
       i++;
     }
 
-    final res = await api.feed.getFeedGenerators(
+    final res = await api.c.feed.getFeedGenerators(
       uris: data,
     );
 
@@ -152,16 +151,16 @@ class _HomePageState extends State<HomePage>
     try {
       XRPCResponse<bsky.Feed> res;
       if (index == 0) {
-        res = await api.feed.getTimeline();
+        res = await api.c.feed.getTimeline();
       } else {
-        res = await api.feed.getFeed(
+        res = await api.c.feed.getFeed(
           generatorUri: generators[index - 1].uri,
         );
       }
 
       feeds[index].cursor = res.data.cursor;
       setState(() {
-        feeds[index].items.addAll(SkyApi.filterFeed(res.data.feed));
+        feeds[index].items.addAll(api.filterFeed(res.data.feed));
       });
     } on XRPCException catch (e) {
       if (!mounted) return;

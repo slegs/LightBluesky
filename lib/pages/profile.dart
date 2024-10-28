@@ -2,7 +2,6 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/models/feedwithcursor.dart';
 import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/partials/customimage.dart';
@@ -42,9 +41,9 @@ class _ProfilePageState extends State<ProfilePage>
       vsync: this,
     );
 
-    _futureProfile = api.actor.getProfile(actor: widget.did);
-    _loadMore();
+    _futureProfile = api.c.actor.getProfile(actor: widget.did);
     _tabController.addListener(_onTabChange);
+    _loadMore();
   }
 
   @override
@@ -56,13 +55,13 @@ class _ProfilePageState extends State<ProfilePage>
   Future<void> _loadMore() async {
     final index = _tabController.index;
 
-    final res = await api.feed.getAuthorFeed(
+    final res = await api.c.feed.getAuthorFeed(
       actor: widget.did,
       cursor: feeds[index].cursor,
       filter: _feedFilters[index],
     );
 
-    final filteredFeed = SkyApi.filterFeed(res.data.feed);
+    final filteredFeed = api.filterFeed(res.data.feed);
 
     feeds[index].cursor = res.data.cursor;
 

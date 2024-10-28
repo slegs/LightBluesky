@@ -78,11 +78,11 @@ class _PostItemState extends State<PostItem> {
   Future<void> _handleRepost() async {
     if (_userReposted) {
       // Remove repost
-      await api.atproto.repo.deleteRecord(uri: _userRepostedAtUri!);
+      await api.c.atproto.repo.deleteRecord(uri: _userRepostedAtUri!);
       _userRepostedAtUri = null;
     } else {
       // Make repost
-      final res = await api.feed.repost(
+      final res = await api.c.feed.repost(
         cid: widget.item.cid,
         uri: widget.item.uri,
       );
@@ -99,11 +99,11 @@ class _PostItemState extends State<PostItem> {
   Future<void> _handleLike() async {
     if (_userLiked) {
       // Remove like
-      await api.atproto.repo.deleteRecord(uri: _userLikedAtUri!);
+      await api.c.atproto.repo.deleteRecord(uri: _userLikedAtUri!);
       _userLikedAtUri = null;
     } else {
       // Make like
-      final res = await api.feed.like(
+      final res = await api.c.feed.like(
         cid: widget.item.cid,
         uri: widget.item.uri,
       );

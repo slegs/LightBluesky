@@ -22,7 +22,7 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    _futurePost = api.feed.getPostThread(
+    _futurePost = api.c.feed.getPostThread(
       uri: widget.uri,
       depth: 10,
     );

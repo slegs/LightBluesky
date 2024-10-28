@@ -34,14 +34,9 @@ class MainDrawer extends StatelessWidget {
             leading: const Icon(Icons.person),
             title: const Text('Profile'),
             onTap: () {
-              if (api.session == null) {
-                Ui.snackbar(context, 'Not logged in!');
-                return;
-              }
-
               Ui.nav(
                 context,
-                ProfilePage(did: api.session!.did),
+                ProfilePage(did: api.c.session!.did),
               );
             },
           ),

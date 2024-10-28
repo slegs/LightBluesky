@@ -1,13 +1,11 @@
 import 'dart:convert';
 
 import 'package:bluesky/atproto.dart';
-import 'package:bluesky/bluesky.dart';
 import 'package:bluesky/core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/helpers/skyapi.dart';
 import 'package:lightbluesky/pages/auth.dart';
 import 'package:lightbluesky/pages/home.dart';
 import 'package:media_kit/media_kit.dart';
@@ -35,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   ///
   /// Checks if user has already loggedin and sets session if its the case
   /// TODO: Move logic to separate file?
-  Future<bool> setupApp() async {
+  Future<bool> _setupApp() async {
     prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('session')) {
       // New user
@@ -46,7 +44,7 @@ class _MyAppState extends State<MyApp> {
     // Get old session data from storage
     var session = Session.fromJson(json.decode(data));
 
-    final isExpired = await SkyApi.isSessionExpired(session);
+    final isExpired = await api.isSessionExpired(session);
 
     if (isExpired) {
       try {
@@ -66,14 +64,14 @@ class _MyAppState extends State<MyApp> {
       }
     }
 
-    api = Bluesky.fromSession(session);
+    api.setSession(session);
     return true;
   }
 
   @override
   void initState() {
     super.initState();
-    _setupFuture = setupApp();
+    _setupFuture = _setupApp();
   }
 
   // This widget is the root of your application.

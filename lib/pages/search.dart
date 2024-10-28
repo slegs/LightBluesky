@@ -26,7 +26,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _makeSearch(String term) async {
     try {
-      final res = await api.actor.searchActorsTypeahead(
+      final res = await api.c.actor.searchActorsTypeahead(
         term: term,
       );
 
