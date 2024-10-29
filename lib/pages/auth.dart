@@ -42,8 +42,6 @@ class _AuthPageState extends State<AuthPage> {
             : null,
       );
 
-      if (!mounted) return;
-
       final data = session.data.toJson();
 
       // Save in memory
@@ -51,6 +49,9 @@ class _AuthPageState extends State<AuthPage> {
       // Save in disk
       prefs.setString('session', json.encode(data));
 
+      await api.setPreferences();
+
+      if (!mounted) return;
       // Redirect to home
       Ui.nav(context, const HomePage());
     } on XRPCException catch (e) {
@@ -130,9 +131,8 @@ class _AuthPageState extends State<AuthPage> {
               ),
             ),
             // 2FA field, hidden by default
-            Visibility(
-              visible: _needsFactor,
-              child: Padding(
+            if (_needsFactor)
+              Padding(
                 padding: const EdgeInsets.all(10),
                 child: TextField(
                   controller: _authFactorController,
@@ -142,7 +142,6 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                 ),
               ),
-            ),
             // Login button
             OutlinedButton.icon(
               onPressed: !_isLoading ? _handleSession : null,

@@ -70,22 +70,12 @@ class _HomePageState extends State<HomePage>
 
   /// Gets all feed generators pinned by user
   Future<List<bsky.FeedGeneratorView>> _getFeedGenerators() async {
-    final actorPrefs = await api.c.actor.getPreferences();
-
     List<AtUri> data = [];
-    var found = false;
-    var i = 0;
-    while (!found && i < actorPrefs.data.preferences.length) {
-      final p = actorPrefs.data.preferences[i];
-      if (p is bsky.UPreferenceSavedFeedsV2) {
-        for (var item in p.data.items) {
-          if (item.pinned && item.type == 'feed') {
-            data.add(AtUri(item.value));
-          }
-        }
-        found = true;
+
+    for (final item in api.feedGenerators) {
+      if (item.pinned) {
+        data.add(AtUri(item.value));
       }
-      i++;
     }
 
     final res = await api.c.feed.getFeedGenerators(
@@ -104,20 +94,9 @@ class _HomePageState extends State<HomePage>
     ];
 
     for (var feed in generators) {
-      Widget? icon;
-
-      if (feed.avatar != null) {
-        icon = CircleAvatar(
-          backgroundImage: NetworkImage(
-            feed.avatar!,
-          ),
-        );
-      }
-
       widgets.add(
         Tab(
           text: feed.displayName,
-          icon: icon,
         ),
       );
     }
@@ -208,24 +187,35 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       drawer: const MainDrawer(),
       body: NestedScrollView(
+        controller: _scrollController,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
               title: const Text('LightBluesky'),
               primary: true,
-              pinned: true,
+              floating: true,
+              snap: true,
               forceElevated: innerBoxIsScrolled,
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            ),
-            SliverToBoxAdapter(
-              child: !_loading
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => const PublishDialog(),
+                    );
+                  },
+                  icon: const Icon(Icons.edit),
+                ),
+              ],
+              bottom: !_loading
                   ? TabBar(
                       controller: _tabController,
                       isScrollable: true,
                       tabs: _handleTabs(),
                     )
                   : null,
-            )
+            ),
           ];
         },
         body: !_loading
@@ -238,12 +228,9 @@ class _HomePageState extends State<HomePage>
               ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.edit),
+        child: const Icon(Icons.arrow_upward),
         onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) => const PublishDialog(),
-          );
+          _scrollController.jumpTo(_scrollController.position.minScrollExtent);
         },
       ),
     );

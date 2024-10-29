@@ -154,36 +154,74 @@ class EmbedWrapper {
       ];
     }
 
-    final record =
-        (typedRoot.data.record as bsky.UEmbedViewRecordViewRecord).data;
+    if (typedRoot.data.record is bsky.UEmbedViewRecordViewRecord) {
+      // Post quote
+      final record =
+          (typedRoot.data.record as bsky.UEmbedViewRecordViewRecord).data;
 
-    return [
-      Card.outlined(
-        child: InkWell(
-          onTap: () {
-            Ui.nav(
-              context,
-              PostPage(uri: record.uri),
-            );
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Actor(
-                actor: record.author,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 10.0,
+      return [
+        Card.outlined(
+          child: InkWell(
+            onTap: () {
+              Ui.nav(
+                context,
+                PostPage(uri: record.uri),
+              );
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Actor(
+                  actor: record.author,
                 ),
-                child: Text(
-                  record.value.text,
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 10.0,
+                  ),
+                  child: Text(
+                    record.value.text,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
+      ];
+    } else if (typedRoot.data.record
+        is bsky.UEmbedViewRecordViewGeneratorView) {
+      // Feed generator quote
+      final record =
+          (typedRoot.data.record as bsky.UEmbedViewRecordViewGeneratorView)
+              .data;
+      return [
+        Card.outlined(
+          child: InkWell(
+            onTap: () {
+              Ui.snackbar(context, "TODO: Add feed support");
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: record.avatar != null
+                        ? Image.network(record.avatar!).image
+                        : null,
+                  ),
+                  title: Text(record.displayName),
+                  subtitle: record.description != null
+                      ? Text(record.description!)
+                      : null,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ];
+    }
+
+    return [
+      const Text("Quote type not supported!"),
     ];
   }
 }

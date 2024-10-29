@@ -65,6 +65,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     api.setSession(session);
+    await api.setPreferences();
     return true;
   }
 

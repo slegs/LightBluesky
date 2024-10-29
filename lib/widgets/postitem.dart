@@ -119,84 +119,82 @@ class _PostItemState extends State<PostItem> {
 
   @override
   Widget build(BuildContext context) {
-    final child = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.reason != null) _handleReason(),
-        // START Author's data
-        Actor(
-          actor: widget.item.author,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 10.0,
-          ),
-          child: Text(
-            widget.item.record.text,
-          ),
-        ),
-        // END Author's data
-        // Add embed if available
-        if (widget.item.embed != null && !widget.basic)
-          Embed(
-            wrap: EmbedWrapper.fromApi(
-              root: widget.item.embed!,
-            ),
-          ),
-        // START interaction buttons
-        if (!widget.basic)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              TextButton.icon(
-                icon: const Icon(Icons.reply_outlined),
-                label: Text(widget.item.replyCount.toString()),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => PublishDialog(
-                      parent: widget.item,
-                    ),
-                  );
-                },
-              ),
-              TextButton.icon(
-                icon: _userReposted
-                    ? const Icon(Icons.autorenew)
-                    : const Icon(Icons.autorenew_outlined),
-                label: Text(
-                  _reposts.toString(),
-                ),
-                onPressed: _handleRepost,
-              ),
-              TextButton.icon(
-                icon: _userLiked
-                    ? const Icon(Icons.favorite)
-                    : const Icon(Icons.favorite_outline),
-                label: Text(
-                  _likes.toString(),
-                ),
-                onPressed: _handleLike,
-              ),
-            ],
-          ),
-        // END interaction buttons
-      ],
-    );
-
     return Card(
-      child: widget.basic
-          ? child
-          : InkWell(
-              onTap: () {
-                Ui.nav(
-                  context,
-                  PostPage(uri: widget.item.uri),
-                );
-              },
-              child: child,
+      child: InkWell(
+        onTap: () {
+          Ui.nav(
+            context,
+            PostPage(uri: widget.item.uri),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.reason != null) _handleReason(),
+            // START Author's data
+            Actor(
+              actor: widget.item.author,
+              tap: !widget.basic,
             ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 10.0,
+              ),
+              child: Text(
+                widget.item.record.text,
+              ),
+            ),
+            // END Author's data
+            // Add embed if available
+            if (widget.item.embed != null && !widget.basic)
+              Embed(
+                wrap: EmbedWrapper.fromApi(
+                  root: widget.item.embed!,
+                ),
+                labels: widget.item.labels,
+              ),
+            // START interaction buttons
+            if (!widget.basic)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  TextButton.icon(
+                    icon: const Icon(Icons.reply_outlined),
+                    label: Text(widget.item.replyCount.toString()),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => PublishDialog(
+                          parent: widget.item,
+                        ),
+                      );
+                    },
+                  ),
+                  TextButton.icon(
+                    icon: _userReposted
+                        ? const Icon(Icons.autorenew)
+                        : const Icon(Icons.autorenew_outlined),
+                    label: Text(
+                      _reposts.toString(),
+                    ),
+                    onPressed: _handleRepost,
+                  ),
+                  TextButton.icon(
+                    icon: _userLiked
+                        ? const Icon(Icons.favorite)
+                        : const Icon(Icons.favorite_outline),
+                    label: Text(
+                      _likes.toString(),
+                    ),
+                    onPressed: _handleLike,
+                  ),
+                ],
+              ),
+            // END interaction buttons
+          ],
+        ),
+      ),
     );
   }
 }

@@ -20,6 +20,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   final _feedFilters = bsky.FeedFilter.values;
+  final _scrollController = ScrollController();
   late Future<XRPCResponse<bsky.ActorProfile>> _futureProfile;
   late TabController _tabController;
 
@@ -43,6 +44,7 @@ class _ProfilePageState extends State<ProfilePage>
 
     _futureProfile = api.c.actor.getProfile(actor: widget.did);
     _tabController.addListener(_onTabChange);
+    _scrollController.addListener(_onScroll);
     _loadMore();
   }
 
@@ -83,6 +85,14 @@ class _ProfilePageState extends State<ProfilePage>
     }
 
     if (feeds[newIndex].items.isEmpty) {
+      _loadMore();
+    }
+  }
+
+  /// Scroll hook, loads data if scroll close to bottom
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       _loadMore();
     }
   }
@@ -164,6 +174,7 @@ class _ProfilePageState extends State<ProfilePage>
           if (snapshot.hasData) {
             final actor = snapshot.data!.data;
             return NestedScrollView(
+              controller: _scrollController,
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
@@ -214,6 +225,12 @@ class _ProfilePageState extends State<ProfilePage>
           return const Center(
             child: CircularProgressIndicator(),
           );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.arrow_upward),
+        onPressed: () {
+          _scrollController.jumpTo(_scrollController.position.minScrollExtent);
         },
       ),
     );

@@ -39,12 +39,12 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  void _handleSearch(String term) {
+  void _handleSearch(String term) async {
     setState(() {
       _isLoading = true;
     });
 
-    _makeSearch(term);
+    await _makeSearch(term);
 
     setState(() {
       _isLoading = false;
@@ -60,16 +60,19 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: Column(
         children: [
-          TextField(
-            onChanged: (val) {
-              _handleSearch(val);
-            },
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Query',
+          if (_isLoading) const LinearProgressIndicator(),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: TextField(
+              onChanged: (val) {
+                _handleSearch(val);
+              },
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Query',
+              ),
             ),
           ),
-          if (_isLoading) const CircularProgressIndicator(),
           Expanded(
             child: ListView.builder(
               itemCount: actors.length,
