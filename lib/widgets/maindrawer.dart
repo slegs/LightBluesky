@@ -33,7 +33,7 @@ class MainDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.tag),
-            title: const Text('Feed'),
+            title: const Text('Feeds'),
             onTap: () {
               Ui.nav(
                 context,

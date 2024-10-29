@@ -3,6 +3,7 @@ import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/pages/feed.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
 
 class FeedsPage extends StatefulWidget {
@@ -51,7 +52,13 @@ class _FeedsPageState extends State<FeedsPage> {
                 final data = gen.data.feeds[i];
                 return ListTile(
                     onTap: () {
-                      Ui.snackbar(context, "TODO: Individual feed");
+                      Ui.nav(
+                        context,
+                        FeedPage(
+                          title: data.displayName,
+                          uri: data.uri,
+                        ),
+                      );
                     },
                     leading: CircleAvatar(
                       backgroundImage: data.avatar != null

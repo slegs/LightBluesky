@@ -16,13 +16,11 @@ class PostItem extends StatefulWidget {
     super.key,
     required this.item,
     this.reason,
-    this.root,
     this.basic = false,
   });
 
   final bsky.Post item;
   final bsky.Reason? reason;
-  final bsky.Post? root;
   final bool basic;
 
   @override
