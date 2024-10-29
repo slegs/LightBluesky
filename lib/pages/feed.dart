@@ -22,6 +22,8 @@ class _FeedPageState extends State<FeedPage> {
   );
   String? cursor;
 
+  bool _loading = true;
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +38,9 @@ class _FeedPageState extends State<FeedPage> {
   }
 
   Future<void> _loadMore() async {
+    setState(() {
+      _loading = true;
+    });
     final res = await api.c.feed.getFeed(
       generatorUri: widget.uri,
       cursor: cursor,
@@ -44,6 +49,7 @@ class _FeedPageState extends State<FeedPage> {
     cursor = res.data.cursor;
 
     setState(() {
+      _loading = false;
       items.addAll(res.data.feed);
     });
   }
@@ -68,6 +74,12 @@ class _FeedPageState extends State<FeedPage> {
           },
           icon: const Icon(Icons.arrow_back),
         ),
+        bottom: _loading
+            ? const PreferredSize(
+                preferredSize: Size.fromHeight(5.0),
+                child: LinearProgressIndicator(),
+              )
+            : null,
       ),
       body: ListView.builder(
         controller: _scrollController,
