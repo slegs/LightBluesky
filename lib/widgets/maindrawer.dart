@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/pages/feeds.dart';
 import 'package:lightbluesky/pages/profile.dart';
 import 'package:lightbluesky/pages/search.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -27,6 +28,16 @@ class MainDrawer extends StatelessWidget {
               Ui.nav(
                 context,
                 const SearchPage(),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.tag),
+            title: const Text('Feed'),
+            onTap: () {
+              Ui.nav(
+                context,
+                const FeedsPage(),
               );
             },
           ),
