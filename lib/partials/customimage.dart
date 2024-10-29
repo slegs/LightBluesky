@@ -1,5 +1,6 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
+import 'package:lightbluesky/partials/icontext.dart';
 
 /// Provides some standard functions to Image
 /// Adds loading indicator and error
@@ -36,8 +37,11 @@ class CustomImage extends StatelessWidget {
         );
       },
       errorBuilder: (context, error, stackTrace) {
-        return const Center(
-          child: Icon(Icons.warning),
+        return Center(
+          child: IconText(
+            icon: Icons.warning,
+            text: error.toString(),
+          ),
         );
       },
     );

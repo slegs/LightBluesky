@@ -40,39 +40,48 @@ class Embed extends StatelessWidget {
     return root;
   }
 
+  /// Setup censorship method for adult content
   Widget _handleRoot({required Widget child}) {
-    var visibility = ContentLabelVisibility.show;
+    var visibility =
+        !api.adult ? ContentLabelVisibility.hide : ContentLabelVisibility.show;
 
     Widget root;
+    String type = "unknown";
 
-    int i = 0;
-    bool finished = false;
+    if (labels != null && labels!.isNotEmpty) {
+      int i = 0;
+      bool finished = false;
 
-    if (labels != null) {
-      while (!finished && i < labels!.length) {
-        final label = labels![i];
-
+      while (!finished && i < api.contentLabels.length) {
+        final content = api.contentLabels[i];
         int j = 0;
-        while (!finished && j < api.contentLabels.length) {
-          final filter = api.contentLabels[j];
-          if (label.value == filter.label) {
-            visibility = filter.visibility;
+        while (!finished && j < labels!.length) {
+          final label = labels![j];
+          if (content.label == label.value) {
+            visibility = content.visibility;
+            type = content.label;
             finished = true;
           }
+
           j++;
         }
+
         i++;
       }
     }
 
     switch (visibility) {
       case ContentLabelVisibility.hide:
-        root = const IconText(icon: Icons.warning, text: 'Adult content');
+        root = const IconText(
+          icon: Icons.warning,
+          text: 'Adult content',
+        );
         break;
       case ContentLabelVisibility.warn:
         root = ExpansionTile(
           leading: const Icon(Icons.warning),
           title: const Text("Adult content"),
+          subtitle: Text('Type: $type'),
           children: [
             child,
           ],

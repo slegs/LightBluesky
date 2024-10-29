@@ -15,7 +15,7 @@ class PostPage extends StatefulWidget {
   State<PostPage> createState() => _PostPageState();
 }
 
-/// TODO: Add reply and auto-open reply
+/// TODO: Add auto-open reply
 class _PostPageState extends State<PostPage> {
   late Future<XRPCResponse<bsky.PostThread>> _futurePost;
 
@@ -54,9 +54,11 @@ class _PostPageState extends State<PostPage> {
 
     for (var reply in thread.data.replies!) {
       final item = reply as bsky.UPostThreadViewRecord;
-      widgets.add(PostItem(
-        item: item.data.post,
-      ));
+      widgets.add(
+        PostItem(
+          item: item.data.post,
+        ),
+      );
     }
 
     return widgets;
