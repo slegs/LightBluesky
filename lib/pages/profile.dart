@@ -2,11 +2,11 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/models/feedwithcursor.dart';
+import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/partials/customimage.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
-import 'package:lightbluesky/widgets/postitem.dart';
+import 'package:lightbluesky/widgets/multiplefeeds.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.did});
@@ -19,82 +19,44 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  final _feedFilters = bsky.FeedFilter.values;
-  final _scrollController = ScrollController();
+  late List<CustomTab> _tabs;
+
   late Future<XRPCResponse<bsky.ActorProfile>> _futureProfile;
   late TabController _tabController;
-
-  List<FeedWithCursor> feeds = bsky.FeedFilter.values
-      .map(
-        (_) => FeedWithCursor(
-            items: List<bsky.FeedView>.empty(
-              growable: true,
-            ),
-            cursor: ''),
-      )
-      .toList();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+
+    _tabs = bsky.FeedFilter.values
+        .map(
+          (f) => CustomTab(
+            name: f.name,
+            func: ({cursor}) => api.c.feed.getAuthorFeed(
+              actor: widget.did,
+              cursor: cursor,
+              filter: bsky.FeedFilter.values.firstWhere(
+                (t) => t.index == f.index,
+              ),
+            ),
+          ),
+        )
+        .toList();
+
     _tabController = TabController(
-      length: _feedFilters.length,
+      length: _tabs.length,
       vsync: this,
     );
 
     _futureProfile = api.c.actor.getProfile(actor: widget.did);
-    _tabController.addListener(_onTabChange);
-    _scrollController.addListener(_onScroll);
-    _loadMore();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadMore() async {
-    final index = _tabController.index;
-
-    final res = await api.c.feed.getAuthorFeed(
-      actor: widget.did,
-      cursor: feeds[index].cursor,
-      filter: _feedFilters[index],
-    );
-
-    final filteredFeed = api.filterFeed(res.data.feed);
-
-    feeds[index].cursor = res.data.cursor;
-
-    setState(() {
-      feeds[index].items.addAll(filteredFeed);
-    });
-  }
-
-  void _onTabChange() {
-    if (!_tabController.indexIsChanging) {
-      return;
-    }
-
-    final newIndex = _tabController.index;
-
-    if (feeds.length < newIndex) {
-      // Out of bounds
-      return;
-    }
-
-    if (feeds[newIndex].items.isEmpty) {
-      _loadMore();
-    }
-  }
-
-  /// Scroll hook, loads data if scroll close to bottom
-  void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      _loadMore();
-    }
   }
 
   Widget _makeProfileCard(bsky.ActorProfile actor) {
@@ -128,31 +90,13 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  List<Widget> _makeTabs() {
+  List<Widget> _handleTabs() {
     List<Widget> widgets = [];
 
-    for (final filter in _feedFilters) {
+    for (final tab in _tabs) {
       widgets.add(
         Tab(
-          text: filter.name,
-        ),
-      );
-    }
-
-    return widgets;
-  }
-
-  List<Widget> _makeTabViews() {
-    List<Widget> widgets = [];
-
-    for (var i = 0; i < _feedFilters.length; i++) {
-      widgets.add(
-        ListView.builder(
-          itemCount: feeds[i].items.length,
-          itemBuilder: (context, j) => PostItem(
-            item: feeds[i].items[j].post,
-            reason: feeds[i].items[j].reason,
-          ),
+          text: tab.name,
         ),
       );
     }
@@ -164,7 +108,7 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: TabBar(
-        tabs: _makeTabs(),
+        tabs: _handleTabs(),
         controller: _tabController,
         isScrollable: true,
       ),
@@ -210,9 +154,10 @@ class _ProfilePageState extends State<ProfilePage>
                 padding: const EdgeInsets.only(
                   top: 20.0,
                 ),
-                child: TabBarView(
-                  controller: _tabController,
-                  children: _makeTabViews(),
+                child: MultipleFeeds(
+                  tabController: _tabController,
+                  scrollController: _scrollController,
+                  tabs: _tabs,
                 ),
               ),
             );

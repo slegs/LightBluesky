@@ -2,12 +2,14 @@ import 'package:bluesky/bluesky.dart';
 
 class FeedWithCursor {
   final List<FeedView> items;
-  final String? cursor;
+  String? cursor;
 
-  const FeedWithCursor({
+  FeedWithCursor({
     required this.items,
     this.cursor,
   });
 
-  set cursor(String? newCursor) => newCursor;
+  void setCursor(String? newCursor) {
+    cursor = newCursor;
+  }
 }

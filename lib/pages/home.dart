@@ -2,11 +2,10 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/models/feedwithcursor.dart';
+import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/partials/dialogs/publish.dart';
 import 'package:lightbluesky/widgets/maindrawer.dart';
-import 'package:lightbluesky/widgets/postitem.dart';
+import 'package:lightbluesky/widgets/multiplefeeds.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,12 +21,9 @@ class _HomePageState extends State<HomePage>
   bool _loading = true;
 
   /// Feed generators data
-  List<bsky.FeedGeneratorView> generators = List.empty(
+  final List<CustomTab> _tabs = List.empty(
     growable: true,
   );
-
-  /// All feeds available (+ following!)
-  late List<FeedWithCursor> feeds;
 
   /// Init widget
   Future<void> _init() async {
@@ -41,27 +37,26 @@ class _HomePageState extends State<HomePage>
       length: data.length + 1, // +1 for following (timeline)
       vsync: this,
     );
-    _tabController.addListener(_onTabChange);
-    _scrollController.addListener(_onScroll);
 
-    generators.addAll(data);
-    feeds = [
-      FeedWithCursor(
-        items: List.empty(
-          growable: true,
+    _tabs.add(
+      CustomTab(
+        name: 'Following',
+        func: ({cursor}) => api.c.feed.getTimeline(
+          cursor: cursor,
         ),
       ),
-      ...data.map(
-        (_) => FeedWithCursor(
-          items: List<bsky.FeedView>.empty(
-            growable: true,
+    );
+    for (final gen in data) {
+      _tabs.add(
+        CustomTab(
+          name: gen.displayName,
+          func: ({cursor}) => api.c.feed.getFeed(
+            generatorUri: gen.uri,
+            cursor: cursor,
           ),
-          cursor: '',
         ),
-      ),
-    ];
-
-    _loadMore();
+      );
+    }
 
     setState(() {
       _loading = false;
@@ -85,88 +80,18 @@ class _HomePageState extends State<HomePage>
     return res.data.feeds;
   }
 
-  /// Generate tabs from generators + preset following
   List<Widget> _handleTabs() {
-    List<Widget> widgets = [
-      const Tab(
-        text: 'Following',
-      )
-    ];
-
-    for (var feed in generators) {
-      widgets.add(
-        Tab(
-          text: feed.displayName,
-        ),
-      );
-    }
-
-    return widgets;
-  }
-
-  /// Generate listviews from all feeds available
-  List<Widget> _handleTabChildren() {
     List<Widget> widgets = [];
 
-    for (var i = 0; i < feeds.length; i++) {
+    for (final tab in _tabs) {
       widgets.add(
-        ListView.builder(
-          itemCount: feeds[i].items.length,
-          itemBuilder: (context, j) => PostItem(
-            item: feeds[i].items[j].post,
-            reason: feeds[i].items[j].reason,
-          ),
+        Tab(
+          text: tab.name,
         ),
       );
     }
 
     return widgets;
-  }
-
-  /// Get feed items from server
-  Future<void> _loadMore() async {
-    final index = _tabController.index;
-
-    try {
-      XRPCResponse<bsky.Feed> res;
-      if (index == 0) {
-        res = await api.c.feed.getTimeline();
-      } else {
-        res = await api.c.feed.getFeed(
-          generatorUri: generators[index - 1].uri,
-        );
-      }
-
-      feeds[index].cursor = res.data.cursor;
-      setState(() {
-        feeds[index].items.addAll(api.filterFeed(res.data.feed));
-      });
-    } on XRPCException catch (e) {
-      if (!mounted) return;
-      Ui.snackbar(context, e.toString());
-    }
-  }
-
-  /// Tab change hook, loads data if tab being changed does not have any items.
-  void _onTabChange() {
-    if (!(_tabController.indexIsChanging ||
-        _tabController.index != _tabController.previousIndex)) {
-      return;
-    }
-
-    final newIndex = _tabController.index;
-
-    if (feeds[newIndex].items.isEmpty) {
-      _loadMore();
-    }
-  }
-
-  /// Scroll hook, loads data if scroll close to bottom
-  void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      _loadMore();
-    }
   }
 
   @override
@@ -210,18 +135,19 @@ class _HomePageState extends State<HomePage>
               ],
               bottom: !_loading
                   ? TabBar(
+                      tabs: _handleTabs(),
                       controller: _tabController,
                       isScrollable: true,
-                      tabs: _handleTabs(),
                     )
                   : null,
             ),
           ];
         },
         body: !_loading
-            ? TabBarView(
-                controller: _tabController,
-                children: _handleTabChildren(),
+            ? MultipleFeeds(
+                tabController: _tabController,
+                scrollController: _scrollController,
+                tabs: _tabs,
               )
             : const Center(
                 child: CircularProgressIndicator(),

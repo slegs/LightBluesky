@@ -25,8 +25,6 @@ class _FeedsPageState extends State<FeedsPage> {
     );
   }
 
-  // api.feedGenerators
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
