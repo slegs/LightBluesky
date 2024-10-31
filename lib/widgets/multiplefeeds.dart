@@ -64,17 +64,12 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
   }
 
   void _onTabChange() {
-    if (!widget.tabController.indexIsChanging) {
+    if (!(widget.tabController.indexIsChanging ||
+        widget.tabController.index != widget.tabController.previousIndex)) {
       return;
     }
 
     final newIndex = widget.tabController.index;
-
-    if (_feeds.length < newIndex) {
-      // Out of bounds
-      return;
-    }
-
     if (_feeds[newIndex].items.isEmpty) {
       _loadMore();
     }
