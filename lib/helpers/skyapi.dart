@@ -60,17 +60,6 @@ class SkyApi {
     c = Bluesky.fromSession(newSession);
   }
 
-  /// Checks if a session has expired
-  Future<bool> isSessionExpired(Session oldSession) async {
-    final tmpApi = Bluesky.fromSession(oldSession);
-    try {
-      await tmpApi.atproto.server.getSession();
-      return false;
-    } on InvalidRequestException catch (_) {
-      return true;
-    }
-  }
-
   Future<void> setPreferences() async {
     final res = await c.actor.getPreferences();
 

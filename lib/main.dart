@@ -4,7 +4,6 @@ import 'package:bluesky/atproto.dart';
 import 'package:bluesky/core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/pages/auth.dart';
 import 'package:lightbluesky/pages/home.dart';
@@ -12,8 +11,6 @@ import 'package:media_kit/media_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   MediaKit.ensureInitialized();
 
   runApp(const MyApp());
@@ -32,7 +29,6 @@ class _MyAppState extends State<MyApp> {
   /// Setups preferences for later usage.
   ///
   /// Checks if user has already loggedin and sets session if its the case
-  /// TODO: Move logic to separate file?
   Future<bool> _setupApp() async {
     prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('session')) {
@@ -44,24 +40,19 @@ class _MyAppState extends State<MyApp> {
     // Get old session data from storage
     var session = Session.fromJson(json.decode(data));
 
-    final isExpired = await api.isSessionExpired(session);
+    // If the refresh token is expired force login
+    if (session.refreshToken.isExpired) {
+      return false;
+    }
 
-    if (isExpired) {
-      try {
-        // Refresh session
-        final refreshedSession = await refreshSession(
-          refreshJwt: session.refreshJwt,
-        );
-        prefs.setString('session', json.encode(refreshedSession.data.toJson()));
+    if (session.accessToken.isExpired) {
+      // Refresh session
+      final refreshedSession = await refreshSession(
+        refreshJwt: session.refreshJwt,
+      );
+      prefs.setString('session', json.encode(refreshedSession.data.toJson()));
 
-        session = refreshedSession.data;
-      } on InvalidRequestException catch (e) {
-        if (e.response.data.message != "ExpiredToken") {
-          rethrow;
-        }
-
-        return false;
-      }
+      session = refreshedSession.data;
     }
 
     api.setSession(session);
@@ -94,10 +85,8 @@ class _MyAppState extends State<MyApp> {
             future: _setupFuture,
             builder: (context, AsyncSnapshot<bool> snapshot) {
               if (snapshot.hasData) {
-                FlutterNativeSplash.remove();
                 return snapshot.data! ? const HomePage() : const AuthPage();
               } else if (snapshot.hasError) {
-                FlutterNativeSplash.remove();
                 return Text('Error seting up app! ${snapshot.error}');
               }
 
