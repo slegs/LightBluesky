@@ -2,8 +2,8 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/partials/postcard.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
-import 'package:lightbluesky/widgets/postitem.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key, required this.uri, this.autoReply = false});
@@ -36,7 +36,9 @@ class _PostPageState extends State<PostPage> {
     while (!done) {
       // Add Post
       parents.add(
-        PostItem(item: current.data.post),
+        PostCard(
+          item: current.data.post,
+        ),
       );
 
       if (current.data.parent == null) {
@@ -55,7 +57,7 @@ class _PostPageState extends State<PostPage> {
     for (var reply in thread.data.replies!) {
       final item = reply as bsky.UPostThreadViewRecord;
       widgets.add(
-        PostItem(
+        PostCard(
           item: item.data.post,
         ),
       );
@@ -88,7 +90,9 @@ class _PostPageState extends State<PostPage> {
                 // Parent
                 if (thread.data.parent != null) ..._handleParent(thread),
                 // Main
-                PostItem(item: thread.data.post),
+                PostCard(
+                  item: thread.data.post,
+                ),
                 // Children
                 if (thread.data.replies != null) ..._handleChildren(thread),
               ],

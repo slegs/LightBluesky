@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/widgets/postitem.dart';
+import 'package:lightbluesky/partials/postcard.dart';
 
 class PublishDialog extends StatefulWidget {
   const PublishDialog({super.key, this.parent});
@@ -93,7 +93,7 @@ class _PublishDialogState extends State<PublishDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_isReply) ...[
-              PostItem(
+              PostCard(
                 item: widget.parent!,
                 basic: true,
               ),

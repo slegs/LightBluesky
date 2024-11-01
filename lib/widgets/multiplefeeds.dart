@@ -94,6 +94,7 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
             return PostItem(
               item: _feeds[i].items[j].post,
               reason: _feeds[i].items[j].reason,
+              reply: _feeds[i].items[j].reply,
             );
           },
         ),

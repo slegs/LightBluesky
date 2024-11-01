@@ -59,6 +59,7 @@ class _SingleFeedState extends State<SingleFeed> {
         return PostItem(
           item: items[i].post,
           reason: items[i].reason,
+          reply: items[i].reply,
         );
       },
     );
