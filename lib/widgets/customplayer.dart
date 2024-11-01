@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
+import 'package:video_player/video_player.dart';
 
 class CustomPlayer extends StatefulWidget {
   const CustomPlayer({
@@ -21,34 +20,79 @@ class CustomPlayer extends StatefulWidget {
 }
 
 class _CustomPlayerState extends State<CustomPlayer> {
-  late final player = Player();
-  late final controller = VideoController(player);
+  late final VideoPlayerController _controller;
+
+  bool _showControls = false;
+
+  void _togglePlay() {
+    setState(() {
+      if (_controller.value.isPlaying) {
+        _controller.pause();
+      } else {
+        _controller.play();
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
 
-    player.open(
-      Media(widget.playlist),
-      play: false,
-    );
+    _controller = VideoPlayerController.networkUrl(
+      Uri.parse(
+        widget.playlist,
+      ),
+    )..initialize().then((_) {
+        _controller.setLooping(true);
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
   }
 
   @override
   void dispose() {
-    player.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: widget.aspectRatio['width'] / widget.aspectRatio['height'],
-      child: Video(
-        controller: controller,
-        width: (widget.aspectRatio['width'] as int).toDouble(),
-        height: (widget.aspectRatio['height'] as int).toDouble(),
-        wakelock: false,
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _showControls = true;
+          Future.delayed(const Duration(seconds: 3), () {
+            setState(() {
+              _showControls = false;
+            });
+          });
+        });
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          _controller.value.isInitialized
+              ? AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
+          if (_showControls)
+            Center(
+              child: CircleAvatar(
+                child: IconButton(
+                  onPressed: _togglePlay,
+                  icon: Icon(
+                    _controller.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

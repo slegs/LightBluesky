@@ -29,6 +29,7 @@ This project wouldn't have been posible without the help of these third-party pr
 - [shared_preferences](https://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences)
 - [url_launcher](https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher)
 - [dynamic_color](https://github.com/material-foundation/flutter-packages/tree/main/packages/dynamic_color)
-- [media_kit](https://github.com/media-kit/media-kit)
+- [video_player](https://github.com/flutter/packages/tree/main/packages/video_player/video_player)
+- [media_kit & video_player_media_kit](https://github.com/media-kit/media-kit)
 - [package_info_plus](https://github.com/fluttercommunity/plus_plugins)
 - [file_picker](https://github.com/miguelpruivo/flutter_file_picker)

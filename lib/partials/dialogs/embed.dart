@@ -50,6 +50,7 @@ class EmbedDialog extends StatelessWidget {
                 },
                 icon: const Icon(Icons.close),
               ),
+              const Spacer(),
               IconButton(
                 onPressed: () {
                   Ui.snackbar(context, "TODO: Add download");

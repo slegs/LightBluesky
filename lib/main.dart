@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/pages/auth.dart';
 import 'package:lightbluesky/pages/home.dart';
-import 'package:media_kit/media_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player_media_kit/video_player_media_kit.dart';
 
 void main() {
-  MediaKit.ensureInitialized();
-
+  VideoPlayerMediaKit.ensureInitialized(
+    linux: true,
+    windows: true,
+  );
   runApp(const MyApp());
 }
 

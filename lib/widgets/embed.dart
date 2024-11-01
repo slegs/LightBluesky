@@ -96,15 +96,18 @@ class Embed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    tap() {
+      showDialog(
+        context: context,
+        builder: (_) => EmbedDialog(
+          wrap: wrap,
+        ),
+      );
+    }
+
     return InkWell(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (_) => EmbedDialog(
-            wrap: wrap,
-          ),
-        );
-      },
+      onTap: wrap.type != EmbedTypes.videos ? tap : null,
+      onLongPress: wrap.type == EmbedTypes.videos ? tap : null,
       child: _handleRoot(
         child: _handleChild(context),
       ),
