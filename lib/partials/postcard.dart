@@ -73,7 +73,7 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Future<void> _handleRepost() async {
+  void _handleRepost() async {
     (() async {
       if (_userReposted) {
         // Remove repost
@@ -96,7 +96,7 @@ class _PostCardState extends State<PostCard> {
     });
   }
 
-  Future<void> _handleLike() async {
+  void _handleLike() {
     (() async {
       if (_userLiked) {
         // Remove like
@@ -138,6 +138,7 @@ class _PostCardState extends State<PostCard> {
             Actor(
               actor: widget.item.author,
               tap: !widget.basic,
+              createdAt: widget.item.record.createdAt,
             ),
             Padding(
               padding: const EdgeInsets.only(

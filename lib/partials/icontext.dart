@@ -12,7 +12,7 @@ class IconText extends StatelessWidget {
       TextSpan(
         children: [
           WidgetSpan(child: Icon(icon)),
-          TextSpan(text: text),
+          TextSpan(text: ' $text'),
         ],
       ),
     );
