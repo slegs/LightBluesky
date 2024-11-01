@@ -74,19 +74,21 @@ class _PostCardState extends State<PostCard> {
   }
 
   Future<void> _handleRepost() async {
-    if (_userReposted) {
-      // Remove repost
-      await api.c.atproto.repo.deleteRecord(uri: _userRepostedAtUri!);
-      _userRepostedAtUri = null;
-    } else {
-      // Make repost
-      final res = await api.c.feed.repost(
-        cid: widget.item.cid,
-        uri: widget.item.uri,
-      );
+    (() async {
+      if (_userReposted) {
+        // Remove repost
+        await api.c.atproto.repo.deleteRecord(uri: _userRepostedAtUri!);
+        _userRepostedAtUri = null;
+      } else {
+        // Make repost
+        final res = await api.c.feed.repost(
+          cid: widget.item.cid,
+          uri: widget.item.uri,
+        );
 
-      _userRepostedAtUri = res.data.uri;
-    }
+        _userRepostedAtUri = res.data.uri;
+      }
+    })();
 
     setState(() {
       _userReposted = !_userReposted;
@@ -95,19 +97,21 @@ class _PostCardState extends State<PostCard> {
   }
 
   Future<void> _handleLike() async {
-    if (_userLiked) {
-      // Remove like
-      await api.c.atproto.repo.deleteRecord(uri: _userLikedAtUri!);
-      _userLikedAtUri = null;
-    } else {
-      // Make like
-      final res = await api.c.feed.like(
-        cid: widget.item.cid,
-        uri: widget.item.uri,
-      );
+    (() async {
+      if (_userLiked) {
+        // Remove like
+        await api.c.atproto.repo.deleteRecord(uri: _userLikedAtUri!);
+        _userLikedAtUri = null;
+      } else {
+        // Make like
+        final res = await api.c.feed.like(
+          cid: widget.item.cid,
+          uri: widget.item.uri,
+        );
 
-      _userLikedAtUri = res.data.uri;
-    }
+        _userLikedAtUri = res.data.uri;
+      }
+    })();
 
     setState(() {
       _userLiked = !_userLiked;
