@@ -30,6 +30,10 @@ You will need `libmpv` for handling video playback.
   * Reply to post
   * New post
   * Attach Media (images only)
+* Posts
+  * Handle adult content
+  * Sharing
+  * Like / Repost
 
 ## TODO
 * Follow / unfollow
