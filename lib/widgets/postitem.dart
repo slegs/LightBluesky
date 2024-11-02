@@ -63,10 +63,8 @@ class PostItem extends StatelessWidget {
             item: item,
             reason: reason,
           )
-        : Card(
-            child: Column(
-              children: _handleReply(),
-            ),
+        : Column(
+            children: _handleReply(),
           );
   }
 }
