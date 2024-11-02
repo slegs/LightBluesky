@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 /// Ui helper class
@@ -45,5 +47,24 @@ class Ui {
     if (!ok) {
       throw Exception('Could not launch $url');
     }
+  }
+
+  static Future<void> shareUrl(String url, BuildContext context) async {
+    final platform = Theme.of(context).platform;
+
+    if (platform == TargetPlatform.android || platform == TargetPlatform.iOS) {
+      Share.shareUri(
+        Uri.parse(url),
+      );
+      return;
+    }
+
+    Clipboard.setData(
+      ClipboardData(text: url),
+    );
+
+    if (!context.mounted) return;
+
+    snackbar(context, "Saved to clipboard");
   }
 }

@@ -6,6 +6,7 @@ import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/embedwrapper.dart';
 import 'package:lightbluesky/pages/post.dart';
 import 'package:lightbluesky/partials/actor.dart';
+import 'package:lightbluesky/partials/dialogs/postcontext.dart';
 import 'package:lightbluesky/partials/dialogs/publish.dart';
 import 'package:lightbluesky/partials/textwithfacets.dart';
 import 'package:lightbluesky/widgets/embed.dart';
@@ -198,6 +199,18 @@ class _PostCardState extends State<PostCard> {
                       _likes.toString(),
                     ),
                     onPressed: _handleLike,
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (_) => PostContextDialog(
+                          post: widget.item,
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.more_vert),
                   ),
                 ],
               ),
