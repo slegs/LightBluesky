@@ -1,10 +1,12 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
+import 'package:bluesky_text/bluesky_text.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/partials/customimage.dart';
+import 'package:lightbluesky/partials/textwithfacets.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
 import 'package:lightbluesky/widgets/multiplefeeds.dart';
 
@@ -60,6 +62,15 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget _makeProfileCard(bsky.ActorProfile actor) {
+    final facetsFuture = actor.description != null
+        ? BlueskyText(
+            actor.description!,
+          ).entities.toFacets()
+        : Future.value(
+            List<Map<String, dynamic>>.empty(
+              growable: false,
+            ),
+          );
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
@@ -82,8 +93,20 @@ class _ProfilePageState extends State<ProfilePage>
             ),
           ),
           if (actor.description != null)
-            Text(
-              actor.description!,
+            FutureBuilder(
+              future: facetsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return TextWithFacets(
+                    text: actor.description!,
+                    facets: snapshot.data!.map(bsky.Facet.fromJson).toList(),
+                  );
+                } else if (snapshot.hasError) {
+                  return ExceptionHandler(exception: snapshot.error!);
+                }
+
+                return const LinearProgressIndicator();
+              },
             ),
         ],
       ),
