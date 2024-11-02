@@ -72,6 +72,7 @@ class _SearchPageState extends State<SearchPage> {
           Padding(
             padding: const EdgeInsets.all(10),
             child: TextField(
+              autofocus: true,
               onChanged: (val) => _makeSearch(val),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
