@@ -59,7 +59,7 @@ class _HashtagPageState extends State<HashtagPage>
   Future<void> _init() async {
     setState(() {
       _loading = true;
-      _isSaved = (prefs.getStringList('hashtags') ?? []).contains(widget.name);
+      _isSaved = storage.hashtags.get().contains(widget.name);
     });
 
     // Get feed generators pinned by user
@@ -137,13 +137,7 @@ class _HashtagPageState extends State<HashtagPage>
                 IconButton(
                   onPressed: !_isSaved
                       ? () {
-                          final tags = prefs.getStringList('hashtags') ?? [];
-                          tags.add(widget.name);
-
-                          prefs.setStringList(
-                            'hashtags',
-                            tags,
-                          );
+                          storage.hashtags.add(widget.name);
 
                           _isSaved = !_isSaved;
                           Ui.snackbar(

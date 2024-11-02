@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bluesky/atproto.dart';
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
@@ -43,12 +41,10 @@ class _AuthPageState extends State<AuthPage> {
             : null,
       );
 
-      final data = session.data.toJson();
-
       // Save in memory
       api.setSession(session.data);
       // Save in disk
-      prefs.setString('session', json.encode(data));
+      storage.session.set(session.data);
 
       await api.setPreferences();
 

@@ -1,5 +1,5 @@
 import 'package:lightbluesky/helpers/skyapi.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lightbluesky/helpers/storage.dart';
 
 final api = SkyApi();
-late SharedPreferences prefs;
+final storage = Storage();

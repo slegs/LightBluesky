@@ -13,7 +13,7 @@ class HashtagsPage extends StatefulWidget {
 class _HashtagsPageState extends State<HashtagsPage> {
   @override
   Widget build(BuildContext context) {
-    final hashtags = prefs.getStringList('hashtags') ?? [];
+    final hashtags = storage.hashtags.get();
 
     return Scaffold(
       appBar: AppBar(
@@ -28,15 +28,8 @@ class _HashtagsPageState extends State<HashtagsPage> {
                   title: Text(hashtags[i]),
                   trailing: IconButton(
                     onPressed: () {
-                      final hashtags = prefs.getStringList('hashtags');
-                      if (hashtags == null) {
-                        return;
-                      }
-
-                      hashtags.removeAt(i);
-
                       setState(() {
-                        prefs.setStringList('hashtags', hashtags);
+                        storage.hashtags.remove(index: i);
                       });
                     },
                     icon: const Icon(Icons.remove),

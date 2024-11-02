@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bluesky/atproto.dart';
 import 'package:bluesky/core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -7,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/pages/auth.dart';
 import 'package:lightbluesky/pages/home.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player_media_kit/video_player_media_kit.dart';
 
 void main() {
@@ -32,15 +29,13 @@ class _MyAppState extends State<MyApp> {
   ///
   /// Checks if user has already loggedin and sets session if its the case
   Future<bool> _setupApp() async {
-    prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('session')) {
+    await storage.init();
+
+    var session = storage.session.get();
+    if (session == null) {
       // New user
       return false;
     }
-
-    final data = prefs.getString('session')!;
-    // Get old session data from storage
-    var session = Session.fromJson(json.decode(data));
 
     // If the refresh token is expired force login
     if (session.refreshToken.isExpired) {
@@ -52,7 +47,8 @@ class _MyAppState extends State<MyApp> {
       final refreshedSession = await refreshSession(
         refreshJwt: session.refreshJwt,
       );
-      prefs.setString('session', json.encode(refreshedSession.data.toJson()));
+
+      storage.session.set(refreshedSession.data);
 
       session = refreshedSession.data;
     }
