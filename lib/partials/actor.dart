@@ -35,7 +35,7 @@ class Actor extends StatelessWidget {
       leading: CircleAvatar(
         // TODO: Use CustomImage
         backgroundImage:
-            actor.avatar != null ? Image.network(actor.avatar!).image : null,
+            actor.avatar != null ? NetworkImage(actor.avatar!) : null,
       ),
       title: Text(
         actor.displayName != null ? actor.displayName! : '@${actor.handle}',

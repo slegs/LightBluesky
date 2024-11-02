@@ -6,16 +6,17 @@ import 'package:lightbluesky/partials/postcard.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
 
 class PostPage extends StatefulWidget {
-  const PostPage({super.key, required this.uri, this.autoReply = false});
+  const PostPage({
+    super.key,
+    required this.uri,
+  });
 
   final AtUri uri;
-  final bool autoReply;
 
   @override
   State<PostPage> createState() => _PostPageState();
 }
 
-/// TODO: Add auto-open reply
 class _PostPageState extends State<PostPage> {
   late Future<XRPCResponse<bsky.PostThread>> _futurePost;
 
