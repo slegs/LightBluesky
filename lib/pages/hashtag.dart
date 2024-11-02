@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart';
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/widgets/multiplefeeds.dart';
 
@@ -130,6 +131,21 @@ class _HashtagPageState extends State<HashtagPage>
                 },
                 icon: const Icon(Icons.arrow_back),
               ),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    final tags = prefs.getStringList('hashtags') ?? [];
+                    tags.add(widget.name);
+                    prefs.setStringList(
+                      'hashtags',
+                      tags,
+                    );
+
+                    Ui.snackbar(context, "Saved hashtag");
+                  },
+                  icon: const Icon(Icons.add),
+                ),
+              ],
               bottom: !_loading
                   ? TabBar(
                       tabs: _handleTabs(),

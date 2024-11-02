@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/feeds.dart';
+import 'package:lightbluesky/pages/hashtags.dart';
 import 'package:lightbluesky/pages/profile.dart';
 import 'package:lightbluesky/pages/search.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -35,12 +36,23 @@ class MainDrawer extends StatelessWidget {
           ),
           // FEEDS
           ListTile(
-            leading: const Icon(Icons.tag),
+            leading: const Icon(Icons.feed),
             title: const Text('Feeds'),
             onTap: () {
               Ui.nav(
                 context,
                 const FeedsPage(),
+              );
+            },
+          ),
+          // HASHTAGS
+          ListTile(
+            leading: const Icon(Icons.tag),
+            title: const Text('Hashtags'),
+            onTap: () {
+              Ui.nav(
+                context,
+                const HashtagsPage(),
               );
             },
           ),
