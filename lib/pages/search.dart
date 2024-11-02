@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/helpers/debouncer.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/partials/actor.dart';
 
@@ -13,6 +14,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final _debouncer = Debouncer(
+    milliseconds: 500,
+  );
   bool _isLoading = false;
 
   List<bsky.ActorBasic> actors = List.empty(
@@ -25,30 +29,34 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _makeSearch(String term) async {
-    try {
-      final res = await api.c.actor.searchActorsTypeahead(
-        term: term,
-      );
+    if (term.isEmpty) {
+      if (actors.isNotEmpty) {
+        setState(() {
+          actors = [];
+        });
+      }
+      return;
+    }
 
-      setState(() {
-        actors = res.data.actors;
+    try {
+      _debouncer.run(() async {
+        setState(() {
+          _isLoading = true;
+        });
+
+        final res = await api.c.actor.searchActorsTypeahead(
+          term: term,
+        );
+
+        setState(() {
+          _isLoading = false;
+          actors = res.data.actors;
+        });
       });
     } on XRPCException catch (e) {
       if (!mounted) return;
       Ui.snackbar(context, e.toString());
     }
-  }
-
-  void _handleSearch(String term) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    await _makeSearch(term);
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -64,9 +72,7 @@ class _SearchPageState extends State<SearchPage> {
           Padding(
             padding: const EdgeInsets.all(10),
             child: TextField(
-              onChanged: (val) {
-                _handleSearch(val);
-              },
+              onChanged: (val) => _makeSearch(val),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Query',

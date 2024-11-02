@@ -3,25 +3,43 @@
   <img alt="LightBluesky profile screenshot" src=".github/screenshots/profile.png" height="400" />
 </p>
 
-A Bluesky client made using Flutter, design to be lightweight and easy to use.
+A Bluesky client made using Flutter, designed to be lightweight and easy to use.
 
 **WIP**: For now, this project is very barebones, don't expect a full client.
 
 ## Installation
-You will need flutter, it is tested for the "stable" version.
+You will need flutter, it is tested for the `stable` version.
 
 ### Linux
 You will need `libmpv` for handling video playback.
 
+## Implemented
+* Auth
+  * 2FA
+  * Different service
+* Home
+  * Timeline (Following)
+  * Pinned feeds
+* Search
+  * Users
+* Feeds
+* Profile
+  * Own
+  * Others
+* Posting
+  * Reply to post
+  * New post
+  * Attach Media (images only)
+
 ## TODO
-* Better search
-* Feeds (all, not only pinned by user)
+* Follow / unfollow
+* Block / unblock
 * Notifications
-* Allow adding media in posts
+* Allow attaching video to post
 * Allow swipe up to refresh list of items
 * Add documentation
 * Make tests
-* Use SecureStorage for session data
+* Use SecureStorage for session data?
 
 ## Credits
 This project wouldn't have been posible without the help of these third-party projects:
