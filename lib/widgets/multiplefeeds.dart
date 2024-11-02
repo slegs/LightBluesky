@@ -47,9 +47,10 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
 
   @override
   void dispose() {
-    super.dispose();
     widget.tabController.removeListener(_onTabChange);
     widget.scrollController.removeListener(_onScroll);
+
+    super.dispose();
   }
 
   /// Get data from API

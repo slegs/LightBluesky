@@ -23,8 +23,8 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   void dispose() {
-    super.dispose();
     _scrollController.dispose();
+    super.dispose();
   }
 
   @override
