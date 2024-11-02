@@ -62,9 +62,11 @@ class _CustomPlayerState extends State<CustomPlayer> {
         setState(() {
           _showControls = true;
           Future.delayed(const Duration(seconds: 3), () {
-            setState(() {
-              _showControls = false;
-            });
+            if (mounted) {
+              setState(() {
+                _showControls = false;
+              });
+            }
           });
         });
       },
@@ -80,15 +82,11 @@ class _CustomPlayerState extends State<CustomPlayer> {
                   child: CircularProgressIndicator(),
                 ),
           if (_showControls)
-            Center(
-              child: CircleAvatar(
-                child: IconButton(
-                  onPressed: _togglePlay,
-                  icon: Icon(
-                    _controller.value.isPlaying
-                        ? Icons.pause
-                        : Icons.play_arrow,
-                  ),
+            CircleAvatar(
+              child: IconButton(
+                onPressed: _togglePlay,
+                icon: Icon(
+                  _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
                 ),
               ),
             ),
