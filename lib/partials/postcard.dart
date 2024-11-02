@@ -7,6 +7,7 @@ import 'package:lightbluesky/models/embedwrapper.dart';
 import 'package:lightbluesky/pages/post.dart';
 import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/partials/dialogs/publish.dart';
+import 'package:lightbluesky/partials/textwithfacets.dart';
 import 'package:lightbluesky/widgets/embed.dart';
 import 'package:lightbluesky/partials/icontext.dart';
 
@@ -122,6 +123,11 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      elevation: 5,
       child: InkWell(
         onTap: () {
           Ui.nav(
@@ -144,8 +150,9 @@ class _PostCardState extends State<PostCard> {
               padding: const EdgeInsets.only(
                 left: 10.0,
               ),
-              child: Text(
-                widget.item.record.text,
+              child: TextWithFacets(
+                text: widget.item.record.text,
+                facets: widget.item.record.facets,
               ),
             ),
             // END Author's data
