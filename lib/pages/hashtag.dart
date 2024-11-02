@@ -139,7 +139,9 @@ class _HashtagPageState extends State<HashtagPage>
                       ? () {
                           storage.hashtags.add(widget.name);
 
-                          _isSaved = !_isSaved;
+                          setState(() {
+                            _isSaved = !_isSaved;
+                          });
                           Ui.snackbar(
                             context,
                             'Hashtag saved',
