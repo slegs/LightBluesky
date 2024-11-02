@@ -24,6 +24,7 @@ class _HashtagPageState extends State<HashtagPage>
   final _scrollController = ScrollController();
   late TabController _tabController;
   bool _loading = true;
+  bool _isSaved = false;
 
   /// Feed generators data
   final List<CustomTab> _tabs = List.empty(
@@ -58,6 +59,7 @@ class _HashtagPageState extends State<HashtagPage>
   Future<void> _init() async {
     setState(() {
       _loading = true;
+      _isSaved = (prefs.getStringList('hashtags') ?? []).contains(widget.name);
     });
 
     // Get feed generators pinned by user
@@ -133,17 +135,26 @@ class _HashtagPageState extends State<HashtagPage>
               ),
               actions: [
                 IconButton(
-                  onPressed: () {
-                    final tags = prefs.getStringList('hashtags') ?? [];
-                    tags.add(widget.name);
-                    prefs.setStringList(
-                      'hashtags',
-                      tags,
-                    );
+                  onPressed: !_isSaved
+                      ? () {
+                          final tags = prefs.getStringList('hashtags') ?? [];
+                          tags.add(widget.name);
 
-                    Ui.snackbar(context, "Saved hashtag");
-                  },
-                  icon: const Icon(Icons.add),
+                          prefs.setStringList(
+                            'hashtags',
+                            tags,
+                          );
+
+                          _isSaved = !_isSaved;
+                          Ui.snackbar(
+                            context,
+                            'Hashtag saved',
+                          );
+                        }
+                      : null,
+                  icon: Icon(
+                    _isSaved ? Icons.check : Icons.add,
+                  ),
                 ),
               ],
               bottom: !_loading
