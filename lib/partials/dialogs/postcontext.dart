@@ -3,12 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/helpers/urlbuilder.dart';
 
+/// Menu with additional post actions
+///
+/// Implemented:
+/// - Share
+///
+/// TODO: Report
 class PostContextDialog extends StatelessWidget {
   const PostContextDialog({
     super.key,
     required this.post,
   });
 
+  /// Post item
   final Post post;
 
   @override

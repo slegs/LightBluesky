@@ -4,6 +4,7 @@ import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/models/feedwithcursor.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 
+/// Multiple Bluesky feed widget
 class MultipleFeeds extends StatefulWidget {
   const MultipleFeeds({
     super.key,
@@ -26,6 +27,8 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
   @override
   void initState() {
     super.initState();
+
+    // Wrap tabs with FeedWithCursor
     _feeds = widget.tabs
         .map(
           (_) => FeedWithCursor(
@@ -49,6 +52,7 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
     widget.scrollController.removeListener(_onScroll);
   }
 
+  /// Get data from API
   Future<void> _loadMore() async {
     final index = widget.tabController.index;
 
@@ -63,6 +67,7 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
     });
   }
 
+  /// Tab change hook
   void _onTabChange() {
     if (!(widget.tabController.indexIsChanging ||
         widget.tabController.index != widget.tabController.previousIndex)) {
@@ -83,6 +88,7 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
     }
   }
 
+  /// Get ListViews for each tab
   List<Widget> _handleTabViews() {
     List<Widget> widgets = [];
 

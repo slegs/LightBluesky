@@ -6,6 +6,7 @@ import 'package:lightbluesky/pages/profile.dart';
 import 'package:lightbluesky/pages/search.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+/// Drawer, shown only on home page
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
 
@@ -21,6 +22,7 @@ class MainDrawer extends StatelessWidget {
             ),
             child: const Text('LightBluesky'),
           ),
+          // SEARCH
           ListTile(
             leading: const Icon(Icons.search),
             title: const Text('Search'),
@@ -31,6 +33,7 @@ class MainDrawer extends StatelessWidget {
               );
             },
           ),
+          // FEEDS
           ListTile(
             leading: const Icon(Icons.tag),
             title: const Text('Feeds'),
@@ -41,6 +44,7 @@ class MainDrawer extends StatelessWidget {
               );
             },
           ),
+          // PROFILE
           ListTile(
             leading: const Icon(Icons.person),
             title: const Text('Profile'),
@@ -51,6 +55,7 @@ class MainDrawer extends StatelessWidget {
               );
             },
           ),
+          // SETTINGS
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
@@ -58,14 +63,15 @@ class MainDrawer extends StatelessWidget {
               Ui.snackbar(context, "TODO: Add settings");
             },
           ),
+          // Source code
           ListTile(
             leading: const Icon(Icons.code),
             title: const Text('Source'),
             onTap: () {
-              /// TODO: Get source URL from pubspec.yml instead of hardcode??
               Ui.openUrl('https://github.com/pablouser1/LightBluesky');
             },
           ),
+          // About the project
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('About'),

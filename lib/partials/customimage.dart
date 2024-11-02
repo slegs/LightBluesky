@@ -12,8 +12,13 @@ class CustomImage extends StatelessWidget {
     this.fit,
   });
 
+  /// Image source
   final String src;
+
+  /// Image aspect ratio
   final bsky.ImageAspectRatio? aspectRatio;
+
+  /// Fit parent
   final BoxFit? fit;
 
   @override

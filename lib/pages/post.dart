@@ -5,6 +5,7 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/partials/postcard.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
 
+/// Individual post page, shows full thread
 class PostPage extends StatefulWidget {
   const PostPage({
     super.key,

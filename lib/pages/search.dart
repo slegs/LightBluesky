@@ -6,6 +6,7 @@ import 'package:lightbluesky/helpers/debouncer.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/partials/actor.dart';
 
+/// Search page, for now only for users
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 

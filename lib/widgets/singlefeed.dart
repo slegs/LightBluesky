@@ -3,6 +3,7 @@ import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 
+/// Single Bluesky feed widget
 class SingleFeed<T> extends StatefulWidget {
   const SingleFeed({
     super.key,
@@ -30,6 +31,7 @@ class _SingleFeedState extends State<SingleFeed> {
     _loadMore();
   }
 
+  /// Get data from API
   Future<void> _loadMore() async {
     final res = await widget.func(
       cursor: cursor,

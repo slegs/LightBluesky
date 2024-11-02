@@ -3,11 +3,13 @@ import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/embedwrapper.dart';
 
+/// Fullscreen embed item
 class EmbedDialog extends StatelessWidget {
   const EmbedDialog({super.key, required this.wrap});
 
   final EmbedWrapper wrap;
 
+  /// Pick root depending on embed type
   Widget _handleRoot() {
     final widgets = wrap.getChildren(
       full: true,
@@ -53,7 +55,8 @@ class EmbedDialog extends StatelessWidget {
               const Spacer(),
               IconButton(
                 onPressed: () {
-                  Ui.snackbar(context, "TODO: Add download");
+                  // TODO: Add download
+                  Ui.snackbar(context, "Download under construction!");
                 },
                 icon: const Icon(Icons.download),
               ),

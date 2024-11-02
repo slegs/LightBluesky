@@ -5,9 +5,13 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/widgets/multiplefeeds.dart';
 
+/// Hashtag page
 class HashtagPage extends StatefulWidget {
   const HashtagPage({super.key, required this.name});
 
+  /// Hashtag name
+  ///
+  /// Example: art
   final String name;
 
   @override
@@ -31,6 +35,7 @@ class _HashtagPageState extends State<HashtagPage>
       '#${widget.name}',
     );
 
+    // Copy response with modified Feed
     return XRPCResponse(
       headers: res.headers,
       status: res.status,

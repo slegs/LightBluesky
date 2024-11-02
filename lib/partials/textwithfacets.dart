@@ -7,12 +7,19 @@ import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/hashtag.dart';
 import 'package:lightbluesky/pages/profile.dart';
 
+/// Text with facets
+///
+/// Facets = Tag, mention...
 class TextWithFacets extends StatelessWidget {
   const TextWithFacets({super.key, required this.text, required this.facets});
 
+  /// Unedited text
   final String text;
+
+  /// Facets available
   final List<Facet>? facets;
 
+  /// Builds all textspans using data available in facets[i].index
   List<TextSpan> _buildTextSpans(
     String text,
     List<Facet> facets,
@@ -72,6 +79,7 @@ class TextWithFacets extends StatelessWidget {
     return spans;
   }
 
+  /// Different action depending on facet type
   void _handleLink(FacetFeature feature, BuildContext context) {
     if (feature is UFacetFeatureLink) {
       Ui.openUrl(feature.data.uri);
@@ -94,6 +102,7 @@ class TextWithFacets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Skip span building if there are no facets
     if (facets == null) {
       return Text(text);
     }

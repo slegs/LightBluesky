@@ -41,11 +41,14 @@ class _PostCardState extends State<PostCard> {
   @override
   void initState() {
     super.initState();
+
+    // Initial value for repost
     if (widget.item.isReposted) {
       _userRepostedAtUri = widget.item.viewer.repost!;
       _userReposted = widget.item.isReposted;
     }
 
+    // Initial value for like
     if (widget.item.isLiked) {
       _userLikedAtUri = widget.item.viewer.like!;
       _userLiked = widget.item.isLiked;
@@ -55,6 +58,7 @@ class _PostCardState extends State<PostCard> {
     _reposts = widget.item.repostCount;
   }
 
+  /// Reason text
   Widget _handleReason() {
     String text;
     IconData icon;
@@ -75,6 +79,7 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
+  /// Add / Remove repost
   void _handleRepost() async {
     (() async {
       if (_userReposted) {
@@ -98,6 +103,7 @@ class _PostCardState extends State<PostCard> {
     });
   }
 
+  /// Add / Remove like
   void _handleLike() {
     (() async {
       if (_userLiked) {

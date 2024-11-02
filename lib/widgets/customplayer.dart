@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+/// Player wrapper, uses `video_player` with custom controls
 class CustomPlayer extends StatefulWidget {
   const CustomPlayer({
     super.key,

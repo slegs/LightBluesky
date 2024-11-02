@@ -13,6 +13,7 @@ class SkyApi {
     growable: true,
   );
 
+  /// Remove items that are from users that are blocked or muted
   List<FeedView> filterFeed(List<FeedView> items) {
     return items
         .where((item) =>
@@ -60,6 +61,7 @@ class SkyApi {
     c = Bluesky.fromSession(newSession);
   }
 
+  /// Save user preferences
   Future<void> setPreferences() async {
     final res = await c.actor.getPreferences();
 

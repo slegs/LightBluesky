@@ -7,6 +7,7 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/home.dart';
 
+/// Authentication page
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
 

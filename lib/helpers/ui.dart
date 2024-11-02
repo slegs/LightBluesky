@@ -49,6 +49,7 @@ class Ui {
     }
   }
 
+  /// Open indent if on mobile or copy url to clipboard
   static Future<void> shareUrl(String url, BuildContext context) async {
     final platform = Theme.of(context).platform;
 

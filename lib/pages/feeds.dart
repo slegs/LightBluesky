@@ -6,6 +6,7 @@ import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/feed.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
 
+/// Feed generators saved by user
 class FeedsPage extends StatefulWidget {
   const FeedsPage({super.key});
 
