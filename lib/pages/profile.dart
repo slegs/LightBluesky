@@ -148,7 +148,7 @@ class _ProfilePageState extends State<ProfilePage>
                   SliverAppBar(
                     primary: true,
                     pinned: true,
-                    expandedHeight: 150.0,
+                    expandedHeight: actor.banner != null ? 150.0 : null,
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary,
                     leading: IconButton(
