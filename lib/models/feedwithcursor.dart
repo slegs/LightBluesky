@@ -7,13 +7,5 @@ class FeedWithCursor {
 
   FeedWithCursor({
     required this.items,
-    this.cursor,
   });
-
-  /// Set cursor
-  ///
-  /// TODO: Use `set` keyword instead?
-  void setCursor(String? newCursor) {
-    cursor = newCursor;
-  }
 }

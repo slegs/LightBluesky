@@ -35,7 +35,6 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
             items: List<bsky.FeedView>.empty(
               growable: true,
             ),
-            cursor: '',
           ),
         )
         .toList();
@@ -61,7 +60,7 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
       cursor: _feeds[index].cursor,
     );
 
-    _feeds[index].setCursor(res.data.cursor);
+    _feeds[index].cursor = res.data.cursor;
 
     setState(() {
       _feeds[index].items.addAll(res.data.feed);
