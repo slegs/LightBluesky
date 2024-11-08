@@ -31,7 +31,7 @@ class EmbedWrapper {
     if (type == EmbedTypes.images) {
       return _handleImages(root as bsky.UEmbedViewImages, full);
     } else if (type == EmbedTypes.videos) {
-      return _handleVideos(root as bsky.UEmbedViewUnknown);
+      return _handleVideos(root as bsky.UEmbedViewVideo);
     } else if (type == EmbedTypes.external) {
       return _handleExternal(root as bsky.UEmbedViewExternal);
     } else if (type == EmbedTypes.quote) {
@@ -54,8 +54,7 @@ class EmbedWrapper {
       type = EmbedTypes.images;
     } else if (root is bsky.UEmbedViewExternal) {
       type = EmbedTypes.external;
-    } else if (root is bsky.UEmbedViewUnknown &&
-        root.data.containsKey("playlist")) {
+    } else if (root is bsky.UEmbedViewVideo) {
       type = EmbedTypes.videos;
     } else if (root is bsky.UEmbedViewRecord) {
       type = EmbedTypes.quote;
@@ -86,19 +85,11 @@ class EmbedWrapper {
   }
 
   // Get widgets for videos
-  List<Widget> _handleVideos(bsky.UEmbedViewUnknown typedRoot) {
-    if (!typedRoot.data.keys
-        .toSet()
-        .containsAll(["playlist", "thumbnail", "aspectRatio"])) {
-      return [const Text("Unable to process video!")];
-    }
-
+  List<Widget> _handleVideos(bsky.UEmbedViewVideo typedRoot) {
     return [
       CustomPlayer(
-        cid: typedRoot.data['cid'],
-        playlist: typedRoot.data['playlist'],
-        thumbnail: typedRoot.data['thumbnail'],
-        aspectRatio: typedRoot.data['aspectRatio'],
+        playlist: typedRoot.data.playlist,
+        aspectRatio: typedRoot.data.aspectRatio,
       ),
     ];
   }

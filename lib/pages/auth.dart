@@ -55,7 +55,7 @@ class _AuthPageState extends State<AuthPage> {
       // Something went wrong
       if (e.response.data.error == 'AuthFactorTokenRequired') {
         // Server is asking for 2FA
-        Ui.snackbar(context, e.response.data.message);
+        Ui.snackbar(context, e.response.data.message ?? '2FA required');
 
         setState(() {
           _needsFactor = true;
@@ -68,7 +68,7 @@ class _AuthPageState extends State<AuthPage> {
       Ui.dialog(
         context,
         'Error ${e.response.data.error}',
-        e.response.data.message,
+        e.response.data.message ?? 'Unexpected error',
         actions: [
           TextButton(
             onPressed: () {

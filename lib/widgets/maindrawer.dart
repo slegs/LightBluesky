@@ -3,6 +3,7 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/feeds.dart';
 import 'package:lightbluesky/pages/hashtags.dart';
+import 'package:lightbluesky/pages/notifications.dart';
 import 'package:lightbluesky/pages/profile.dart';
 import 'package:lightbluesky/pages/search.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -31,6 +32,17 @@ class MainDrawer extends StatelessWidget {
               Ui.nav(
                 context,
                 const SearchPage(),
+              );
+            },
+          ),
+          // NOTIFICATIONS
+          ListTile(
+            leading: const Icon(Icons.notifications),
+            title: const Text('Notifications'),
+            onTap: () {
+              Ui.nav(
+                context,
+                const NotificationsPage(),
               );
             },
           ),

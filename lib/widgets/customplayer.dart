@@ -1,3 +1,4 @@
+import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -5,16 +6,12 @@ import 'package:video_player/video_player.dart';
 class CustomPlayer extends StatefulWidget {
   const CustomPlayer({
     super.key,
-    required this.cid,
     required this.playlist,
-    required this.thumbnail,
     required this.aspectRatio,
   });
 
-  final String cid;
   final String playlist;
-  final String thumbnail;
-  final Map<String, dynamic> aspectRatio;
+  final ImageAspectRatio? aspectRatio;
 
   @override
   State<CustomPlayer> createState() => _CustomPlayerState();
@@ -40,9 +37,7 @@ class _CustomPlayerState extends State<CustomPlayer> {
     super.initState();
 
     _controller = VideoPlayerController.networkUrl(
-      Uri.parse(
-        widget.playlist,
-      ),
+      Uri.parse(widget.playlist),
     )..initialize().then((_) {
         _controller.setLooping(true);
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
