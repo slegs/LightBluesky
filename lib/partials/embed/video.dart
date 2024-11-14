@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/partials/dialogs/embed.dart';
 import 'package:lightbluesky/widgets/customplayer.dart';
 
+/// Embed for a video
 class VideoEmbed extends StatelessWidget {
   const VideoEmbed({
     super.key,

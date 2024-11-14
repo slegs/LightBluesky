@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 
+/// Embed for generator feed records
 class GeneratorRecordEmbed extends StatelessWidget {
   const GeneratorRecordEmbed({
     super.key,

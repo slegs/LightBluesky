@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/partials/customimage.dart';
 import 'package:lightbluesky/partials/dialogs/embed.dart';
 
+/// Embed for image(s), 1 to 4
 class ImagesEmbed extends StatelessWidget {
   const ImagesEmbed({
     super.key,
@@ -43,6 +44,7 @@ class ImagesEmbed extends StatelessWidget {
           ),
         );
       },
+      // Do not make grid if only one image
       child: root.data.images.length == 1
           ? widgets[0]
           : GridView.count(

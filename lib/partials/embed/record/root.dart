@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/partials/embed/record/generator.dart';
 import 'package:lightbluesky/partials/embed/record/quote.dart';
 
+/// Embed for record
+///
+/// Supported:
+/// - Quotes
+/// - Generator feeds
 class RecordEmbed extends StatelessWidget {
   const RecordEmbed({
     super.key,
