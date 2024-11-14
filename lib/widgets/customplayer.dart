@@ -1,4 +1,3 @@
-import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -7,11 +6,9 @@ class CustomPlayer extends StatefulWidget {
   const CustomPlayer({
     super.key,
     required this.playlist,
-    required this.aspectRatio,
   });
 
   final String playlist;
-  final ImageAspectRatio? aspectRatio;
 
   @override
   State<CustomPlayer> createState() => _CustomPlayerState();

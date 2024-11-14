@@ -1,4 +1,3 @@
-import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/partials/icontext.dart';
 
@@ -8,15 +7,11 @@ class CustomImage extends StatelessWidget {
   const CustomImage(
     this.src, {
     super.key,
-    this.aspectRatio,
     this.fit,
   });
 
   /// Image source
   final String src;
-
-  /// Image aspect ratio
-  final bsky.ImageAspectRatio? aspectRatio;
 
   /// Fit parent
   final BoxFit? fit;

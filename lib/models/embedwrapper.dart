@@ -74,7 +74,6 @@ class EmbedWrapper {
         padding: const EdgeInsets.all(5.0),
         child: CustomImage(
           full ? img.fullsize : img.thumbnail,
-          aspectRatio: img.aspectRatio,
         ),
       );
 
@@ -89,7 +88,6 @@ class EmbedWrapper {
     return [
       CustomPlayer(
         playlist: typedRoot.data.playlist,
-        aspectRatio: typedRoot.data.aspectRatio,
       ),
     ];
   }

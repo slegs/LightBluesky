@@ -69,18 +69,18 @@ packages:
     dependency: "direct main"
     description:
       name: bluesky
-      sha256: "9225cd6bc039193872dc52b8d165522d81405b730416e5e33b7d91dd06638ada"
+      sha256: "84bba999712cef0ae45fbb640e0504ddcf9d3ab1409506aade49dfd2efdea91a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.17.0"
+    version: "0.17.1"
   bluesky_text:
     dependency: "direct main"
     description:
       name: bluesky_text
-      sha256: ee50d05846c78cf6199c94b14193e2ed7f5f81378e0313ba6c435a1537b2ed40
+      sha256: ef6a6b7c739e19bac2f984d170563fa435a839ceefe9c1b2acb9f61c62c27b25
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.9"
+    version: "0.6.10"
   boolean_selector:
     dependency: transitive
     description:
