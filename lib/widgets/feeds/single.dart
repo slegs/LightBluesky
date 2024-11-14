@@ -31,6 +31,12 @@ class _SingleFeedState extends State<SingleFeed> {
     _loadMore();
   }
 
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onScroll);
+    super.dispose();
+  }
+
   /// Get data from API
   Future<void> _loadMore() async {
     final res = await widget.func(
@@ -38,6 +44,11 @@ class _SingleFeedState extends State<SingleFeed> {
     );
 
     cursor = res.data.cursor;
+
+    if (!mounted) {
+      // User disposed widget before API request could finish
+      return;
+    }
 
     setState(() {
       items.addAll(res.data.feed);

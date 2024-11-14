@@ -62,6 +62,11 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
 
     _feeds[index].cursor = res.data.cursor;
 
+    if (!mounted) {
+      // User disposed widget before API request could finish
+      return;
+    }
+
     setState(() {
       _feeds[index].items.addAll(res.data.feed);
     });

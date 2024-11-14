@@ -17,7 +17,7 @@ class CustomPlayer extends StatefulWidget {
 class _CustomPlayerState extends State<CustomPlayer> {
   late final VideoPlayerController _controller;
 
-  bool _showControls = false;
+  bool _showControls = true;
 
   void _togglePlay() {
     setState(() {
