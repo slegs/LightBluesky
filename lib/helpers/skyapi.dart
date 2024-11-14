@@ -1,3 +1,4 @@
+import 'package:bluesky/app_bsky_embed_video.dart';
 import 'package:bluesky/bluesky.dart';
 import 'package:bluesky/core.dart';
 import 'package:file_picker/file_picker.dart';
@@ -46,6 +47,19 @@ class SkyApi {
         embed = Embed.images(
           data: EmbedImages(
             images: images,
+          ),
+        );
+        break;
+      case FileType.video:
+        final bytes = await files[0].xFile.readAsBytes();
+
+        final uploaded = await c.atproto.repo.uploadBlob(
+          bytes,
+        );
+
+        embed = Embed.video(
+          data: EmbedVideo(
+            video: uploaded.data.blob,
           ),
         );
         break;

@@ -106,6 +106,11 @@ class EmbedRoot extends StatelessWidget {
       widget = const Text("Unsupported embed :(");
     }
 
-    return _handleAdult(child: widget);
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 10.0,
+      ),
+      child: _handleAdult(child: widget),
+    );
   }
 }

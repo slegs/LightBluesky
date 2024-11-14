@@ -27,8 +27,6 @@ class _PublishDialogState extends State<PublishDialog> {
     growable: true,
   );
 
-  bool get _isReply => widget.parent != null;
-
   /// Send post to Bluesky
   Future<void> _handlePublish() async {
     setState(() {
@@ -47,7 +45,7 @@ class _PublishDialogState extends State<PublishDialog> {
 
       await api.c.feed.post(
         text: text.value,
-        reply: _isReply ? widget.parent!.record.reply : null,
+        reply: widget.parent?.record.reply,
         facets: facets.map(bsky.Facet.fromJson).toList(),
         embed: embed,
       );
@@ -92,7 +90,7 @@ class _PublishDialogState extends State<PublishDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_isReply) ...[
+            if (widget.parent != null) ...[
               PostCard(
                 item: widget.parent!,
                 basic: true,
@@ -110,7 +108,9 @@ class _PublishDialogState extends State<PublishDialog> {
               keyboardType: TextInputType.multiline,
               maxLines: null,
               decoration: InputDecoration(
-                hintText: !_isReply ? "What's on your mind?" : "Write a reply",
+                hintText: widget.parent != null
+                    ? "What's on your mind?"
+                    : "Write a reply",
               ),
             ),
             if (_files.isNotEmpty)
@@ -133,6 +133,13 @@ class _PublishDialogState extends State<PublishDialog> {
                         ? () => _handleFiles(FileType.image)
                         : null,
                     icon: const Icon(Icons.add_a_photo),
+                  ),
+                  // Add video
+                  IconButton(
+                    onPressed: _fileType == null || _fileType == FileType.video
+                        ? () => _handleFiles(FileType.video)
+                        : null,
+                    icon: const Icon(Icons.video_library),
                   ),
                   const Spacer(),
                   // Cancel button
