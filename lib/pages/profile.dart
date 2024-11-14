@@ -28,6 +28,9 @@ class _ProfilePageState extends State<ProfilePage>
   late TabController _tabController;
   final _scrollController = ScrollController();
 
+  bool _following = false;
+  AtUri? _followingAtUri;
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +56,10 @@ class _ProfilePageState extends State<ProfilePage>
     );
 
     _futureProfile = api.c.actor.getProfile(actor: widget.did);
+    _futureProfile.then((actor) {
+      _following = actor.data.viewer.isFollowing;
+      _followingAtUri = actor.data.viewer.following;
+    });
   }
 
   @override
@@ -60,6 +67,29 @@ class _ProfilePageState extends State<ProfilePage>
     _tabController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Future<void> _toggleFollow() async {
+    final oldFollowing = _following;
+    setState(() {
+      _following = !_following;
+    });
+
+    if (oldFollowing) {
+      // Unfollow
+      api.c.atproto.repo.deleteRecord(
+        uri: _followingAtUri!,
+      );
+
+      _followingAtUri = null;
+    } else {
+      // Follow
+      final res = await api.c.graph.follow(
+        did: widget.did,
+      );
+
+      _followingAtUri = res.data.uri;
+    }
   }
 
   Widget _makeProfileCard(bsky.ActorProfile actor) {
@@ -93,6 +123,16 @@ class _ProfilePageState extends State<ProfilePage>
               labels: actor.labels,
             ),
           ),
+          if (widget.did != api.c.session?.did)
+            Row(
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _toggleFollow,
+                  label: Text(_following ? "Unfollow" : "Follow"),
+                  icon: Icon(_following ? Icons.remove : Icons.add),
+                ),
+              ],
+            ),
           if (actor.description != null)
             FutureBuilder(
               future: facetsFuture,
