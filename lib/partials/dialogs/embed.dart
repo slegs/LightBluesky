@@ -1,40 +1,13 @@
+import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
-import 'package:lightbluesky/enums/embedtypes.dart';
 import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/models/embedwrapper.dart';
+import 'package:lightbluesky/widgets/embed.dart';
 
 /// Fullscreen embed item
 class EmbedDialog extends StatelessWidget {
-  const EmbedDialog({super.key, required this.wrap});
+  const EmbedDialog({super.key, required this.item});
 
-  final EmbedWrapper wrap;
-
-  /// Pick root depending on embed type
-  Widget _handleRoot() {
-    final widgets = wrap.getChildren(
-      full: true,
-    );
-
-    Widget root;
-    switch (wrap.type) {
-      case EmbedTypes.images:
-        root = widgets.length == 1
-            ? widgets[0]
-            : PageView.builder(
-                itemCount: widgets.length,
-                pageSnapping: true,
-                itemBuilder: (context, i) {
-                  return widgets[i];
-                },
-              );
-        break;
-      default:
-        root = widgets[0];
-        break;
-    }
-
-    return root;
-  }
+  final EmbedView item;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +36,10 @@ class EmbedDialog extends StatelessWidget {
             ],
           ),
           Expanded(
-            child: _handleRoot(),
+            child: EmbedRoot(
+              item: item,
+              labels: const [],
+            ),
           ),
         ],
       ),

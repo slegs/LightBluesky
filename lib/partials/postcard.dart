@@ -3,14 +3,13 @@ import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/models/embedwrapper.dart';
 import 'package:lightbluesky/pages/post.dart';
 import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/partials/dialogs/postcontext.dart';
 import 'package:lightbluesky/partials/dialogs/publish.dart';
 import 'package:lightbluesky/partials/textwithfacets.dart';
-import 'package:lightbluesky/widgets/embed.dart';
 import 'package:lightbluesky/partials/icontext.dart';
+import 'package:lightbluesky/widgets/embed.dart';
 
 /// Card containing a FeedView (post)
 class PostCard extends StatefulWidget {
@@ -165,10 +164,8 @@ class _PostCardState extends State<PostCard> {
             // END Author's data
             // Add embed if available
             if (widget.item.embed != null && !widget.basic)
-              Embed(
-                wrap: EmbedWrapper.fromApi(
-                  root: widget.item.embed!,
-                ),
+              EmbedRoot(
+                item: widget.item.embed!,
                 labels: widget.item.labels,
               ),
             // START interaction buttons

@@ -2,46 +2,32 @@ import 'package:bluesky/atproto.dart';
 import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/enums/embedtypes.dart';
-import 'package:lightbluesky/models/embedwrapper.dart';
-import 'package:lightbluesky/partials/dialogs/embed.dart';
+import 'package:lightbluesky/partials/embed/record/root.dart';
 import 'package:lightbluesky/partials/icontext.dart';
+import 'package:lightbluesky/partials/embed/external.dart';
+import 'package:lightbluesky/partials/embed/images.dart';
+import 'package:lightbluesky/partials/embed/video.dart';
 
-/// Embed widget, used on posts that contain embeded data
-class Embed extends StatelessWidget {
-  const Embed({super.key, required this.wrap, this.labels});
+/// Root embed widget
+class EmbedRoot extends StatelessWidget {
+  const EmbedRoot({
+    super.key,
+    required this.item,
+    required this.labels,
+    this.full = false,
+  });
 
-  final EmbedWrapper wrap;
+  /// Embed root
+  final EmbedView item;
+
+  /// Linked post labels
   final List<Label>? labels;
 
-  Widget _handleChild(BuildContext context) {
-    Widget root;
-    final widgets = wrap.getChildren(
-      full: false,
-      context: context,
-    );
-    switch (wrap.type) {
-      case EmbedTypes.images:
-        root = widgets.length == 1
-            ? widgets[0]
-            : GridView.count(
-                shrinkWrap: true,
-                // Disable scrolling photos
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: widgets.length == 1 ? 1 : 2,
-                children: widgets,
-              );
-        break;
-      default:
-        root = widgets[0];
-        break;
-    }
-
-    return root;
-  }
+  /// IMAGES ONLY: Use fullsized or thumbnail
+  final bool full;
 
   /// Setup censorship method for adult content
-  Widget _handleRoot({required Widget child}) {
+  Widget _handleAdult({required Widget child}) {
     var visibility =
         !api.adult ? ContentLabelVisibility.hide : ContentLabelVisibility.show;
 
@@ -96,21 +82,30 @@ class Embed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    tap() {
-      showDialog(
-        context: context,
-        builder: (_) => EmbedDialog(
-          wrap: wrap,
-        ),
+    Widget widget;
+
+    // Pick specific widget for embed type
+    if (item is UEmbedViewImages) {
+      widget = ImagesEmbed(
+        root: item as UEmbedViewImages,
+        full: full,
       );
+    } else if (item is UEmbedViewVideo) {
+      widget = VideoEmbed(
+        root: item as UEmbedViewVideo,
+      );
+    } else if (item is UEmbedViewExternal) {
+      widget = ExternalEmbed(
+        root: item as UEmbedViewExternal,
+      );
+    } else if (item is UEmbedViewRecord) {
+      widget = RecordEmbed(
+        root: item as UEmbedViewRecord,
+      );
+    } else {
+      widget = const Text("Unsupported embed :(");
     }
 
-    return InkWell(
-      onTap: wrap.type != EmbedTypes.videos ? tap : null,
-      onLongPress: wrap.type == EmbedTypes.videos ? tap : null,
-      child: _handleRoot(
-        child: _handleChild(context),
-      ),
-    );
+    return _handleAdult(child: widget);
   }
 }
