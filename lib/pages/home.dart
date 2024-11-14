@@ -5,7 +5,7 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/partials/dialogs/publish.dart';
 import 'package:lightbluesky/widgets/maindrawer.dart';
-import 'package:lightbluesky/widgets/multiplefeeds.dart';
+import 'package:lightbluesky/widgets/feeds/multiple.dart';
 
 /// Home page, contains timeline and pinned feeds
 class HomePage extends StatefulWidget {

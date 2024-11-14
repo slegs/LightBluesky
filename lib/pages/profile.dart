@@ -8,7 +8,7 @@ import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/partials/customimage.dart';
 import 'package:lightbluesky/partials/textwithfacets.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
-import 'package:lightbluesky/widgets/multiplefeeds.dart';
+import 'package:lightbluesky/widgets/feeds/multiple.dart';
 
 /// Profile page, contains profile data and feed of user's posts
 class ProfilePage extends StatefulWidget {

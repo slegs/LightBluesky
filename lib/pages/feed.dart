@@ -1,7 +1,7 @@
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/widgets/singlefeed.dart';
+import 'package:lightbluesky/widgets/feeds/single.dart';
 
 /// Individual feed generator page
 class FeedPage extends StatefulWidget {

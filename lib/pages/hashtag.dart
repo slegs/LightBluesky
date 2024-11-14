@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/customtab.dart';
-import 'package:lightbluesky/widgets/multiplefeeds.dart';
+import 'package:lightbluesky/widgets/feeds/multiple.dart';
 
 /// Hashtag page
 class HashtagPage extends StatefulWidget {
