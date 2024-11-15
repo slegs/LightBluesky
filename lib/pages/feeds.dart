@@ -23,7 +23,7 @@ class _FeedsPageState extends State<FeedsPage> {
     super.initState();
 
     _futureGenerators = api.c.feed.getFeedGenerators(
-      uris: api.feedGenerators.map((f) => AtUri(f.value)).toList(),
+      uris: api.content.feeds.map((f) => AtUri(f.value)).toList(),
     );
   }
 

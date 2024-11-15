@@ -1,4 +1,3 @@
-import 'package:bluesky/atproto.dart';
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
@@ -32,22 +31,13 @@ class _AuthPageState extends State<AuthPage> {
     });
 
     try {
-      // Try login
-      final session = await createSession(
-        service: _serviceController.text,
-        identifier: _identityController.text,
-        password: _passwordController.text,
-        authFactorToken: _authFactorController.value.text != ''
-            ? _authFactorController.value.text
-            : null,
+      await api.session.login(
+        _serviceController.text,
+        _identityController.text,
+        _passwordController.text,
+        _authFactorController.text != '' ? _authFactorController.text : null,
       );
-
-      // Save in memory
-      api.setSession(session.data);
-      // Save in disk
-      storage.session.set(session.data);
-
-      await api.setPreferences();
+      await api.content.init();
 
       if (!mounted) return;
       // Redirect to home

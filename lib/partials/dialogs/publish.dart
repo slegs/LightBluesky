@@ -40,7 +40,7 @@ class _PublishDialogState extends State<PublishDialog> {
       bsky.Embed? embed;
 
       if (_files.isNotEmpty) {
-        embed = await api.upload(_files, _fileType!);
+        embed = await api.files.upload(_files, _fileType!);
       }
 
       await api.c.feed.post(

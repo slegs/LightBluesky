@@ -7,54 +7,92 @@ import 'package:bluesky/core.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:lightbluesky/common.dart';
 
-/// Helper class for specific bluesky API functions
-class SkyApi {
-  var c = Bluesky.anonymous();
-  bool adult = false;
-  List<SavedFeed> feedGenerators = List.empty(
-    growable: true,
-  );
-  List<ContentLabelPreference> contentLabels = List.empty(
-    growable: true,
-  );
+var _c = Bluesky.anonymous();
 
+/// Session module for Api helper
+class SessionModule {
   Timer? _refreshTimer;
 
-  /// Set session for Bluesky
-  void setSession(Session? newSession) {
+  Future<bool> init() async {
+    final session = storage.session.get();
+    if (session == null || session.refreshToken.isExpired) {
+      // New user or refresh token is expired
+      return false;
+    }
+
+    if (session.accessToken.isExpired) {
+      _refresh();
+    } else {
+      _save(session, disk: false);
+    }
+
+    return true;
+  }
+
+  Future<void> login(
+    String service,
+    String identity,
+    String password,
+    String? authFactor,
+  ) async {
+    // Try login
+    final session = await createSession(
+      service: service,
+      identifier: identity,
+      password: password,
+      authFactorToken: authFactor,
+    );
+
+    _save(session.data);
+  }
+
+  void logout() {
+    deleteSession(
+      refreshJwt: _c.session!.refreshJwt,
+    );
+    _save(null);
+  }
+
+  Future<void> _refresh() async {
+    final refreshedSession = await refreshSession(
+      refreshJwt: _c.session!.refreshJwt,
+    );
+
+    _save(refreshedSession.data);
+    _timer();
+  }
+
+  /// Save to memory and optionally to disk
+  void _save(Session? session, {bool disk = true}) {
+    if (disk) {
+      if (session == null) {
+        storage.session.remove();
+      } else {
+        storage.session.set(session);
+      }
+    }
+
+    if (session == null) {
+      _c = Bluesky.anonymous();
+    } else {
+      _c = Bluesky.fromSession(session);
+    }
+  }
+
+  void _timer() {
     if (_refreshTimer != null) {
       _refreshTimer!.cancel();
     }
 
-    if (newSession == null) {
-      c = Bluesky.anonymous();
-      return;
-    }
-
-    c = Bluesky.fromSession(newSession);
-
-    // Setup new timer
     final expiresIn =
-        newSession.accessToken.expiresAt.difference(DateTime.now());
+        _c.session!.accessToken.expiresAt.difference(DateTime.now());
 
-    _refreshTimer = Timer(expiresIn, () async {
-      final refreshedSession = await refreshSession(
-        refreshJwt: c.session!.refreshJwt,
-      );
-
-      storage.session.set(refreshedSession.data);
-      setSession(refreshedSession.data);
-    });
+    _refreshTimer = Timer(expiresIn, _refresh);
   }
+}
 
-  /// Remove items that are from users that are blocked or muted
-  List<FeedView> filterFeed(List<FeedView> items) {
-    return items
-        .where((item) =>
-            item.post.author.isNotBlocking && item.post.author.isNotMuted)
-        .toList();
-  }
-
+/// Files module for Api helper
+class FilesModule {
   /// Handle file upload, returns Embed of type selected
   Future<Embed?> upload(List<PlatformFile> files, FileType type) async {
     Embed? embed;
@@ -68,7 +106,7 @@ class SkyApi {
         for (var file in files) {
           final bytes = await file.xFile.readAsBytes();
 
-          final uploaded = await c.atproto.repo.uploadBlob(
+          final uploaded = await _c.atproto.repo.uploadBlob(
             bytes,
           );
 
@@ -86,7 +124,7 @@ class SkyApi {
       case FileType.video:
         final bytes = await files[0].xFile.readAsBytes();
 
-        final uploaded = await c.atproto.repo.uploadBlob(
+        final uploaded = await _c.atproto.repo.uploadBlob(
           bytes,
         );
 
@@ -102,10 +140,27 @@ class SkyApi {
 
     return embed;
   }
+}
+
+/// Content module for Api helper
+class ContentModule {
+  /// Has adult content enabled
+  bool adult = false;
+
+  /// List of feed generators
+  List<SavedFeed> feeds = List.empty(
+    growable: true,
+  );
+
+  /// List content preferance labels, used for deciding if an item should
+  /// be hidden or not
+  List<ContentLabelPreference> labels = List.empty(
+    growable: true,
+  );
 
   /// Save user preferences
-  Future<void> setPreferences() async {
-    final res = await c.actor.getPreferences();
+  Future<void> init() async {
+    final res = await _c.actor.getPreferences();
 
     for (final p in res.data.preferences) {
       if (p is UPreferenceAdultContent) {
@@ -113,12 +168,30 @@ class SkyApi {
       } else if (p is UPreferenceSavedFeedsV2) {
         for (var item in p.data.items) {
           if (item.type == "feed") {
-            feedGenerators.add(item);
+            feeds.add(item);
           }
         }
       } else if (p is UPreferenceContentLabel) {
-        contentLabels.add(p.data);
+        labels.add(p.data);
       }
     }
   }
+
+  /// Remove items that are from users that are blocked or muted
+  List<FeedView> filter(List<FeedView> items) {
+    return items
+        .where((item) =>
+            item.post.author.isNotBlocking && item.post.author.isNotMuted)
+        .toList();
+  }
+}
+
+/// Helper class for specific bluesky API functions
+class SkyApi {
+  final session = SessionModule();
+  final files = FilesModule();
+  final content = ContentModule();
+
+  /// Bluesky client instance
+  Bluesky get c => _c;
 }

@@ -1,4 +1,3 @@
-import 'package:bluesky/atproto.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/constants/app.dart';
@@ -134,11 +133,7 @@ class MainDrawer extends StatelessWidget {
                 leading: const Icon(Icons.logout),
                 title: Text(locale.drawer_logout),
                 onTap: () {
-                  deleteSession(
-                    refreshJwt: api.c.session!.refreshJwt,
-                  );
-                  storage.session.remove();
-                  api.setSession(null);
+                  api.session.logout();
 
                   Ui.snackbar(context, locale.drawer_logout_ok);
 

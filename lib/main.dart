@@ -1,5 +1,3 @@
-import 'package:bluesky/atproto.dart';
-import 'package:bluesky/core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
@@ -33,31 +31,13 @@ class _MyAppState extends State<MyApp> {
   Future<bool> _setupApp() async {
     await storage.init();
 
-    var session = storage.session.get();
-    if (session == null) {
-      // New user
-      return false;
+    final ok = await api.session.init();
+
+    if (ok) {
+      await api.content.init();
     }
 
-    // If the refresh token is expired force login
-    if (session.refreshToken.isExpired) {
-      return false;
-    }
-
-    if (session.accessToken.isExpired) {
-      // Refresh session
-      final refreshedSession = await refreshSession(
-        refreshJwt: session.refreshJwt,
-      );
-
-      storage.session.set(refreshedSession.data);
-
-      session = refreshedSession.data;
-    }
-
-    api.setSession(session);
-    await api.setPreferences();
-    return true;
+    return ok;
   }
 
   @override
