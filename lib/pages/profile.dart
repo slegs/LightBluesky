@@ -35,7 +35,13 @@ class _ProfilePageState extends State<ProfilePage>
   void initState() {
     super.initState();
 
-    _tabs = bsky.FeedFilter.values
+    final filters = [
+      bsky.FeedFilter.postsNoReplies,
+      bsky.FeedFilter.postsWithReplies,
+      bsky.FeedFilter.postsWithMedia,
+    ];
+
+    _tabs = filters
         .map(
           (f) => CustomTab(
             name: f.name,

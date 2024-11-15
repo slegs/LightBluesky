@@ -1,6 +1,7 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/helpers/ui.dart';
+import 'package:lightbluesky/pages/feed.dart';
 
 /// Embed for generator feed records
 class GeneratorRecordEmbed extends StatelessWidget {
@@ -15,7 +16,13 @@ class GeneratorRecordEmbed extends StatelessWidget {
     return Card.outlined(
       child: InkWell(
         onTap: () {
-          Ui.snackbar(context, "TODO: Add feed support");
+          Ui.nav(
+            context,
+            FeedPage(
+              title: root.data.displayName,
+              uri: root.data.uri,
+            ),
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
