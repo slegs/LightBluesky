@@ -108,7 +108,7 @@ class _PublishDialogState extends State<PublishDialog> {
               keyboardType: TextInputType.multiline,
               maxLines: null,
               decoration: InputDecoration(
-                hintText: widget.parent != null
+                hintText: widget.parent == null
                     ? "What's on your mind?"
                     : "Write a reply",
               ),
