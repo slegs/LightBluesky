@@ -5,7 +5,7 @@
 
 A Bluesky client made using Flutter, designed to be lightweight and easy to use.
 
-**WIP**: For now, this project is very barebones, don't expect a full client.
+**WIP**: The project is _usable_ but still being developed, expect some issues.
 
 ## Installation
 You will need flutter, it is tested for the `stable` version.
@@ -34,6 +34,9 @@ You will need `libmpv` for handling video playback.
   * Handle adult content
   * Sharing
   * Like / Repost
+* Translations
+  * English
+  * Spanish
 
 ## TODO
 * Group timeline posts

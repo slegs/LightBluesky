@@ -12,6 +12,18 @@
   "@sort_latest": {
     "description": "Sorting method for posts that picks the most recent fist"
   },
+  "drawer_about": "About",
+  "@drawer_about": {
+    "description": "Open details about the application itself"
+  },
+  "drawer_settings": "Settings",
+  "@drawer_settings": {
+    "description": "Open settings for app"
+  },
+  "drawer_source": "Source",
+  "@drawer_source": {
+    "description": "Open source code"
+  },
   "drawer_my_profile": "My profile",
   "@drawer_my_profile": {
     "description": "Open currently loggedin user's profile"

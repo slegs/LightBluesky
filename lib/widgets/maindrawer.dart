@@ -1,6 +1,7 @@
 import 'package:bluesky/atproto.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/constants/app.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/auth.dart';
 import 'package:lightbluesky/pages/feeds.dart';
@@ -30,7 +31,7 @@ class MainDrawer extends StatelessWidget {
             child: Column(
               children: [
                 const Expanded(
-                  child: Text('LightBluesky'),
+                  child: Text(App.name),
                 ),
                 TextButton.icon(
                   onPressed: () async {
@@ -45,7 +46,7 @@ class MainDrawer extends StatelessWidget {
                     );
                   },
                   icon: const Icon(Icons.info),
-                  label: Text("About"),
+                  label: Text(locale.drawer_about),
                 ),
               ],
             ),
@@ -97,7 +98,7 @@ class MainDrawer extends StatelessWidget {
           // SETTINGS
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
+            title: Text(locale.drawer_settings),
             onTap: () {
               Ui.dialog(
                 context,
@@ -106,17 +107,18 @@ class MainDrawer extends StatelessWidget {
               );
             },
           ),
-          // Source code
+          // SOURCE CODE
           ListTile(
             leading: const Icon(Icons.code),
-            title: const Text('Source'),
+            title: Text(locale.drawer_source),
             onTap: () {
-              Ui.openUrl('https://github.com/pablouser1/LightBluesky');
+              Ui.openUrl(App.source);
             },
           ),
           ExpansionTile(
             title: Text(api.c.session!.handle),
             children: [
+              // PROFILE
               ListTile(
                 leading: const Icon(Icons.person),
                 title: Text(locale.drawer_my_profile),
@@ -127,6 +129,7 @@ class MainDrawer extends StatelessWidget {
                   );
                 },
               ),
+              // LOGOUT
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: Text(locale.drawer_logout),

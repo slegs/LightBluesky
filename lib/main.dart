@@ -3,10 +3,10 @@ import 'package:bluesky/core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/constants/app.dart';
 import 'package:lightbluesky/pages/auth.dart';
 import 'package:lightbluesky/pages/home.dart';
 import 'package:video_player_media_kit/video_player_media_kit.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
@@ -72,12 +72,8 @@ class _MyAppState extends State<MyApp> {
     return DynamicColorBuilder(
       builder: (lightColorScheme, darkColorScheme) {
         return MaterialApp(
-          title: 'LightBluesky',
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
+          title: App.name,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           theme: ThemeData(
             colorScheme: lightColorScheme ?? const ColorScheme.light(),

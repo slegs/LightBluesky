@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:bluesky/app_bsky_embed_video.dart';
+import 'package:bluesky/atproto.dart';
 import 'package:bluesky/bluesky.dart';
 import 'package:bluesky/core.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:lightbluesky/common.dart';
 
 /// Helper class for specific bluesky API functions
 class SkyApi {
@@ -13,6 +17,35 @@ class SkyApi {
   List<ContentLabelPreference> contentLabels = List.empty(
     growable: true,
   );
+
+  Timer? _refreshTimer;
+
+  /// Set session for Bluesky
+  void setSession(Session? newSession) {
+    if (_refreshTimer != null) {
+      _refreshTimer!.cancel();
+    }
+
+    if (newSession == null) {
+      c = Bluesky.anonymous();
+      return;
+    }
+
+    c = Bluesky.fromSession(newSession);
+
+    // Setup new timer
+    final expiresIn =
+        newSession.accessToken.expiresAt.difference(DateTime.now());
+
+    _refreshTimer = Timer(expiresIn, () async {
+      final refreshedSession = await refreshSession(
+        refreshJwt: c.session!.refreshJwt,
+      );
+
+      storage.session.set(refreshedSession.data);
+      setSession(refreshedSession.data);
+    });
+  }
 
   /// Remove items that are from users that are blocked or muted
   List<FeedView> filterFeed(List<FeedView> items) {
@@ -68,15 +101,6 @@ class SkyApi {
     }
 
     return embed;
-  }
-
-  /// Set session for Bluesky
-  void setSession(Session? newSession) {
-    if (newSession == null) {
-      c = Bluesky.anonymous();
-      return;
-    }
-    c = Bluesky.fromSession(newSession);
   }
 
   /// Save user preferences
