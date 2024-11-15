@@ -29,6 +29,11 @@ class SessionModule {
   void set(Session session) {
     _c.setString(key, json.encode(session.toJson()));
   }
+
+  /// Wipe current session
+  void remove() {
+    _c.remove(key);
+  }
 }
 
 /// Hashtag(s) module for Storage

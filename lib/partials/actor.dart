@@ -5,6 +5,7 @@ import 'package:get_time_ago/get_time_ago.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/profile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Common widget for
 /// displaying actor's display name and/or handle and profile picture
@@ -27,6 +28,8 @@ class Actor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+
     return ListTile(
       onTap: tap
           ? () => Ui.nav(
@@ -46,7 +49,12 @@ class Actor extends StatelessWidget {
         actor.displayName != null ? actor.displayName! : '@${actor.handle}',
       ),
       subtitle: actor.displayName != null ? Text('@${actor.handle}') : null,
-      trailing: createdAt != null ? Text(GetTimeAgo.parse(createdAt!)) : null,
+      trailing: createdAt != null
+          ? Text(GetTimeAgo.parse(
+              createdAt!,
+              locale: locale.localeName,
+            ))
+          : null,
     );
   }
 }

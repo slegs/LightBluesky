@@ -71,7 +71,11 @@ class SkyApi {
   }
 
   /// Set session for Bluesky
-  void setSession(Session newSession) {
+  void setSession(Session? newSession) {
+    if (newSession == null) {
+      c = Bluesky.anonymous();
+      return;
+    }
     c = Bluesky.fromSession(newSession);
   }
 

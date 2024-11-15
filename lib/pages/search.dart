@@ -5,6 +5,7 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/debouncer.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/partials/actor.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Search page, for now only for users
 class SearchPage extends StatefulWidget {
@@ -62,10 +63,12 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Search"),
+        title: Text(locale.search_title),
       ),
       body: Column(
         children: [
@@ -75,9 +78,9 @@ class _SearchPageState extends State<SearchPage> {
             child: TextField(
               autofocus: true,
               onChanged: (val) => _makeSearch(val),
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Query',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: locale.search_title,
               ),
             ),
           ),

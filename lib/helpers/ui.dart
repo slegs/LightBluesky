@@ -6,10 +6,33 @@ import 'package:url_launcher/url_launcher_string.dart';
 /// Ui helper class
 class Ui {
   /// Changes route to the one specificied in route
-  static void nav(BuildContext context, Widget route) {
+  static void nav(
+    BuildContext context,
+    Widget route, {
+    bool replace = false,
+    bool wipe = false,
+  }) {
+    final pageRoute = MaterialPageRoute(builder: (context) => route);
+    if (replace) {
+      Navigator.pushReplacement(
+        context,
+        pageRoute,
+      );
+      return;
+    }
+
+    if (wipe) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        pageRoute,
+        (_) => false,
+      );
+      return;
+    }
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => route),
+      pageRoute,
     );
   }
 

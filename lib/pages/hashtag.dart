@@ -5,6 +5,7 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/widgets/feeds/multiple.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Hashtag page
 class HashtagPage extends StatefulWidget {
@@ -23,18 +24,13 @@ class _HashtagPageState extends State<HashtagPage>
     with SingleTickerProviderStateMixin {
   final _scrollController = ScrollController();
   late TabController _tabController;
-  bool _loading = true;
   bool _isSaved = false;
 
-  /// Feed generators data
-  final List<CustomTab> _tabs = List.empty(
-    growable: true,
-  );
-
   /// Wrapper made to adapt function to Feed type
-  Future<XRPCResponse<Feed>> _func(String type, String? cursor) async {
+  Future<XRPCResponse<Feed>> _func(String sort, String? cursor) async {
     final res = await api.c.feed.searchPosts(
       '#${widget.name}',
+      sort: sort,
     );
 
     // Copy response with modified Feed
@@ -55,56 +51,13 @@ class _HashtagPageState extends State<HashtagPage>
     );
   }
 
-  /// Init widget
-  Future<void> _init() async {
-    setState(() {
-      _loading = true;
-      _isSaved = storage.hashtags.get().contains(widget.name);
-    });
-
-    // Get feed generators pinned by user
+  @override
+  void initState() {
+    super.initState();
     _tabController = TabController(
       length: 2, // Top + latest
       vsync: this,
     );
-
-    _tabs.add(
-      CustomTab(
-        name: 'Top',
-        func: ({cursor}) => _func('top', cursor),
-      ),
-    );
-
-    _tabs.add(
-      CustomTab(
-        name: 'Latest',
-        func: ({cursor}) => _func('latest', cursor),
-      ),
-    );
-
-    setState(() {
-      _loading = false;
-    });
-  }
-
-  List<Widget> _handleTabs() {
-    List<Widget> widgets = [];
-
-    for (final tab in _tabs) {
-      widgets.add(
-        Tab(
-          text: tab.name,
-        ),
-      );
-    }
-
-    return widgets;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _init();
   }
 
   @override
@@ -114,8 +67,33 @@ class _HashtagPageState extends State<HashtagPage>
     super.dispose();
   }
 
+  void _saveHashtag() {
+    storage.hashtags.add(widget.name);
+
+    setState(() {
+      _isSaved = !_isSaved;
+    });
+    Ui.snackbar(
+      context,
+      'Hashtag saved',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+
+    final tabs = [
+      CustomTab(
+        name: locale.sort_top,
+        func: ({cursor}) => _func('top', cursor),
+      ),
+      CustomTab(
+        name: locale.sort_latest,
+        func: ({cursor}) => _func('latest', cursor),
+      ),
+    ];
+
     return Scaffold(
       body: NestedScrollView(
         controller: _scrollController,
@@ -135,43 +113,30 @@ class _HashtagPageState extends State<HashtagPage>
               ),
               actions: [
                 IconButton(
-                  onPressed: !_isSaved
-                      ? () {
-                          storage.hashtags.add(widget.name);
-
-                          setState(() {
-                            _isSaved = !_isSaved;
-                          });
-                          Ui.snackbar(
-                            context,
-                            'Hashtag saved',
-                          );
-                        }
-                      : null,
+                  onPressed: !_isSaved ? _saveHashtag : null,
                   icon: Icon(
                     _isSaved ? Icons.check : Icons.add,
                   ),
                 ),
               ],
-              bottom: !_loading
-                  ? TabBar(
-                      tabs: _handleTabs(),
-                      controller: _tabController,
-                      isScrollable: true,
-                    )
-                  : null,
+              bottom: TabBar(
+                tabs: [
+                  for (final tab in tabs)
+                    Tab(
+                      text: tab.name,
+                    ),
+                ],
+                controller: _tabController,
+                isScrollable: true,
+              ),
             ),
           ];
         },
-        body: !_loading
-            ? MultipleFeeds(
-                tabController: _tabController,
-                scrollController: _scrollController,
-                tabs: _tabs,
-              )
-            : const Center(
-                child: CircularProgressIndicator(),
-              ),
+        body: MultipleFeeds(
+          tabController: _tabController,
+          scrollController: _scrollController,
+          tabs: tabs,
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.arrow_upward),

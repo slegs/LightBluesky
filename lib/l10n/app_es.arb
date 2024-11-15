@@ -1,11 +1,24 @@
 {
   "@@locale": "es",
   "unknown_error": "Error desconocido",
+  "sort_top": "Popular",
+  "sort_latest": "Reciente",
+  "drawer_my_profile": "Mi perfil",
+  "drawer_logout": "Cerrar sesión",
+  "drawer_logout_ok": "Sesión cerrada exitosamente",
   "auth_title": "Autentificación",
   "auth_service": "Servicio",
   "auth_handle": "Nombre de usuario / correo electrónico",
   "auth_password": "Contraseña",
   "auth_2fa": "Autentificación de dos pasos",
   "auth_2fa_sent": "Código enviado a tu correo electrónico",
-  "auth_login": "Iniciar sesión"
+  "auth_login": "Iniciar sesión",
+  "feed_nLikes": "{count, plural, =0{no hay favoritos} =1{1 favorito} other{{count} favoritos}}",
+  "hashtags_title": "Etiquetas",
+  "hashtags_empty": "Tus etiquetas se verán aquí cuando las guardes",
+  "notifications_title": "Notificaciones",
+  "notifications_follow": "te ha seguido",
+  "notifications_like": "le ha gustado tu publicación",
+  "notifications_repost": "ha reposteado tu publicación",
+  "search_title": "Buscar"
 }

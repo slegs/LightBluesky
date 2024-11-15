@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/hashtag.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HashtagsPage extends StatefulWidget {
   const HashtagsPage({super.key});
@@ -13,12 +14,13 @@ class HashtagsPage extends StatefulWidget {
 class _HashtagsPageState extends State<HashtagsPage> {
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
     final hashtags = storage.hashtags.get();
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Hashtags"),
+        title: Text(locale.hashtags_title),
       ),
       body: hashtags.isNotEmpty
           ? ListView.builder(
@@ -43,8 +45,8 @@ class _HashtagsPageState extends State<HashtagsPage> {
                 );
               },
             )
-          : const Center(
-              child: Text('Your saved hashtags will be shown here'),
+          : Center(
+              child: Text(locale.hashtags_empty),
             ),
     );
   }

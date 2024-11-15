@@ -1,6 +1,7 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Notificatons page
 /// TODO: Group notifications
@@ -54,9 +55,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Notifications"),
+        title: Text(locale.notifications_title),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: IconButton(
           onPressed: () {
@@ -75,13 +78,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
           if (item.reason.isFollow) {
             icon = Icons.person_add;
-            text = 'followed you';
+            text = locale.notifications_follow;
           } else if (item.reason.isLike) {
             icon = Icons.favorite;
-            text = 'liked your post';
+            text = locale.notifications_like;
           } else if (item.reason.isRepost) {
             icon = Icons.autorenew;
-            text = 'reposted your post';
+            text = locale.notifications_repost;
           } else {
             icon = Icons.question_mark;
             text = item.reason.toString();

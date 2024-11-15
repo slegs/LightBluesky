@@ -5,6 +5,7 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/feed.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Feed generators saved by user
 class FeedsPage extends StatefulWidget {
@@ -28,6 +29,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Feeds"),
@@ -50,23 +52,25 @@ class _FeedsPageState extends State<FeedsPage> {
               itemBuilder: (context, i) {
                 final data = gen.data.feeds[i];
                 return ListTile(
-                    onTap: () {
-                      Ui.nav(
-                        context,
-                        FeedPage(
-                          title: data.displayName,
-                          uri: data.uri,
-                        ),
-                      );
-                    },
-                    leading: CircleAvatar(
-                      backgroundImage: data.avatar != null
-                          ? NetworkImage(data.avatar!)
-                          : null,
-                    ),
-                    title: Text(data.displayName),
-                    subtitle: Text('@${data.createdBy.handle}'),
-                    trailing: Text('${data.likeCount.toString()} like(s)'));
+                  onTap: () {
+                    Ui.nav(
+                      context,
+                      FeedPage(
+                        title: data.displayName,
+                        uri: data.uri,
+                      ),
+                    );
+                  },
+                  leading: CircleAvatar(
+                    backgroundImage:
+                        data.avatar != null ? NetworkImage(data.avatar!) : null,
+                  ),
+                  title: Text(data.displayName),
+                  subtitle: Text('@${data.createdBy.handle}'),
+                  trailing: Text(
+                    locale.feed_nLikes(data.likeCount),
+                  ),
+                );
               },
             );
           } else if (snapshot.hasError) {

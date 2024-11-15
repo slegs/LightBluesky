@@ -4,6 +4,26 @@
   "@unknown_error": {
     "description": "An unknown error happened"
   },
+  "sort_top": "Top",
+  "@sort_top": {
+    "description": "Sorting method for posts that picks the most popular first"
+  },
+  "sort_latest": "Latest",
+  "@sort_latest": {
+    "description": "Sorting method for posts that picks the most recent fist"
+  },
+  "drawer_my_profile": "My profile",
+  "@drawer_my_profile": {
+    "description": "Open currently loggedin user's profile"
+  },
+  "drawer_logout": "Logout",
+  "@drawer_logout": {
+    "description": "Quit current session"
+  },
+  "drawer_logout_ok": "Logged out succesfully",
+  "@drawer_logout_ok": {
+    "description": "Opens a snackbar when the user logged out"
+  },
   "auth_title": "Authentication",
   "@auth_title": {
     "description": "Title for page auth.dart"
@@ -31,5 +51,43 @@
   "auth_login": "Login",
   "@auth_login": {
     "description": "Start login procedure"
+  },
+  "feed_nLikes": "{count, plural, =0{no likes} =1{1 like} other{{count} likes}}",
+  "@feed_nLikes": {
+    "description": "Amount of likes a feed has received",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "hashtags_title": "Hashtags",
+  "@hashtags_title": {
+    "description": "Title for page hashtags.dart"
+  },
+  "hashtags_empty": "Your saved hashtags will be shown here",
+  "@hashtags_empty": {
+    "description": "Text shown when user has no hashtags saved"
+  },
+  "notifications_title": "Notifications",
+  "@notifications_title": {
+    "description": "Title for page notifications.dart"
+  },
+  "notifications_follow": "followed you",
+  "@notifications_follow": {
+    "description": "Notififies a new follower, the username is not included"
+  },
+  "notifications_like": "liked your post",
+  "@notifications_like": {
+    "description": "Notififies a new like, the username is not included"
+  },
+  "notifications_repost": "reposted your post",
+  "@notifications_repost": {
+    "description": "Notififies a new repost, the username is not included"
+  },
+  "search_title": "Search",
+  "@search_title": {
+    "description": "Title for page search.dart"
   }
 }

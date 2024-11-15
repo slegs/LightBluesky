@@ -22,9 +22,14 @@ class _HomePageState extends State<HomePage>
   bool _loading = true;
 
   /// Feed generators data
-  final List<CustomTab> _tabs = List.empty(
-    growable: true,
-  );
+  final List<CustomTab> _tabs = [
+    CustomTab(
+      name: 'Timeline',
+      func: ({cursor}) => api.c.feed.getTimeline(
+        cursor: cursor,
+      ),
+    ),
+  ];
 
   /// Init widget
   Future<void> _init() async {
@@ -39,14 +44,6 @@ class _HomePageState extends State<HomePage>
       vsync: this,
     );
 
-    _tabs.add(
-      CustomTab(
-        name: 'Following',
-        func: ({cursor}) => api.c.feed.getTimeline(
-          cursor: cursor,
-        ),
-      ),
-    );
     for (final gen in data) {
       _tabs.add(
         CustomTab(
