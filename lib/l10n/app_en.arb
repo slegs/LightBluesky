@@ -1,0 +1,35 @@
+{
+  "@@locale": "en",
+  "unknown_error": "Unknown error",
+  "@unknown_error": {
+    "description": "An unknown error happened"
+  },
+  "auth_title": "Authentication",
+  "@auth_title": {
+    "description": "Title for page auth.dart"
+  },
+  "auth_service": "Service",
+  "@auth_service": {
+    "description": "Service to pick from when logging in"
+  },
+  "auth_handle": "Handle or email",
+  "@auth_handle": {
+    "description": "Login using your handle or your linked email"
+  },
+  "auth_password": "Password",
+  "@auth_password": {
+    "description": "Password required for login"
+  },
+  "auth_2fa": "2FA code",
+  "@auth_2fa": {
+    "description": "2FA code required if user has it enabled on bsky's settings"
+  },
+  "auth_2fa_sent": "Your 2FA code has been sent to your email",
+  "@auth_2fa_sent": {
+    "description": "2FA is enabled by the user and the code has just been sent"
+  },
+  "auth_login": "Login",
+  "@auth_login": {
+    "description": "Start login procedure"
+  }
+}

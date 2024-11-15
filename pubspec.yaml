@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   bluesky: ^0.17.1
   bluesky_text: ^0.6.10
   shared_preferences: ^2.3.2
@@ -45,6 +47,7 @@ dependencies:
   share_plus: ^10.0.0
   flutter_cache_manager: ^3.4.1
   cached_network_image: ^3.4.0
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
@@ -62,4 +65,5 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
   uses-material-design: true

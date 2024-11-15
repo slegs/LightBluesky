@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/home.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Authentication page
 class AuthPage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _AuthPageState extends State<AuthPage> {
   final _authFactorController = TextEditingController();
 
   // Run login attempt
-  void _handleSession() async {
+  void _handleSession(AppLocalizations locale) async {
     setState(() {
       _isLoading = true;
     });
@@ -55,7 +56,7 @@ class _AuthPageState extends State<AuthPage> {
       // Something went wrong
       if (e.response.data.error == 'AuthFactorTokenRequired') {
         // Server is asking for 2FA
-        Ui.snackbar(context, e.response.data.message ?? '2FA required');
+        Ui.snackbar(context, e.response.data.message ?? locale.auth_2fa_sent);
 
         setState(() {
           _needsFactor = true;
@@ -67,8 +68,8 @@ class _AuthPageState extends State<AuthPage> {
       // Unexpected error happened
       Ui.dialog(
         context,
-        'Error ${e.response.data.error}',
-        e.response.data.message ?? 'Unexpected error',
+        e.response.data.error,
+        e.response.data.message ?? locale.unknown_error,
         actions: [
           TextButton(
             onPressed: () {
@@ -87,10 +88,11 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Auth"),
+        title: Text(locale.auth_title),
       ),
       body: Center(
         child: Column(
@@ -100,9 +102,9 @@ class _AuthPageState extends State<AuthPage> {
               padding: const EdgeInsets.all(10),
               child: TextField(
                 controller: _serviceController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Service',
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: locale.auth_service,
                 ),
               ),
             ),
@@ -110,9 +112,9 @@ class _AuthPageState extends State<AuthPage> {
               padding: const EdgeInsets.all(10),
               child: TextField(
                 controller: _identityController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Handle / email',
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: locale.auth_handle,
                 ),
               ),
             ),
@@ -121,9 +123,9 @@ class _AuthPageState extends State<AuthPage> {
               child: TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: locale.auth_password,
                 ),
               ),
             ),
@@ -133,18 +135,18 @@ class _AuthPageState extends State<AuthPage> {
                 padding: const EdgeInsets.all(10),
                 child: TextField(
                   controller: _authFactorController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: '2FA code',
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: locale.auth_2fa,
                   ),
                 ),
               ),
             // Login button
             OutlinedButton.icon(
-              onPressed: !_isLoading ? _handleSession : null,
+              onPressed: !_isLoading ? () => _handleSession(locale) : null,
               icon: const Icon(Icons.login),
-              label: const Text(
-                'Login',
+              label: Text(
+                locale.auth_login,
               ),
             ),
           ],

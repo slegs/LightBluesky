@@ -1,0 +1,11 @@
+{
+  "@@locale": "es",
+  "unknown_error": "Error desconocido",
+  "auth_title": "Autentificación",
+  "auth_service": "Servicio",
+  "auth_handle": "Nombre de usuario / correo electrónico",
+  "auth_password": "Contraseña",
+  "auth_2fa": "Autentificación de dos pasos",
+  "auth_2fa_sent": "Código enviado a tu correo electrónico",
+  "auth_login": "Iniciar sesión"
+}
