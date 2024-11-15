@@ -110,6 +110,15 @@ class EmbedRoot extends StatelessWidget {
         root: item as UEmbedViewRecord,
         open: open,
       );
+    } else if (item is UEmbedViewRecordWithMedia) {
+      final data = (item as UEmbedViewRecordWithMedia).data;
+      widget = RecordEmbed(
+        root: UEmbedViewRecord(
+          data: data.record,
+        ),
+        media: data.media,
+        open: open,
+      );
     } else {
       widget = const IconText(
         icon: Icons.warning,

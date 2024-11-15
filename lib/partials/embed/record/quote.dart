@@ -12,15 +12,17 @@ class QuoteRecordEmbed extends StatelessWidget {
   const QuoteRecordEmbed({
     super.key,
     required this.record,
+    this.media,
     required this.open,
   });
 
   final bsky.UEmbedViewRecordViewRecord? record;
+  final bsky.EmbedView? media;
   final bool open;
 
   @override
   Widget build(BuildContext context) {
-    return Card.outlined(
+    final card = Card.outlined(
       child: record != null
           ? InkWell(
               onTap: open
@@ -45,7 +47,8 @@ class QuoteRecordEmbed extends StatelessWidget {
                       record!.data.value.text,
                     ),
                   ),
-                  if (record!.data.embeds != null)
+                  if (record!.data.embeds != null &&
+                      record!.data.embeds!.isNotEmpty)
                     EmbedRoot(
                       item: record!.data.embeds![0],
                       labels: record!.data.labels,
@@ -58,5 +61,15 @@ class QuoteRecordEmbed extends StatelessWidget {
               text: "Not found!",
             ),
     );
+    return media == null
+        ? card
+        : Column(
+            children: [
+              EmbedRoot(
+                item: media!,
+              ),
+              card,
+            ],
+          );
   }
 }
