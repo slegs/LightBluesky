@@ -24,6 +24,8 @@ class SessionModule {
 
     if (session.accessToken.isExpired) {
       _refresh();
+    } else {
+      _timer();
     }
 
     return true;
