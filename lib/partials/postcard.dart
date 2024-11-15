@@ -192,6 +192,9 @@ class _PostCardState extends State<PostCard> {
                     label: Text(
                       _reposts.toString(),
                     ),
+                    style: TextButton.styleFrom(
+                      foregroundColor: _userReposted ? Colors.green : null,
+                    ),
                     onPressed: _handleRepost,
                   ),
                   TextButton.icon(
@@ -200,6 +203,9 @@ class _PostCardState extends State<PostCard> {
                         : const Icon(Icons.favorite_outline),
                     label: Text(
                       _likes.toString(),
+                    ),
+                    style: TextButton.styleFrom(
+                      foregroundColor: _userLiked ? Colors.red : null,
                     ),
                     onPressed: _handleLike,
                   ),

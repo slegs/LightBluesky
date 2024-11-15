@@ -84,7 +84,11 @@ class MainDrawer extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {
-              Ui.snackbar(context, "TODO: Add settings");
+              Ui.dialog(
+                context,
+                "Under construction",
+                "TODO: Add settings",
+              );
             },
           ),
           // Source code
