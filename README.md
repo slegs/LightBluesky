@@ -36,10 +36,8 @@ You will need `libmpv` for handling video playback.
   * Like / Repost
 
 ## TODO
-* Follow / unfollow
+* Group timeline posts
 * Block / unblock
-* Notifications
-* Allow attaching video to post
 * Allow swipe up to refresh list of items
 * Add documentation
 * Make tests
@@ -51,7 +49,11 @@ This project wouldn't have been posible without the help of these third-party pr
 - [shared_preferences](https://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences)
 - [url_launcher](https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher)
 - [dynamic_color](https://github.com/material-foundation/flutter-packages/tree/main/packages/dynamic_color)
-- [video_player](https://github.com/flutter/packages/tree/main/packages/video_player/video_player)
-- [media_kit & video_player_media_kit](https://github.com/media-kit/media-kit)
 - [package_info_plus](https://github.com/fluttercommunity/plus_plugins)
 - [file_picker](https://github.com/miguelpruivo/flutter_file_picker)
+- [get_time_ago](https://pub.dev/packages/get_time_ago)
+- [video_player](https://github.com/flutter/packages/tree/main/packages/video_player/video_player)
+- [media_kit & video_player_media_kit](https://github.com/media-kit/media-kit)
+- [share_plus](https://pub.dev/packages/share_plus)
+- [flutter_cache_manager](https://github.com/Baseflow/flutter_cache_manager/tree/develop/flutter_cache_manager)
+- [cached_network_image](https://github.com/Baseflow/flutter_cached_network_image)

@@ -103,7 +103,10 @@ class EmbedRoot extends StatelessWidget {
         root: item as UEmbedViewRecord,
       );
     } else {
-      widget = const Text("Unsupported embed :(");
+      widget = const IconText(
+        icon: Icons.warning,
+        text: "Unsupported embed :(",
+      );
     }
 
     return Padding(

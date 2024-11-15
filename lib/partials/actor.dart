@@ -1,6 +1,8 @@
 import 'package:bluesky/bluesky.dart' as bsky;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
+import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/profile.dart';
 
@@ -33,9 +35,12 @@ class Actor extends StatelessWidget {
               )
           : null,
       leading: CircleAvatar(
-        // TODO: Use CustomImage
-        backgroundImage:
-            actor.avatar != null ? NetworkImage(actor.avatar!) : null,
+        backgroundImage: actor.avatar != null
+            ? CachedNetworkImageProvider(
+                actor.avatar!,
+                cacheManager: cache,
+              )
+            : null,
       ),
       title: Text(
         actor.displayName != null ? actor.displayName! : '@${actor.handle}',
