@@ -1,10 +1,10 @@
 import 'package:bluesky/bluesky.dart' as bsky;
-import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/widgets/exceptionhandler.dart';
 
 /// Notificatons page
+/// TODO: Group notifications
+/// TODO: Handle read
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
 
@@ -13,12 +13,43 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  late Future<XRPCResponse<bsky.Notifications>> _futureNotifications;
+  final controller = ScrollController();
+  final List<bsky.Notification> items = List.empty(
+    growable: true,
+  );
+
+  String? cursor;
 
   @override
   void initState() {
     super.initState();
-    _futureNotifications = api.c.notification.listNotifications();
+    _loadMore();
+    controller.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadMore() async {
+    final res = await api.c.notification.listNotifications(
+      cursor: cursor,
+    );
+
+    cursor = res.data.cursor;
+
+    setState(() {
+      items.addAll(res.data.notifications);
+    });
+  }
+
+  /// Scroll hook, loads data if scroll close to bottom
+  void _onScroll() {
+    if (controller.position.pixels == controller.position.maxScrollExtent) {
+      _loadMore();
+    }
   }
 
   @override
@@ -29,36 +60,46 @@ class _NotificationsPageState extends State<NotificationsPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: IconButton(
           onPressed: () {
-            api.c.notification.listNotifications();
             Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back),
         ),
       ),
-      body: FutureBuilder(
-        future: _futureNotifications,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final items = snapshot.data!.data.notifications;
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, i) {
+          final item = items[i];
 
-            return ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(
-                    items[index].author.displayName ??
-                        items[index].author.handle,
-                  ),
-                );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return ExceptionHandler(
-              exception: snapshot.error!,
-            );
+          IconData icon;
+          String text;
+
+          if (item.reason.isFollow) {
+            icon = Icons.person_add;
+            text = 'followed you';
+          } else if (item.reason.isLike) {
+            icon = Icons.favorite;
+            text = 'liked your post';
+          } else if (item.reason.isRepost) {
+            icon = Icons.autorenew;
+            text = 'reposted your post';
+          } else {
+            icon = Icons.question_mark;
+            text = item.reason.toString();
           }
-          return const Center(
-            child: CircularProgressIndicator(),
+
+          return Column(
+            children: [
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: item.author.avatar != null
+                      ? NetworkImage(item.author.avatar!)
+                      : null,
+                ),
+                title: Text(item.author.displayName ?? item.author.handle),
+                subtitle: Text(text),
+                trailing: Icon(icon),
+              ),
+            ],
           );
         },
       ),
