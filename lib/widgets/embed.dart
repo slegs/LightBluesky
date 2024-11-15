@@ -13,8 +13,9 @@ class EmbedRoot extends StatelessWidget {
   const EmbedRoot({
     super.key,
     required this.item,
-    required this.labels,
+    this.labels,
     this.full = false,
+    this.open = true,
   });
 
   /// Embed root
@@ -25,6 +26,9 @@ class EmbedRoot extends StatelessWidget {
 
   /// IMAGES ONLY: Use fullsized or thumbnail
   final bool full;
+
+  /// Allows tapping
+  final bool open;
 
   /// Setup censorship method for adult content
   Widget _handleAdult({required Widget child}) {
@@ -89,18 +93,22 @@ class EmbedRoot extends StatelessWidget {
       widget = ImagesEmbed(
         root: item as UEmbedViewImages,
         full: full,
+        open: open,
       );
     } else if (item is UEmbedViewVideo) {
       widget = VideoEmbed(
         root: item as UEmbedViewVideo,
+        open: open,
       );
     } else if (item is UEmbedViewExternal) {
       widget = ExternalEmbed(
         root: item as UEmbedViewExternal,
+        open: open,
       );
     } else if (item is UEmbedViewRecord) {
       widget = RecordEmbed(
         root: item as UEmbedViewRecord,
+        open: open,
       );
     } else {
       widget = const IconText(

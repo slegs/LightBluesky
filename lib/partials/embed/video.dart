@@ -8,21 +8,25 @@ class VideoEmbed extends StatelessWidget {
   const VideoEmbed({
     super.key,
     required this.root,
+    required this.open,
   });
 
   final UEmbedViewVideo root;
+  final bool open;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onLongPress: () {
-        showDialog(
-          context: context,
-          builder: (_) => EmbedDialog(
-            item: root,
-          ),
-        );
-      },
+      onLongPress: open
+          ? () {
+              showDialog(
+                context: context,
+                builder: (_) => EmbedDialog(
+                  item: root,
+                ),
+              );
+            }
+          : null,
       child: CustomPlayer(
         playlist: root.data.playlist,
       ),

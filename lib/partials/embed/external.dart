@@ -8,9 +8,11 @@ class ExternalEmbed extends StatelessWidget {
   const ExternalEmbed({
     super.key,
     required this.root,
+    required this.open,
   });
 
   final UEmbedViewExternal root;
+  final bool open;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,11 @@ class ExternalEmbed extends StatelessWidget {
     }
 
     return InkWell(
+      onTap: open
+          ? () {
+              Ui.openUrl(external.uri);
+            }
+          : null,
       child: Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Column(
@@ -45,9 +52,6 @@ class ExternalEmbed extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () {
-        Ui.openUrl(external.uri);
-      },
     );
   }
 }

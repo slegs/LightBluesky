@@ -8,22 +8,27 @@ class GeneratorRecordEmbed extends StatelessWidget {
   const GeneratorRecordEmbed({
     super.key,
     required this.root,
+    required this.open,
   });
 
   final bsky.UEmbedViewRecordViewGeneratorView root;
+  final bool open;
+
   @override
   Widget build(BuildContext context) {
     return Card.outlined(
       child: InkWell(
-        onTap: () {
-          Ui.nav(
-            context,
-            FeedPage(
-              title: root.data.displayName,
-              uri: root.data.uri,
-            ),
-          );
-        },
+        onTap: open
+            ? () {
+                Ui.nav(
+                  context,
+                  FeedPage(
+                    title: root.data.displayName,
+                    uri: root.data.uri,
+                  ),
+                );
+              }
+            : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

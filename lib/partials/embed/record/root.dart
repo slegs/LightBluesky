@@ -13,9 +13,11 @@ class RecordEmbed extends StatelessWidget {
   const RecordEmbed({
     super.key,
     required this.root,
+    required this.open,
   });
 
   final UEmbedViewRecord root;
+  final bool open;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +25,17 @@ class RecordEmbed extends StatelessWidget {
     if (root.data.record is UEmbedViewRecordViewRecord) {
       widget = QuoteRecordEmbed(
         record: root.data.record as UEmbedViewRecordViewRecord,
+        open: open,
       );
     } else if (root.data.record is UEmbedViewRecordViewNotFound) {
-      widget = const QuoteRecordEmbed(
+      widget = QuoteRecordEmbed(
         record: null,
+        open: open,
       );
     } else if (root.data.record is UEmbedViewRecordViewGeneratorView) {
       widget = GeneratorRecordEmbed(
         root: root.data.record as UEmbedViewRecordViewGeneratorView,
+        open: open,
       );
     } else {
       widget = const IconText(

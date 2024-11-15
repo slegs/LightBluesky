@@ -12,21 +12,25 @@ class QuoteRecordEmbed extends StatelessWidget {
   const QuoteRecordEmbed({
     super.key,
     required this.record,
+    required this.open,
   });
 
   final bsky.UEmbedViewRecordViewRecord? record;
+  final bool open;
 
   @override
   Widget build(BuildContext context) {
     return Card.outlined(
       child: record != null
           ? InkWell(
-              onTap: () {
-                Ui.nav(
-                  context,
-                  PostPage(uri: record!.data.uri),
-                );
-              },
+              onTap: open
+                  ? () {
+                      Ui.nav(
+                        context,
+                        PostPage(uri: record!.data.uri),
+                      );
+                    }
+                  : null,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

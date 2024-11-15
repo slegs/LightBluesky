@@ -38,7 +38,8 @@ class EmbedDialog extends StatelessWidget {
           Expanded(
             child: EmbedRoot(
               item: item,
-              labels: const [],
+              full: true,
+              open: false,
             ),
           ),
         ],
