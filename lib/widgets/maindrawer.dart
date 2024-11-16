@@ -133,7 +133,7 @@ class MainDrawer extends StatelessWidget {
                 leading: const Icon(Icons.logout),
                 title: Text(locale.drawer_logout),
                 onTap: () {
-                  api.session.logout();
+                  api.logout();
 
                   Ui.snackbar(context, locale.drawer_logout_ok);
 

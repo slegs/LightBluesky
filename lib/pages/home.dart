@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage>
   Future<List<bsky.FeedGeneratorView>> _getFeedGenerators() async {
     List<AtUri> data = [];
 
-    for (final item in api.content.feeds) {
+    for (final item in api.feeds) {
       if (item.pinned) {
         data.add(AtUri(item.value));
       }

@@ -32,9 +32,8 @@ class EmbedRoot extends StatelessWidget {
 
   /// Setup censorship method for adult content
   Widget _handleAdult({required Widget child}) {
-    var visibility = !api.content.adult
-        ? ContentLabelVisibility.hide
-        : ContentLabelVisibility.show;
+    var visibility =
+        !api.adult ? ContentLabelVisibility.hide : ContentLabelVisibility.show;
 
     Widget root;
     String type = "unknown";
@@ -43,8 +42,8 @@ class EmbedRoot extends StatelessWidget {
       int i = 0;
       bool finished = false;
 
-      while (!finished && i < api.content.labels.length) {
-        final content = api.content.labels[i];
+      while (!finished && i < api.labels.length) {
+        final content = api.labels[i];
         int j = 0;
         while (!finished && j < labels!.length) {
           final label = labels![j];

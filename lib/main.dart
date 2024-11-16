@@ -31,10 +31,10 @@ class _MyAppState extends State<MyApp> {
   Future<bool> _setupApp() async {
     await storage.init();
 
-    final ok = await api.session.init();
+    final ok = await api.init();
 
     if (ok) {
-      await api.content.init();
+      await api.initPreferences();
     }
 
     return ok;

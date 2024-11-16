@@ -31,13 +31,13 @@ class _AuthPageState extends State<AuthPage> {
     });
 
     try {
-      await api.session.login(
+      await api.login(
         _serviceController.text,
         _identityController.text,
         _passwordController.text,
         _authFactorController.text != '' ? _authFactorController.text : null,
       );
-      await api.content.init();
+      await api.initPreferences();
 
       if (!mounted) return;
       // Redirect to home
