@@ -15,14 +15,18 @@ class SessionModule {
 
   Future<bool> init() async {
     final session = storage.session.get();
-    if (!(session != null && !session.refreshToken.isExpired)) {
+    if (session == null) {
       // New user or refresh token is expired
       return false;
     }
 
     _save(session, disk: false);
 
-    if (session.accessToken.isExpired) {
+    if (_c.session!.refreshToken.isExpired) {
+      return false;
+    }
+
+    if (_c.session!.accessToken.isExpired) {
       _refresh();
     } else {
       _timer();
