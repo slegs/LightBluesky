@@ -119,7 +119,7 @@ class SkyApi {
     }
 
     if (c.session!.accessToken.isExpired) {
-      _refresh();
+      await _refresh();
     } else {
       _timer();
     }
