@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/partials/icontext.dart';
 
+/// Helper class to handle images
 class CustomImage {
-  static Image normal({
+  /// Adds standard image found in [url].
+  ///
+  /// Use [caching] to store the image for future usage.
+  static Widget normal({
     required String url,
     required bool caching,
+    double? ratio,
     BoxFit? fit,
   }) {
-    return Image(
+    final img = Image(
       image: provider(
         url: url,
         caching: caching,
@@ -39,6 +44,12 @@ class CustomImage {
         );
       },
     );
+    return ratio == null
+        ? img
+        : AspectRatio(
+            aspectRatio: ratio,
+            child: img,
+          );
   }
 
   static ImageProvider provider({

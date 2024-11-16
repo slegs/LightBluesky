@@ -21,8 +21,14 @@ class ImagesEmbed extends StatelessWidget {
     List<Widget> widgets = [];
 
     for (var img in root.data.images) {
+      double? ratio;
+      if (img.aspectRatio != null) {
+        ratio = img.aspectRatio!.width / img.aspectRatio!.height;
+      }
+
       final widget = CustomImage.normal(
         url: full ? img.fullsize : img.thumbnail,
+        ratio: ratio,
         caching: false,
       );
 
