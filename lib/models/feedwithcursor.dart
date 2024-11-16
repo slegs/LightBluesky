@@ -4,6 +4,7 @@ import 'package:bluesky/bluesky.dart';
 class FeedWithCursor {
   final List<FeedView> items;
   String? cursor;
+  bool hasMore = true;
 
   FeedWithCursor({
     required this.items,

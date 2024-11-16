@@ -55,10 +55,17 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
   /// Get data from API
   Future<void> _loadMore() async {
     final index = widget.tabController.index;
+    if (!_feeds[index].hasMore) {
+      return;
+    }
 
     final res = await widget.tabs[index].func(
       cursor: _feeds[index].cursor,
     );
+
+    if (res.data.cursor == null) {
+      _feeds[index].hasMore = false;
+    }
 
     _feeds[index].cursor = res.data.cursor;
 

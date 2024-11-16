@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/helpers/customimage.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/feed.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
@@ -62,8 +63,12 @@ class _FeedsPageState extends State<FeedsPage> {
                     );
                   },
                   leading: CircleAvatar(
-                    backgroundImage:
-                        data.avatar != null ? NetworkImage(data.avatar!) : null,
+                    backgroundImage: data.avatar != null
+                        ? CustomImage.provider(
+                            url: data.avatar!,
+                            caching: true,
+                          )
+                        : null,
                   ),
                   title: Text(data.displayName),
                   subtitle: Text('@${data.createdBy.handle}'),

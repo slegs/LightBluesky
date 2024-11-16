@@ -1,6 +1,6 @@
 import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
-import 'package:lightbluesky/partials/customimage.dart';
+import 'package:lightbluesky/helpers/customimage.dart';
 import 'package:lightbluesky/partials/dialogs/embed.dart';
 
 /// Embed for image(s), 1 to 4
@@ -23,8 +23,9 @@ class ImagesEmbed extends StatelessWidget {
     for (var img in root.data.images) {
       final widget = Padding(
         padding: const EdgeInsets.all(5.0),
-        child: CustomImage(
-          full ? img.fullsize : img.thumbnail,
+        child: CustomImage.normal(
+          url: full ? img.fullsize : img.thumbnail,
+          caching: false,
         ),
       );
 

@@ -3,9 +3,9 @@ import 'package:bluesky/core.dart';
 import 'package:bluesky_text/bluesky_text.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/helpers/customimage.dart';
 import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/partials/actor.dart';
-import 'package:lightbluesky/partials/customimage.dart';
 import 'package:lightbluesky/partials/textwithfacets.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
 import 'package:lightbluesky/widgets/feeds/multiple.dart';
@@ -128,6 +128,7 @@ class _ProfilePageState extends State<ProfilePage>
               viewer: actor.viewer,
               labels: actor.labels,
             ),
+            tap: false,
           ),
           if (widget.did != api.c.session?.did)
             Row(
@@ -206,9 +207,10 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                     flexibleSpace: FlexibleSpaceBar(
                       background: actor.banner != null
-                          ? CustomImage(
-                              actor.banner!,
+                          ? CustomImage.normal(
+                              url: actor.banner!,
                               fit: BoxFit.cover,
+                              caching: false,
                             )
                           : null,
                     ),

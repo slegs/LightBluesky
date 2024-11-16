@@ -1,5 +1,6 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
+import 'package:lightbluesky/helpers/customimage.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/pages/feed.dart';
 import 'package:lightbluesky/widgets/embed.dart';
@@ -35,7 +36,10 @@ class GeneratorRecordEmbed extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             backgroundImage: root.data.avatar != null
-                ? Image.network(root.data.avatar!).image
+                ? CustomImage.provider(
+                    url: root.data.avatar!,
+                    caching: false,
+                  )
                 : null,
           ),
           title: Text(root.data.displayName),

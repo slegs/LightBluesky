@@ -1,7 +1,7 @@
 import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
+import 'package:lightbluesky/helpers/customimage.dart';
 import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/partials/customimage.dart';
 
 /// Embed for external (Tenor gifs and links to other websites)
 class ExternalEmbed extends StatelessWidget {
@@ -37,9 +37,10 @@ class ExternalEmbed extends StatelessWidget {
         child: Column(
           children: [
             if (thumb != null)
-              CustomImage(
-                thumb,
+              CustomImage.normal(
+                url: thumb,
                 fit: BoxFit.fill,
+                caching: false,
               ),
             // TODO: Click to open ALT
             Text(

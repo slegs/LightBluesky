@@ -86,8 +86,9 @@ class SessionModule {
   }
 
   void _timer() {
-    if (_refreshTimer != null) {
+    if (_refreshTimer != null && _refreshTimer!.isActive) {
       _refreshTimer!.cancel();
+      _refreshTimer = null;
     }
 
     final expiresIn =

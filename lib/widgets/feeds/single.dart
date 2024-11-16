@@ -1,6 +1,7 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
+import 'package:lightbluesky/models/feedwithcursor.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 
 /// Single Bluesky feed widget
@@ -19,10 +20,11 @@ class SingleFeed<T> extends StatefulWidget {
 }
 
 class _SingleFeedState extends State<SingleFeed> {
-  final List<bsky.FeedView> items = List.empty(
-    growable: true,
+  final FeedWithCursor feed = FeedWithCursor(
+    items: List.empty(
+      growable: true,
+    ),
   );
-  String? cursor;
 
   @override
   void initState() {
@@ -39,11 +41,19 @@ class _SingleFeedState extends State<SingleFeed> {
 
   /// Get data from API
   Future<void> _loadMore() async {
+    if (!feed.hasMore) {
+      return;
+    }
+
     final res = await widget.func(
-      cursor: cursor,
+      cursor: feed.cursor,
     );
 
-    cursor = res.data.cursor;
+    if (res.data.cursor == null) {
+      feed.hasMore = false;
+    }
+
+    feed.cursor = res.data.cursor;
 
     if (!mounted) {
       // User disposed widget before API request could finish
@@ -51,7 +61,7 @@ class _SingleFeedState extends State<SingleFeed> {
     }
 
     setState(() {
-      items.addAll(res.data.feed);
+      feed.items.addAll(res.data.feed);
     });
   }
 
@@ -67,12 +77,12 @@ class _SingleFeedState extends State<SingleFeed> {
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: widget.controller,
-      itemCount: items.length,
+      itemCount: feed.items.length,
       itemBuilder: (context, i) {
         return PostItem(
-          item: items[i].post,
-          reason: items[i].reason,
-          reply: items[i].reply,
+          item: feed.items[i].post,
+          reason: feed.items[i].reason,
+          reply: feed.items[i].reply,
         );
       },
     );
