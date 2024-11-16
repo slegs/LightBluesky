@@ -21,12 +21,9 @@ class ImagesEmbed extends StatelessWidget {
     List<Widget> widgets = [];
 
     for (var img in root.data.images) {
-      final widget = Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: CustomImage.normal(
-          url: full ? img.fullsize : img.thumbnail,
-          caching: false,
-        ),
+      final widget = CustomImage.normal(
+        url: full ? img.fullsize : img.thumbnail,
+        caching: false,
       );
 
       widgets.add(widget);
