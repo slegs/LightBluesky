@@ -6,6 +6,10 @@ import 'package:url_launcher/url_launcher_string.dart';
 /// Ui helper class
 class Ui {
   /// Changes route to the one specificied in route
+  ///
+  /// If [replace] is set, the route will overwrite the last one
+  ///
+  /// If [wipe] is set, it will overwrite **ALL** routes
   static void nav(
     BuildContext context,
     Widget route, {
@@ -37,8 +41,12 @@ class Ui {
   }
 
   /// Opens a dialog modal.
-  static Future<void> dialog(BuildContext context, String title, String body,
-      {List<TextButton>? actions}) async {
+  static Future<void> dialog(
+    BuildContext context,
+    String title,
+    String body, {
+    List<TextButton>? actions,
+  }) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,

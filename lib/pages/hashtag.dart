@@ -67,7 +67,7 @@ class _HashtagPageState extends State<HashtagPage>
     super.dispose();
   }
 
-  void _saveHashtag() {
+  void _saveHashtag(AppLocalizations locale) {
     storage.hashtags.add(widget.name);
 
     setState(() {
@@ -75,7 +75,7 @@ class _HashtagPageState extends State<HashtagPage>
     });
     Ui.snackbar(
       context,
-      'Hashtag saved',
+      locale.hashtag_saved,
     );
   }
 
@@ -113,7 +113,7 @@ class _HashtagPageState extends State<HashtagPage>
               ),
               actions: [
                 IconButton(
-                  onPressed: !_isSaved ? _saveHashtag : null,
+                  onPressed: !_isSaved ? () => _saveHashtag(locale) : null,
                   icon: Icon(
                     _isSaved ? Icons.check : Icons.add,
                   ),

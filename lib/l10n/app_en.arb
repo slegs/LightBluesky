@@ -82,6 +82,10 @@
   "@hashtags_empty": {
     "description": "Text shown when user has no hashtags saved"
   },
+  "hashtag_saved": "Hashtag saved",
+  "@hashtag_saved": {
+    "description": "Text shown when user adds a new hashtag"
+  },
   "notifications_title": "Notifications",
   "@notifications_title": {
     "description": "Title for page notifications.dart"
