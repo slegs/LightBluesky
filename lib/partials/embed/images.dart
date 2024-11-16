@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/helpers/customimage.dart';
 import 'package:lightbluesky/partials/dialogs/embed.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 /// Embed for image(s), 1 to 4
 class ImagesEmbed extends StatelessWidget {
@@ -49,12 +50,17 @@ class ImagesEmbed extends StatelessWidget {
       base = widgets[0];
     } else if (full) {
       // Left-right scroll images
-      base = PageView.builder(
-        itemCount: widgets.length,
-        pageSnapping: true,
-        itemBuilder: (context, i) {
-          return widgets[i];
+      base = PhotoViewGallery.builder(
+        itemCount: root.data.images.length,
+        builder: (context, index) {
+          return PhotoViewGalleryPageOptions.customChild(
+            child: widgets[index],
+          );
         },
+        backgroundDecoration: const BoxDecoration(
+          color: Colors.transparent,
+        ),
+        scrollPhysics: const BouncingScrollPhysics(),
       );
     } else {
       // Images grid
