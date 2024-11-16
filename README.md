@@ -60,3 +60,4 @@ This project wouldn't have been posible without the help of these third-party pr
 - [share_plus](https://pub.dev/packages/share_plus)
 - [flutter_cache_manager](https://github.com/Baseflow/flutter_cache_manager/tree/develop/flutter_cache_manager)
 - [cached_network_image](https://github.com/Baseflow/flutter_cached_network_image)
+- [photo_view](https://github.com/bluefireteam/photo_view)

@@ -30,6 +30,7 @@ class ImagesEmbed extends StatelessWidget {
         url: full ? img.fullsize : img.thumbnail,
         ratio: ratio,
         caching: false,
+        zoomable: full,
       );
 
       widgets.add(widget);
