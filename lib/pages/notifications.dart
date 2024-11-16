@@ -1,4 +1,5 @@
 import 'package:bluesky/bluesky.dart' as bsky;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -95,7 +96,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ListTile(
                 leading: CircleAvatar(
                   backgroundImage: item.author.avatar != null
-                      ? NetworkImage(item.author.avatar!)
+                      ? CachedNetworkImageProvider(
+                          item.author.avatar!,
+                          cacheManager: cache,
+                        )
                       : null,
                 ),
                 title: Text(item.author.displayName ?? item.author.handle),
