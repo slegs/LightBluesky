@@ -31,7 +31,7 @@ class Actor extends StatelessWidget {
 
     return ListTile(
       onTap: tap
-          ? () => context.go(
+          ? () => context.push(
                 UrlBuilder.profile(actor.handle),
               )
           : null,
