@@ -16,6 +16,12 @@ class VideoEmbed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double? ratio;
+
+    if (root.data.aspectRatio != null) {
+      ratio = root.data.aspectRatio!.width / root.data.aspectRatio!.height;
+    }
+
     return InkWell(
       onLongPress: open
           ? () {
@@ -29,6 +35,7 @@ class VideoEmbed extends StatelessWidget {
           : null,
       child: CustomPlayer(
         playlist: root.data.playlist,
+        ratio: ratio,
       ),
     );
   }

@@ -46,7 +46,7 @@ class Ui {
   }
 
   /// Open indent if on mobile or copy url to clipboard
-  static Future<void> shareUrl(String url, BuildContext context) async {
+  static void shareUrl(String url, BuildContext context) {
     final platform = Theme.of(context).platform;
 
     if (platform == TargetPlatform.android || platform == TargetPlatform.iOS) {
@@ -59,8 +59,6 @@ class Ui {
     Clipboard.setData(
       ClipboardData(text: url),
     );
-
-    if (!context.mounted) return;
 
     snackbar(context, "Saved to clipboard");
   }

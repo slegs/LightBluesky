@@ -6,9 +6,11 @@ class CustomPlayer extends StatefulWidget {
   const CustomPlayer({
     super.key,
     required this.playlist,
+    this.ratio,
   });
 
   final String playlist;
+  final double? ratio;
 
   @override
   State<CustomPlayer> createState() => _CustomPlayerState();
@@ -50,40 +52,42 @@ class _CustomPlayerState extends State<CustomPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _showControls = true;
-          Future.delayed(const Duration(seconds: 3), () {
-            if (mounted) {
-              setState(() {
-                _showControls = false;
-              });
-            }
+    return AspectRatio(
+      aspectRatio: widget.ratio ?? _controller.value.aspectRatio,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _showControls = true;
+            Future.delayed(const Duration(seconds: 3), () {
+              if (mounted) {
+                setState(() {
+                  _showControls = false;
+                });
+              }
+            });
           });
-        });
-      },
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          _controller.value.isInitialized
-              ? AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                ),
-          if (_showControls)
-            CircleAvatar(
-              child: IconButton(
-                onPressed: _togglePlay,
-                icon: Icon(
-                  _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            _controller.value.isInitialized
+                ? VideoPlayer(_controller)
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+            if (_showControls)
+              CircleAvatar(
+                child: IconButton(
+                  onPressed: _togglePlay,
+                  icon: Icon(
+                    _controller.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

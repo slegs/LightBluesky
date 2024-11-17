@@ -74,7 +74,10 @@ class CustomImage {
     required bool caching,
   }) {
     return caching
-        ? CachedNetworkImageProvider(url, cacheManager: cache)
+        ? CachedNetworkImageProvider(
+            url,
+            cacheManager: cache,
+          )
         : NetworkImage(url);
   }
 }

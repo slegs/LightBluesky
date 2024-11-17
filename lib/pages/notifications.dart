@@ -1,8 +1,8 @@
 import 'package:bluesky/bluesky.dart' as bsky;
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lightbluesky/helpers/customimage.dart';
 
 /// Notificatons page
 /// - TODO: Group notifications
@@ -91,9 +91,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ListTile(
                 leading: CircleAvatar(
                   backgroundImage: item.author.avatar != null
-                      ? CachedNetworkImageProvider(
-                          item.author.avatar!,
-                          cacheManager: cache,
+                      ? CustomImage.provider(
+                          url: item.author.avatar!,
+                          caching: true,
                         )
                       : null,
                 ),
