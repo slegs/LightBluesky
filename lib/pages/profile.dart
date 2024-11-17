@@ -12,9 +12,12 @@ import 'package:lightbluesky/widgets/feeds/multiple.dart';
 
 /// Profile page, contains profile data and feed of user's posts
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, required this.did});
+  const ProfilePage({
+    super.key,
+    required this.handleOrDid,
+  });
 
-  final String did;
+  final String handleOrDid;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -46,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage>
           (f) => CustomTab(
             name: f.name,
             func: ({cursor}) => api.c.feed.getAuthorFeed(
-              actor: widget.did,
+              actor: widget.handleOrDid,
               cursor: cursor,
               filter: bsky.FeedFilter.values.firstWhere(
                 (t) => t.index == f.index,
@@ -61,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage>
       vsync: this,
     );
 
-    _futureProfile = api.c.actor.getProfile(actor: widget.did);
+    _futureProfile = api.c.actor.getProfile(actor: widget.handleOrDid);
     _futureProfile.then((actor) {
       _following = actor.data.viewer.isFollowing;
       _followingAtUri = actor.data.viewer.following;
@@ -75,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage>
     super.dispose();
   }
 
-  Future<void> _toggleFollow() async {
+  Future<void> _toggleFollow(String did) async {
     final oldFollowing = _following;
     setState(() {
       _following = !_following;
@@ -91,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage>
     } else {
       // Follow
       final res = await api.c.graph.follow(
-        did: widget.did,
+        did: did,
       );
 
       _followingAtUri = res.data.uri;
@@ -130,11 +133,11 @@ class _ProfilePageState extends State<ProfilePage>
             ),
             tap: false,
           ),
-          if (widget.did != api.c.session?.did)
+          if (actor.did != api.c.session?.did)
             Row(
               children: [
                 ElevatedButton.icon(
-                  onPressed: _toggleFollow,
+                  onPressed: () => _toggleFollow(actor.did),
                   label: Text(_following ? "Unfollow" : "Follow"),
                   icon: Icon(_following ? Icons.remove : Icons.add),
                 ),

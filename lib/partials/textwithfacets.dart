@@ -3,15 +3,19 @@ import 'dart:convert';
 import 'package:bluesky/bluesky.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/pages/hashtag.dart';
-import 'package:lightbluesky/pages/profile.dart';
+import 'package:lightbluesky/helpers/urlbuilder.dart';
 
 /// Text with facets
 ///
 /// Facets = Tag, mention...
 class TextWithFacets extends StatelessWidget {
-  const TextWithFacets({super.key, required this.text, required this.facets});
+  const TextWithFacets({
+    super.key,
+    required this.text,
+    required this.facets,
+  });
 
   /// Unedited text
   final String text;
@@ -84,16 +88,13 @@ class TextWithFacets extends StatelessWidget {
     if (feature is UFacetFeatureLink) {
       Ui.openUrl(feature.data.uri);
     } else if (feature is UFacetFeatureMention) {
-      Ui.nav(
-        context,
-        ProfilePage(
-          did: feature.data.did,
-        ),
+      context.go(
+        UrlBuilder.profile(feature.data.did),
       );
     } else if (feature is UFacetFeatureTag) {
-      Ui.nav(
-        context,
-        HashtagPage(name: feature.data.tag),
+      final encoded = Uri.encodeComponent('#${feature.data.tag}');
+      context.go(
+        '/search?q=$encoded',
       );
     } else {
       Ui.snackbar(context, "Unkown facet type! :(");

@@ -2,34 +2,35 @@ import 'package:bluesky/bluesky.dart';
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/widgets/feeds/multiple.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Hashtag page
-class HashtagPage extends StatefulWidget {
-  const HashtagPage({super.key, required this.name});
+class SearchTermPage extends StatefulWidget {
+  const SearchTermPage({
+    super.key,
+    required this.q,
+  });
 
-  /// Hashtag name
+  /// Search term
   ///
   /// Example: art
-  final String name;
+  final String q;
 
   @override
-  State<HashtagPage> createState() => _HashtagPageState();
+  State<SearchTermPage> createState() => _SearchTermPageState();
 }
 
-class _HashtagPageState extends State<HashtagPage>
+class _SearchTermPageState extends State<SearchTermPage>
     with SingleTickerProviderStateMixin {
   final _scrollController = ScrollController();
   late TabController _tabController;
-  bool _isSaved = false;
 
   /// Wrapper made to adapt function to Feed type
   Future<XRPCResponse<Feed>> _func(String sort, String? cursor) async {
     final res = await api.c.feed.searchPosts(
-      '#${widget.name}',
+      widget.q,
       sort: sort,
     );
 
@@ -67,18 +68,6 @@ class _HashtagPageState extends State<HashtagPage>
     super.dispose();
   }
 
-  void _saveHashtag(AppLocalizations locale) {
-    storage.hashtags.add(widget.name);
-
-    setState(() {
-      _isSaved = !_isSaved;
-    });
-    Ui.snackbar(
-      context,
-      locale.hashtag_saved,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
@@ -100,7 +89,7 @@ class _HashtagPageState extends State<HashtagPage>
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              title: Text('#${widget.name}'),
+              title: Text(widget.q),
               primary: true,
               floating: true,
               snap: true,
@@ -111,14 +100,6 @@ class _HashtagPageState extends State<HashtagPage>
                 },
                 icon: const Icon(Icons.arrow_back),
               ),
-              actions: [
-                IconButton(
-                  onPressed: !_isSaved ? () => _saveHashtag(locale) : null,
-                  icon: Icon(
-                    _isSaved ? Icons.check : Icons.add,
-                  ),
-                ),
-              ],
               bottom: TabBar(
                 tabs: [
                   for (final tab in tabs)

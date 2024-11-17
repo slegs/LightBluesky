@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/constants/app.dart';
 import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/pages/auth.dart';
-import 'package:lightbluesky/pages/feeds.dart';
-import 'package:lightbluesky/pages/hashtags.dart';
-import 'package:lightbluesky/pages/notifications.dart';
-import 'package:lightbluesky/pages/profile.dart';
-import 'package:lightbluesky/pages/search.dart';
+import 'package:lightbluesky/helpers/urlbuilder.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -55,10 +51,7 @@ class MainDrawer extends StatelessWidget {
             leading: const Icon(Icons.search),
             title: Text(locale.search_title),
             onTap: () {
-              Ui.nav(
-                context,
-                const SearchPage(),
-              );
+              context.go('/search');
             },
           ),
           // NOTIFICATIONS
@@ -66,10 +59,7 @@ class MainDrawer extends StatelessWidget {
             leading: const Icon(Icons.notifications),
             title: Text(locale.notifications_title),
             onTap: () {
-              Ui.nav(
-                context,
-                const NotificationsPage(),
-              );
+              context.go('/notifications');
             },
           ),
           // FEEDS
@@ -77,21 +67,7 @@ class MainDrawer extends StatelessWidget {
             leading: const Icon(Icons.feed),
             title: const Text('Feeds'),
             onTap: () {
-              Ui.nav(
-                context,
-                const FeedsPage(),
-              );
-            },
-          ),
-          // HASHTAGS
-          ListTile(
-            leading: const Icon(Icons.tag),
-            title: Text(locale.hashtags_title),
-            onTap: () {
-              Ui.nav(
-                context,
-                const HashtagsPage(),
-              );
+              context.go('/feeds');
             },
           ),
           // SETTINGS
@@ -122,9 +98,8 @@ class MainDrawer extends StatelessWidget {
                 leading: const Icon(Icons.person),
                 title: Text(locale.drawer_my_profile),
                 onTap: () {
-                  Ui.nav(
-                    context,
-                    ProfilePage(did: api.c.session!.did),
+                  context.go(
+                    UrlBuilder.profile(api.c.session!.did),
                   );
                 },
               ),
@@ -137,11 +112,7 @@ class MainDrawer extends StatelessWidget {
 
                   Ui.snackbar(context, locale.drawer_logout_ok);
 
-                  Ui.nav(
-                    context,
-                    const AuthPage(),
-                    wipe: true,
-                  );
+                  context.go('/login');
                 },
               ),
             ],

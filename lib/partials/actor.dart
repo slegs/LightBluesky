@@ -1,9 +1,9 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/helpers/customimage.dart';
-import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/pages/profile.dart';
+import 'package:lightbluesky/helpers/urlbuilder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Common widget for
@@ -31,9 +31,8 @@ class Actor extends StatelessWidget {
 
     return ListTile(
       onTap: tap
-          ? () => Ui.nav(
-                context,
-                ProfilePage(did: actor.did),
+          ? () => context.go(
+                UrlBuilder.profile(actor.handle),
               )
           : null,
       leading: CircleAvatar(

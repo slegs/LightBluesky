@@ -36,48 +36,9 @@ class SessionModule {
   }
 }
 
-/// Hashtag(s) module for Storage
-class HashtagModule {
-  static const String key = 'hashtags';
-
-  const HashtagModule();
-
-  /// Get all hashtags
-  List<String> get() {
-    return _c.getStringList(key) ?? [];
-  }
-
-  /// Add a new hashtag
-  void add(String value) {
-    final tags = get();
-
-    tags.add(value);
-
-    _c.setStringList(key, tags);
-  }
-
-  /// Remove a hashtag using its value or index
-  void remove({String? value, int? index}) {
-    if (value == null && index == null) {
-      throw ArgumentError("Value or index should be set");
-    }
-
-    final tags = get();
-
-    if (index != null) {
-      tags.removeAt(index);
-    } else if (value != null) {
-      tags.remove(value);
-    }
-
-    _c.setStringList(key, tags);
-  }
-}
-
 /// Wrapper for SharedPreferences
 class Storage {
   final session = const SessionModule();
-  final hashtags = const HashtagModule();
 
   /// Set SharedPreferences instance
   Future<void> init() async {

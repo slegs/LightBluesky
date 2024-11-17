@@ -1,9 +1,9 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/common.dart';
-import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/pages/post.dart';
+import 'package:lightbluesky/helpers/urlbuilder.dart';
 import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/partials/dialogs/postcontext.dart';
 import 'package:lightbluesky/partials/dialogs/publish.dart';
@@ -132,13 +132,19 @@ class _PostCardState extends State<PostCard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 5,
+      ),
       elevation: 5,
       child: InkWell(
         onTap: () {
-          Ui.nav(
-            context,
-            PostPage(uri: widget.item.uri),
+          // Redirect to post
+          context.push(
+            UrlBuilder.post(
+              widget.item.author.handle,
+              widget.item.uri.rkey,
+            ),
           );
         },
         child: Column(

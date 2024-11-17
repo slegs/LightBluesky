@@ -26,7 +26,12 @@ class PostContextDialog extends StatelessWidget {
           leading: const Icon(Icons.share),
           title: const Text('Share'),
           onTap: () {
-            final url = UrlBuilder.post(post);
+            final url = UrlBuilder.full(
+              UrlBuilder.post(
+                post.author.handle,
+                post.uri.rkey,
+              ),
+            );
             Ui.shareUrl(url, context);
           },
         ),

@@ -1,9 +1,17 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/constants/app.dart';
 import 'package:lightbluesky/pages/auth.dart';
+import 'package:lightbluesky/pages/feed.dart';
+import 'package:lightbluesky/pages/feeds.dart';
 import 'package:lightbluesky/pages/home.dart';
+import 'package:lightbluesky/pages/notifications.dart';
+import 'package:lightbluesky/pages/post.dart';
+import 'package:lightbluesky/pages/profile.dart';
+import 'package:lightbluesky/pages/search.dart';
+import 'package:lightbluesky/pages/searchterm.dart';
 import 'package:video_player_media_kit/video_player_media_kit.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -24,6 +32,75 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Future<bool> _setupFuture;
+  late final _router = GoRouter(
+    redirect: (context, state) async {
+      final ok = await _setupFuture;
+
+      return ok ? null : '/login';
+    },
+    routes: [
+      // Home
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const HomePage(),
+        routes: [
+          // Feeds
+          GoRoute(
+            path: 'feeds',
+            builder: (context, state) => const FeedsPage(),
+          ),
+          // Hashtags
+          GoRoute(
+            path: 'notifications',
+            builder: (context, state) => const NotificationsPage(),
+          ),
+          // Search
+          GoRoute(
+            path: 'search',
+            builder: (context, state) {
+              if (state.uri.queryParameters.containsKey('q')) {
+                return SearchTermPage(
+                  q: state.uri.queryParameters['q']!,
+                );
+              }
+
+              return const SearchPage();
+            },
+          ),
+          // Profile root
+          GoRoute(
+            path: 'profile/:handle',
+            builder: (context, state) => ProfilePage(
+              handleOrDid: state.pathParameters['handle']!,
+            ),
+            routes: [
+              // Post
+              GoRoute(
+                path: 'post/:rkey',
+                builder: (context, state) => PostPage(
+                  handle: state.pathParameters['handle']!,
+                  rkey: state.pathParameters['rkey']!,
+                ),
+              ),
+              // Feed generator
+              GoRoute(
+                path: 'feed/:rkey',
+                builder: (context, state) => FeedPage(
+                  handle: state.pathParameters['handle']!,
+                  rkey: state.pathParameters['rkey']!,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      // Login
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const AuthPage(),
+      ),
+    ],
+  );
 
   /// Setups preferences for later usage.
   ///
@@ -51,7 +128,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (lightColorScheme, darkColorScheme) {
-        return MaterialApp(
+        return MaterialApp.router(
           title: App.name,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -63,20 +140,7 @@ class _MyAppState extends State<MyApp> {
             colorScheme: darkColorScheme ?? const ColorScheme.dark(),
             useMaterial3: true,
           ),
-          home: FutureBuilder(
-            future: _setupFuture,
-            builder: (context, AsyncSnapshot<bool> snapshot) {
-              if (snapshot.hasData) {
-                return snapshot.data! ? const HomePage() : const AuthPage();
-              } else if (snapshot.hasError) {
-                return Text('Error seting up app! ${snapshot.error}');
-              }
-
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
-          ),
+          routerConfig: _router,
         );
       },
     );

@@ -1,7 +1,7 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
-import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/pages/post.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lightbluesky/helpers/urlbuilder.dart';
 import 'package:lightbluesky/partials/actor.dart';
 import 'package:lightbluesky/partials/icontext.dart';
 import 'package:lightbluesky/widgets/embed.dart';
@@ -27,9 +27,11 @@ class QuoteRecordEmbed extends StatelessWidget {
           ? InkWell(
               onTap: open
                   ? () {
-                      Ui.nav(
-                        context,
-                        PostPage(uri: record!.data.uri),
+                      context.go(
+                        UrlBuilder.post(
+                          record!.data.author.handle,
+                          record!.data.uri.rkey,
+                        ),
                       );
                     }
                   : null,

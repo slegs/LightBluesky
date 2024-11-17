@@ -1,10 +1,10 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/customimage.dart';
-import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/pages/feed.dart';
+import 'package:lightbluesky/helpers/urlbuilder.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -54,11 +54,10 @@ class _FeedsPageState extends State<FeedsPage> {
                 final data = gen.data.feeds[i];
                 return ListTile(
                   onTap: () {
-                    Ui.nav(
-                      context,
-                      FeedPage(
-                        title: data.displayName,
-                        uri: data.uri,
+                    context.push(
+                      UrlBuilder.feedGenerator(
+                        data.createdBy.handle,
+                        data.uri.rkey,
                       ),
                     );
                   },

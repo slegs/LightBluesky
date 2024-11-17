@@ -1,8 +1,8 @@
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/pages/home.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Authentication page
@@ -41,7 +41,7 @@ class _AuthPageState extends State<AuthPage> {
 
       if (!mounted) return;
       // Redirect to home
-      Ui.nav(context, const HomePage());
+      context.go('/');
     } on XRPCException catch (e) {
       // Something went wrong
       if (e.response.data.error == 'AuthFactorTokenRequired') {

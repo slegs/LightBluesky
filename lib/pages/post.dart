@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/partials/postcard.dart';
 import 'package:lightbluesky/widgets/exceptionhandler.dart';
+import 'package:bluesky/ids.dart' as ns;
 
 /// Individual post page, shows full thread
 class PostPage extends StatefulWidget {
   const PostPage({
     super.key,
-    required this.uri,
+    required this.handle,
+    required this.rkey,
   });
 
-  final AtUri uri;
+  final String handle;
+  final String rkey;
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -24,8 +27,10 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
+
+    final uri = AtUri.make(widget.handle, ns.appBskyFeedPost, widget.rkey);
     _futurePost = api.c.feed.getPostThread(
-      uri: widget.uri,
+      uri: uri,
       depth: 10,
     );
   }

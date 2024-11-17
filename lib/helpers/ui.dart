@@ -5,41 +5,6 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 /// Ui helper class
 class Ui {
-  /// Changes route to the one specificied in route
-  ///
-  /// If [replace] is set, the route will overwrite the last one
-  ///
-  /// If [wipe] is set, it will overwrite **ALL** routes
-  static void nav(
-    BuildContext context,
-    Widget route, {
-    bool replace = false,
-    bool wipe = false,
-  }) {
-    final pageRoute = MaterialPageRoute(builder: (context) => route);
-    if (replace) {
-      Navigator.pushReplacement(
-        context,
-        pageRoute,
-      );
-      return;
-    }
-
-    if (wipe) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        pageRoute,
-        (_) => false,
-      );
-      return;
-    }
-
-    Navigator.push(
-      context,
-      pageRoute,
-    );
-  }
-
   /// Opens a dialog modal.
   static Future<void> dialog(
     BuildContext context,

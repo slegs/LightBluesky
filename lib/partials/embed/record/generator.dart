@@ -1,8 +1,8 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/helpers/customimage.dart';
-import 'package:lightbluesky/helpers/ui.dart';
-import 'package:lightbluesky/pages/feed.dart';
+import 'package:lightbluesky/helpers/urlbuilder.dart';
 import 'package:lightbluesky/widgets/embed.dart';
 
 /// Embed for generator feed records
@@ -24,11 +24,10 @@ class GeneratorRecordEmbed extends StatelessWidget {
       child: InkWell(
         onTap: open
             ? () {
-                Ui.nav(
-                  context,
-                  FeedPage(
-                    title: root.data.displayName,
-                    uri: root.data.uri,
+                context.go(
+                  UrlBuilder.feedGenerator(
+                    root.data.createdBy.handle,
+                    root.data.uri.rkey,
                   ),
                 );
               }
