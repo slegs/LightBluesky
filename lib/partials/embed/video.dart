@@ -35,6 +35,7 @@ class VideoEmbed extends StatelessWidget {
           : null,
       child: CustomPlayer(
         playlist: root.data.playlist,
+        thumb: root.data.thumbnail,
         ratio: ratio,
       ),
     );

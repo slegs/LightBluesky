@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lightbluesky/helpers/customimage.dart';
 import 'package:video_player/video_player.dart';
 
 /// Player wrapper, uses `video_player` with custom controls
@@ -6,10 +7,12 @@ class CustomPlayer extends StatefulWidget {
   const CustomPlayer({
     super.key,
     required this.playlist,
+    this.thumb,
     this.ratio,
   });
 
   final String playlist;
+  final String? thumb;
   final double? ratio;
 
   @override
@@ -50,6 +53,18 @@ class _CustomPlayerState extends State<CustomPlayer> {
     super.dispose();
   }
 
+  List<Widget> _handlePlaceholder() {
+    return [
+      if (widget.thumb != null)
+        CustomImage.normal(
+          url: widget.thumb!,
+          caching: false,
+          fit: BoxFit.fill,
+        ),
+      const CircularProgressIndicator(),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -70,12 +85,8 @@ class _CustomPlayerState extends State<CustomPlayer> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            _controller.value.isInitialized
-                ? VideoPlayer(_controller)
-                : const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-            if (_showControls)
+            if (_controller.value.isInitialized) VideoPlayer(_controller),
+            if (_showControls && _controller.value.isInitialized)
               CircleAvatar(
                 child: IconButton(
                   onPressed: _togglePlay,
@@ -86,6 +97,7 @@ class _CustomPlayerState extends State<CustomPlayer> {
                   ),
                 ),
               ),
+            if (!_controller.value.isInitialized) ..._handlePlaceholder(),
           ],
         ),
       ),
