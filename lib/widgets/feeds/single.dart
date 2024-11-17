@@ -40,9 +40,13 @@ class _SingleFeedState extends State<SingleFeed> {
   }
 
   /// Get data from API
-  Future<void> _loadMore() async {
+  Future<void> _loadMore({bool reset = false}) async {
     if (!feed.hasMore) {
       return;
+    }
+
+    if (reset) {
+      feed.cursor = null;
     }
 
     final res = await widget.func(
@@ -61,6 +65,9 @@ class _SingleFeedState extends State<SingleFeed> {
     }
 
     setState(() {
+      if (reset) {
+        feed.items.clear();
+      }
       feed.items.addAll(res.data.feed);
     });
   }
@@ -75,16 +82,19 @@ class _SingleFeedState extends State<SingleFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: widget.controller,
-      itemCount: feed.items.length,
-      itemBuilder: (context, i) {
-        return PostItem(
-          item: feed.items[i].post,
-          reason: feed.items[i].reason,
-          reply: feed.items[i].reply,
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: _loadMore,
+      child: ListView.builder(
+        controller: widget.controller,
+        itemCount: feed.items.length,
+        itemBuilder: (context, i) {
+          return PostItem(
+            item: feed.items[i].post,
+            reason: feed.items[i].reason,
+            reply: feed.items[i].reply,
+          );
+        },
+      ),
     );
   }
 }

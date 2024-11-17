@@ -53,10 +53,16 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
   }
 
   /// Get data from API
-  Future<void> _loadMore() async {
+  Future<void> _loadMore({
+    bool reset = false,
+  }) async {
     final index = widget.tabController.index;
     if (!_feeds[index].hasMore) {
       return;
+    }
+
+    if (reset) {
+      _feeds[index].cursor = null;
     }
 
     final res = await widget.tabs[index].func(
@@ -75,6 +81,9 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
     }
 
     setState(() {
+      if (reset) {
+        _feeds[index].items.clear();
+      }
       _feeds[index].items.addAll(res.data.feed);
     });
   }
@@ -106,15 +115,20 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
 
     for (int i = 0; i < _feeds.length; i++) {
       widgets.add(
-        ListView.builder(
-          itemCount: _feeds[i].items.length,
-          itemBuilder: (context, j) {
-            return PostItem(
-              item: _feeds[i].items[j].post,
-              reason: _feeds[i].items[j].reason,
-              reply: _feeds[i].items[j].reply,
-            );
-          },
+        RefreshIndicator(
+          onRefresh: () => _loadMore(
+            reset: true,
+          ),
+          child: ListView.builder(
+            itemCount: _feeds[i].items.length,
+            itemBuilder: (context, j) {
+              return PostItem(
+                item: _feeds[i].items[j].post,
+                reason: _feeds[i].items[j].reason,
+                reply: _feeds[i].items[j].reply,
+              );
+            },
+          ),
         ),
       );
     }

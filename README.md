@@ -41,7 +41,6 @@ You will need `libmpv` for handling video playback.
 ## TODO
 * Group timeline posts
 * Block / unblock
-* Allow swipe up to refresh list of items
 * Add documentation
 * Make tests
 * Use SecureStorage for session data?
