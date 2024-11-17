@@ -78,12 +78,6 @@ class _PostPageState extends State<PostPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
       ),
       body: FutureBuilder(
         future: _futurePost,

@@ -94,12 +94,6 @@ class _SearchTermPageState extends State<SearchTermPage>
               floating: true,
               snap: true,
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back),
-              ),
               bottom: TabBar(
                 tabs: [
                   for (final tab in tabs)

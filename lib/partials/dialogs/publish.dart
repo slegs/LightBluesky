@@ -3,6 +3,7 @@ import 'package:bluesky/core.dart';
 import 'package:bluesky_text/bluesky_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/partials/postcard.dart';
@@ -52,7 +53,7 @@ class _PublishDialogState extends State<PublishDialog> {
 
       if (!mounted) return;
       Ui.snackbar(context, 'Post published!');
-      Navigator.pop(context);
+      context.pop();
     } on XRPCException catch (e) {
       if (!mounted) return;
       Ui.snackbar(context, e.toString());
@@ -144,9 +145,7 @@ class _PublishDialogState extends State<PublishDialog> {
                   const Spacer(),
                   // Cancel button
                   TextButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => context.pop(),
                     icon: const Icon(Icons.close),
                     label: const Text('Cancel'),
                   ),

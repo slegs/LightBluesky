@@ -5,8 +5,9 @@ import 'package:lightbluesky/common.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Notificatons page
-/// TODO: Group notifications
-/// TODO: Handle read
+/// - TODO: Group notifications
+/// - TODO: Handle read
+/// - TODO: Tap notification
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
 
@@ -62,12 +63,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
       appBar: AppBar(
         title: Text(locale.notifications_title),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
       ),
       body: ListView.builder(
         itemCount: items.length,

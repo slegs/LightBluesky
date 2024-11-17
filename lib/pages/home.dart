@@ -2,6 +2,7 @@ import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
+import 'package:lightbluesky/constants/app.dart';
 import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/partials/dialogs/publish.dart';
 import 'package:lightbluesky/widgets/maindrawer.dart';
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage>
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              title: const Text('LightBluesky'),
+              title: const Text(App.name),
               primary: true,
               floating: true,
               snap: true,

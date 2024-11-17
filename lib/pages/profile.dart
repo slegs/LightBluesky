@@ -202,12 +202,6 @@ class _ProfilePageState extends State<ProfilePage>
                     expandedHeight: actor.banner != null ? 150.0 : null,
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary,
-                    leading: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back),
-                    ),
                     flexibleSpace: FlexibleSpaceBar(
                       background: actor.banner != null
                           ? CustomImage.normal(

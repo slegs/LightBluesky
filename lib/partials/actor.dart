@@ -44,7 +44,7 @@ class Actor extends StatelessWidget {
             : null,
       ),
       title: Text(
-        actor.displayName != null ? actor.displayName! : '@${actor.handle}',
+        actor.displayName ?? '@${actor.handle}',
       ),
       subtitle: actor.displayName != null ? Text('@${actor.handle}') : null,
       trailing: createdAt != null

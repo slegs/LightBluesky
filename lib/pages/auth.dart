@@ -62,9 +62,7 @@ class _AuthPageState extends State<AuthPage> {
         e.response.data.message ?? locale.unknown_error,
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            onPressed: () => context.pop(),
             child: const Text("OK"),
           ),
         ],

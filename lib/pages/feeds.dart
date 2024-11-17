@@ -35,12 +35,6 @@ class _FeedsPageState extends State<FeedsPage> {
       appBar: AppBar(
         title: const Text("Feeds"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
       ),
       body: FutureBuilder(
         future: _futureGenerators,

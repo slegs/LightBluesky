@@ -45,12 +45,6 @@ class _FeedPageState extends State<FeedPage> {
       appBar: AppBar(
         title: Text(widget.rkey),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
       ),
       body: FutureBuilder(
         future: _futureDid,

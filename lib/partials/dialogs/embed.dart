@@ -1,5 +1,6 @@
 import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/widgets/embed.dart';
 
@@ -20,9 +21,7 @@ class EmbedDialog extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => context.pop(),
                 icon: const Icon(Icons.close),
               ),
               const Spacer(),
