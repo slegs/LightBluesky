@@ -1,5 +1,6 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/constants/app.dart';
@@ -16,6 +17,8 @@ import 'package:video_player_media_kit/video_player_media_kit.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   VideoPlayerMediaKit.ensureInitialized(
     linux: true,
     windows: true,
@@ -113,6 +116,8 @@ class _MyAppState extends State<MyApp> {
     if (ok) {
       await api.initPreferences();
     }
+
+    FlutterNativeSplash.remove();
 
     return ok;
   }
