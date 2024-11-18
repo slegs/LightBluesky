@@ -26,9 +26,32 @@ class _HomePageState extends State<HomePage>
   final List<CustomTab> _tabs = [
     CustomTab(
       name: 'Timeline',
-      func: ({cursor}) => api.c.feed.getTimeline(
-        cursor: cursor,
-      ),
+      func: ({cursor}) async {
+        final res = await api.c.feed.getTimeline(
+          cursor: cursor,
+        );
+
+        // Remove replies from timeline
+        List<bsky.FeedView> feed = List.empty(
+          growable: true,
+        );
+
+        for (final item in res.data.feed) {
+          if (item.reply == null) {
+            feed.add(item);
+          }
+        }
+
+        return XRPCResponse(
+          headers: res.headers,
+          status: res.status,
+          request: res.request,
+          rateLimit: res.rateLimit,
+          data: res.data.copyWith(
+            feed: feed,
+          ),
+        );
+      },
     ),
   ];
 
