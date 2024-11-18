@@ -29,14 +29,6 @@ class SkyApi {
   /// Timer used for refreshing session
   Timer? _refreshTimer;
 
-  /// Remove items that are from users that are blocked or muted
-  List<FeedView> filterFeed(List<FeedView> items) {
-    return items
-        .where((item) =>
-            item.post.author.isNotBlocking && item.post.author.isNotMuted)
-        .toList();
-  }
-
   /// Save user preferences
   Future<void> initPreferences() async {
     final res = await c.actor.getPreferences();

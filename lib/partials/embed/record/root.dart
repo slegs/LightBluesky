@@ -58,6 +58,12 @@ class RecordEmbed extends StatelessWidget {
         media: typedMedia,
         open: open,
       );
+    } else if (root.data.record is UEmbedViewRecordViewBlocked) {
+      // TODO: TRANSLATE
+      widget = const IconText(
+        icon: Icons.warning,
+        text: "Quote is from a blocked user",
+      );
     } else if (root.data.record is UEmbedViewRecordViewGeneratorView) {
       widget = GeneratorRecordEmbed(
         root: root.data.record as UEmbedViewRecordViewGeneratorView,

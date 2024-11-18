@@ -1,6 +1,7 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/partials/postcard.dart';
+import 'package:lightbluesky/partials/reply.dart';
 
 class PostItem extends StatelessWidget {
   const PostItem({
@@ -19,23 +20,23 @@ class PostItem extends StatelessWidget {
       growable: true,
     );
 
-    final root = reply!.root as bsky.UReplyPostRecord;
-    final parent = reply!.parent as bsky.UReplyPostRecord;
+    final root = reply!.root;
+    final parent = reply!.parent;
 
     widgets.add(
-      PostCard(
-        item: root.data,
+      ReplyPostRoot(
+        root: root,
       ),
     );
 
-    if (root.data.cid != parent.data.cid) {
+    if (root != parent) {
       widgets.add(
         Padding(
           padding: const EdgeInsets.only(
             left: 20.0,
           ),
-          child: PostCard(
-            item: parent.data,
+          child: ReplyPostRoot(
+            root: parent,
           ),
         ),
       );
