@@ -32,15 +32,7 @@ class _HomePageState extends State<HomePage>
         );
 
         // Remove replies from timeline
-        List<bsky.FeedView> feed = List.empty(
-          growable: true,
-        );
-
-        for (final item in res.data.feed) {
-          if (item.reply == null) {
-            feed.add(item);
-          }
-        }
+        final feed = res.data.feed.where((el) => el.reply == null);
 
         return XRPCResponse(
           headers: res.headers,
@@ -48,7 +40,7 @@ class _HomePageState extends State<HomePage>
           request: res.request,
           rateLimit: res.rateLimit,
           data: res.data.copyWith(
-            feed: feed,
+            feed: feed.toList(),
           ),
         );
       },
