@@ -70,6 +70,13 @@ class _MyAppState extends State<MyApp> {
               return const SearchPage();
             },
           ),
+          // Hashtag
+          GoRoute(
+            path: 'hashtag/:term',
+            builder: (context, state) => SearchTermPage(
+              q: '#${state.uri.queryParameters['term']!}',
+            ),
+          ),
           // Profile root
           GoRoute(
             path: 'profile/:handle',
