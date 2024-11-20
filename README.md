@@ -29,9 +29,10 @@ You will need `libmpv` for handling video playback.
 * Posting
   * Reply to post
   * New post
-  * Attach Media (images only)
+  * Attach Media (images and videos)
 * Posts
   * Handle adult content
+  * Facets support (mentions, tags...)
   * Sharing
   * Like / Repost
 * Translations
@@ -40,7 +41,16 @@ You will need `libmpv` for handling video playback.
 
 ## TODO
 * Group timeline posts
+* Group notifications
+* Load indicator when reached bottom of feed and is loading new posts
+* Timeline post options (see replies, reposts...)
+* DMs
+* Starterpacks
 * Block / unblock
+* Mute / unmute
+* Multi accounts support
+* Better video controls
+* Better UI for desktop
 * Add documentation
 * Make tests
 * Use SecureStorage for session data?
