@@ -32,8 +32,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  bluesky: ^0.17.1
-  bluesky_text: ^0.6.10
+  bluesky: ^0.18.1
+  bluesky_text: ^0.7.1
   shared_preferences: ^2.3.2
   url_launcher: ^6.3.1
   dynamic_color: ^1.7.0
@@ -62,7 +62,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -106,11 +106,15 @@ class SkyApi {
 
     _save(session, disk: false);
 
-    if (c.session!.refreshToken.isExpired) {
+    final now = DateTime.now();
+
+    // Check if refresh token is expired
+    if (now.isAfter(c.session!.refreshTokenJwt.exp)) {
       return false;
     }
 
-    if (c.session!.accessToken.isExpired) {
+    // Check if access token is expired
+    if (now.isAfter(c.session!.accessTokenJwt.exp)) {
       await _refresh();
     } else {
       _timer();
@@ -179,8 +183,7 @@ class SkyApi {
       _refreshTimer = null;
     }
 
-    final expiresIn =
-        c.session!.accessToken.expiresAt.difference(DateTime.now());
+    final expiresIn = c.session!.accessTokenJwt.exp.difference(DateTime.now());
 
     _refreshTimer = Timer(expiresIn, _refresh);
   }
