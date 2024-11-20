@@ -4,6 +4,7 @@ import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/constants/app.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/helpers/urlbuilder.dart';
+import 'package:lightbluesky/partials/notificationscounter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -55,13 +56,7 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           // NOTIFICATIONS
-          ListTile(
-            leading: const Icon(Icons.notifications),
-            title: Text(locale.notifications_title),
-            onTap: () {
-              context.go('/notifications');
-            },
-          ),
+          const NotificationsCounter(),
           // FEEDS
           ListTile(
             leading: const Icon(Icons.feed),

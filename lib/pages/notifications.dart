@@ -1,8 +1,10 @@
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lightbluesky/helpers/customimage.dart';
+import 'package:lightbluesky/helpers/urlbuilder.dart';
 
 /// Notificatons page
 /// - TODO: Group notifications
@@ -71,10 +73,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
           IconData icon;
           String text;
+          String? path;
 
           if (item.reason.isFollow) {
             icon = Icons.person_add;
             text = locale.notifications_follow;
+            path = UrlBuilder.profile(item.author.handle);
           } else if (item.reason.isLike) {
             icon = Icons.favorite;
             text = locale.notifications_like;
@@ -83,12 +87,17 @@ class _NotificationsPageState extends State<NotificationsPage> {
             text = locale.notifications_repost;
           } else {
             icon = Icons.question_mark;
-            text = item.reason.toString();
+            text = item.reason.name;
           }
 
           return Column(
             children: [
               ListTile(
+                onTap: path != null
+                    ? () {
+                        context.push(path!);
+                      }
+                    : null,
                 leading: CircleAvatar(
                   backgroundImage: item.author.avatar != null
                       ? CustomImage.provider(
