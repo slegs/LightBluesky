@@ -1,6 +1,7 @@
 import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/helpers/urlbuilder.dart';
 
@@ -29,6 +30,9 @@ class PostContextDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uri = post.uri.toString();
+    final hasBookmark = storage.bookmark.has(uri);
+
     return Wrap(
       children: [
         ListTile(
@@ -43,6 +47,26 @@ class PostContextDialog extends StatelessWidget {
                 ),
               );
               Ui.shareUrl(url, context);
+            },
+            context: context,
+          ),
+        ),
+        ListTile(
+          leading: hasBookmark
+              ? const Icon(Icons.bookmark_remove)
+              : const Icon(Icons.bookmark_add),
+          title: Text(hasBookmark ? 'Remove bookmark' : 'Add bookmark'),
+          onTap: () => _closeWhenFunc(
+            func: () {
+              if (hasBookmark) {
+                storage.bookmark.remove(
+                  uri: uri,
+                );
+              } else {
+                storage.bookmark.add(uri);
+              }
+
+              Ui.snackbar(context, 'Changes applied succesfully');
             },
             context: context,
           ),

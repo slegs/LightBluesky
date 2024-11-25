@@ -36,9 +36,63 @@ class SessionModule {
   }
 }
 
+class BookmarkModule {
+  static const String key = 'saved';
+
+  const BookmarkModule();
+
+  /// Get all saved posts
+  List<String> get() {
+    if (!_c.containsKey(key)) {
+      return [];
+    }
+
+    return _c.getStringList(key)!;
+  }
+
+  bool has(String uri) {
+    if (!_c.containsKey(key)) {
+      return false;
+    }
+
+    return _c.getStringList(key)!.contains(uri);
+  }
+
+  /// Add a new post
+  void add(String uri) {
+    _c.setStringList(key, [
+      ...get(),
+      uri,
+    ]);
+  }
+
+  /// Removes a post
+  void remove({String? uri, int? pos}) {
+    if (uri == null && pos == null) {
+      throw ArgumentError.notNull("Id and pos");
+    }
+
+    final posts = get();
+
+    if (uri != null) {
+      posts.remove(uri);
+    } else if (pos != null) {
+      posts.removeAt(pos);
+    }
+
+    _c.setStringList(key, posts);
+  }
+
+  /// Remove all posts
+  void clear() {
+    _c.remove(key);
+  }
+}
+
 /// Wrapper for SharedPreferences
 class Storage {
   final session = const SessionModule();
+  final bookmark = const BookmarkModule();
 
   /// Set SharedPreferences instance
   Future<void> init() async {

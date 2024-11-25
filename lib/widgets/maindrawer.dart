@@ -65,6 +65,14 @@ class MainDrawer extends StatelessWidget {
               context.go('/feeds');
             },
           ),
+          // BOOKMARKS
+          ListTile(
+            leading: const Icon(Icons.bookmark),
+            title: const Text('Bookmarks'),
+            onTap: () {
+              context.go('/bookmarks');
+            },
+          ),
           // SETTINGS
           ListTile(
             leading: const Icon(Icons.settings),

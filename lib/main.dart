@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/constants/app.dart';
 import 'package:lightbluesky/pages/auth.dart';
+import 'package:lightbluesky/pages/bookmarks.dart';
 import 'package:lightbluesky/pages/feed.dart';
 import 'package:lightbluesky/pages/feeds.dart';
 import 'package:lightbluesky/pages/home.dart';
@@ -69,6 +70,11 @@ class _MyAppState extends State<MyApp> {
 
               return const SearchPage();
             },
+          ),
+          // Bookmarks
+          GoRoute(
+            path: 'bookmarks',
+            builder: (context, state) => const BookmarksPage(),
           ),
           // Hashtag
           GoRoute(
