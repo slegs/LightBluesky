@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/helpers/customimage.dart';
-import 'package:lightbluesky/helpers/urlbuilder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lightbluesky/helpers/urlbuilder.dart';
 
 /// Common widget for
 /// displaying actor's display name and/or handle and profile picture
@@ -25,26 +25,41 @@ class Actor extends StatelessWidget {
   /// Allow tapping to open actor's profile
   final bool tap;
 
-  @override
-  Widget build(BuildContext context) {
-    final locale = AppLocalizations.of(context)!;
-
-    return ListTile(
+  Widget _handleLink({
+    required Widget child,
+    required BuildContext context,
+  }) {
+    return InkWell(
       onTap: tap
           ? () => context.push(
                 UrlBuilder.profile(actor.handle),
               )
           : null,
-      leading: CircleAvatar(
-        backgroundImage: actor.avatar != null
-            ? CustomImage.provider(
-                url: actor.avatar!,
-                caching: true,
-              )
-            : null,
+      child: child,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+
+    return ListTile(
+      leading: _handleLink(
+        context: context,
+        child: CircleAvatar(
+          backgroundImage: actor.avatar != null
+              ? CustomImage.provider(
+                  url: actor.avatar!,
+                  caching: true,
+                )
+              : null,
+        ),
       ),
-      title: Text(
-        actor.displayName ?? '@${actor.handle}',
+      title: _handleLink(
+        context: context,
+        child: Text(
+          actor.displayName ?? '@${actor.handle}',
+        ),
       ),
       subtitle: actor.displayName != null ? Text('@${actor.handle}') : null,
       trailing: createdAt != null

@@ -94,7 +94,17 @@ class _PublishDialogState extends State<PublishDialog> {
             if (widget.parent != null) ...[
               PostCard(
                 item: widget.parent!,
-                basic: true,
+                sections: Sections(
+                  post: Section(
+                    tappable: false,
+                  ),
+                  embed: Section(
+                    enabled: false,
+                  ),
+                  interaction: Section(
+                    enabled: false,
+                  ),
+                ),
               ),
               const Divider(),
             ],
@@ -109,6 +119,7 @@ class _PublishDialogState extends State<PublishDialog> {
               keyboardType: TextInputType.multiline,
               maxLines: null,
               decoration: InputDecoration(
+                // TODO: Translate
                 hintText: widget.parent == null
                     ? "What's on your mind?"
                     : "Write a reply",

@@ -1,5 +1,6 @@
 import 'package:bluesky/bluesky.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lightbluesky/helpers/ui.dart';
 import 'package:lightbluesky/helpers/urlbuilder.dart';
 
@@ -18,6 +19,14 @@ class PostContextDialog extends StatelessWidget {
   /// Post item
   final Post post;
 
+  void _closeWhenFunc({
+    required void Function() func,
+    required BuildContext context,
+  }) {
+    func();
+    context.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -25,23 +34,29 @@ class PostContextDialog extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.share),
           title: const Text('Share'),
-          onTap: () {
-            final url = UrlBuilder.full(
-              UrlBuilder.post(
-                post.author.handle,
-                post.uri.rkey,
-              ),
-            );
-            Ui.shareUrl(url, context);
-          },
+          onTap: () => _closeWhenFunc(
+            func: () {
+              final url = UrlBuilder.full(
+                UrlBuilder.post(
+                  post.author.handle,
+                  post.uri.rkey,
+                ),
+              );
+              Ui.shareUrl(url, context);
+            },
+            context: context,
+          ),
         ),
         ListTile(
           leading: const Icon(Icons.warning),
           title: const Text('Report'),
-          onTap: () {
-            Ui.snackbar(context, "TODO: Add report");
-          },
-        )
+          onTap: () => _closeWhenFunc(
+            func: () {
+              Ui.snackbar(context, "TODO: Add report");
+            },
+            context: context,
+          ),
+        ),
       ],
     );
   }

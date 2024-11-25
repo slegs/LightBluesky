@@ -1,69 +1,57 @@
 import 'package:bluesky/bluesky.dart' as bsky;
-import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/helpers/urlbuilder.dart';
 import 'package:lightbluesky/partials/actor.dart';
-import 'package:lightbluesky/partials/dialogs/postcontext.dart';
-import 'package:lightbluesky/partials/dialogs/publish.dart';
+import 'package:lightbluesky/partials/interaction.dart';
 import 'package:lightbluesky/partials/textwithfacets.dart';
 import 'package:lightbluesky/partials/icontext.dart';
 import 'package:lightbluesky/widgets/embed.dart';
 
+class Section {
+  final bool enabled;
+  final bool tappable;
+
+  const Section({
+    this.enabled = true,
+    this.tappable = true,
+  });
+}
+
+class Sections {
+  final Section actor;
+  final Section post;
+  final Section embed;
+  final Section interaction;
+
+  const Sections({
+    this.actor = const Section(),
+    this.post = const Section(),
+    this.embed = const Section(),
+    this.interaction = const Section(),
+  });
+}
+
 /// Card containing a FeedView (post)
-class PostCard extends StatefulWidget {
+class PostCard extends StatelessWidget {
   const PostCard({
     super.key,
     required this.item,
     this.reason,
-    this.basic = false,
+    this.sections = const Sections(),
   });
 
   final bsky.Post item;
   final bsky.Reason? reason;
-  final bool basic;
-
-  @override
-  State<PostCard> createState() => _PostCardState();
-}
-
-class _PostCardState extends State<PostCard> {
-  int _likes = 0;
-  int _reposts = 0;
-
-  AtUri? _userRepostedAtUri;
-  bool _userReposted = false;
-  AtUri? _userLikedAtUri;
-  bool _userLiked = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Initial value for repost
-    if (widget.item.isReposted) {
-      _userRepostedAtUri = widget.item.viewer.repost!;
-      _userReposted = widget.item.isReposted;
-    }
-
-    // Initial value for like
-    if (widget.item.isLiked) {
-      _userLikedAtUri = widget.item.viewer.like!;
-      _userLiked = widget.item.isLiked;
-    }
-
-    _likes = widget.item.likeCount;
-    _reposts = widget.item.repostCount;
-  }
+  final Sections sections;
 
   /// Reason text
   Widget _handleReason() {
     String text;
     IconData icon;
 
-    if (widget.reason!.data is bsky.ReasonRepost) {
-      final repost = widget.reason!.data as bsky.ReasonRepost;
+    if (reason!.data is bsky.ReasonRepost) {
+      final repost = reason!.data as bsky.ReasonRepost;
 
       text = 'Reposted by ${repost.by.displayName ?? "@${repost.by.handle}"}';
       icon = Icons.autorenew;
@@ -78,56 +66,43 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  /// Add / Remove repost
-  void _handleRepost() async {
-    (() async {
-      if (_userReposted) {
-        // Remove repost
-        await api.c.atproto.repo.deleteRecord(uri: _userRepostedAtUri!);
-        _userRepostedAtUri = null;
-      } else {
-        // Make repost
-        final res = await api.c.feed.repost(
-          cid: widget.item.cid,
-          uri: widget.item.uri,
-        );
-
-        _userRepostedAtUri = res.data.uri;
-      }
-    })();
-
-    setState(() {
-      _userReposted = !_userReposted;
-      _reposts = _userReposted ? _reposts + 1 : _reposts - 1;
-    });
-  }
-
-  /// Add / Remove like
-  void _handleLike() {
-    (() async {
-      if (_userLiked) {
-        // Remove like
-        await api.c.atproto.repo.deleteRecord(uri: _userLikedAtUri!);
-        _userLikedAtUri = null;
-      } else {
-        // Make like
-        final res = await api.c.feed.like(
-          cid: widget.item.cid,
-          uri: widget.item.uri,
-        );
-
-        _userLikedAtUri = res.data.uri;
-      }
-    })();
-
-    setState(() {
-      _userLiked = !_userLiked;
-      _likes = _userLiked ? _likes + 1 : _likes - 1;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final col = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (reason != null) _handleReason(),
+        // START Author's data
+        if (sections.actor.enabled)
+          Actor(
+            actor: item.author,
+            tap: sections.actor.tappable,
+            createdAt: item.record.createdAt,
+          ),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 10.0,
+          ),
+          child: TextWithFacets(
+            text: item.record.text,
+            facets: item.record.facets,
+          ),
+        ),
+        // END Author's data
+        // Add embed if available
+        if (sections.embed.enabled && item.embed != null)
+          EmbedRoot(
+            item: item.embed!,
+            labels: item.labels,
+            open: sections.embed.tappable,
+          ),
+        if (sections.interaction.enabled)
+          InteractionPostCard(
+            item: item,
+          ),
+      ],
+    );
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -137,102 +112,20 @@ class _PostCardState extends State<PostCard> {
         vertical: 5,
       ),
       elevation: 5,
-      child: InkWell(
-        onTap: () {
-          // Redirect to post
-          context.push(
-            UrlBuilder.post(
-              widget.item.author.handle,
-              widget.item.uri.rkey,
-            ),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (widget.reason != null) _handleReason(),
-            // START Author's data
-            Actor(
-              actor: widget.item.author,
-              tap: !widget.basic,
-              createdAt: widget.item.record.createdAt,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 10.0,
-              ),
-              child: TextWithFacets(
-                text: widget.item.record.text,
-                facets: widget.item.record.facets,
-              ),
-            ),
-            // END Author's data
-            // Add embed if available
-            if (widget.item.embed != null && !widget.basic)
-              EmbedRoot(
-                item: widget.item.embed!,
-                labels: widget.item.labels,
-              ),
-            // START interaction buttons
-            if (!widget.basic)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  TextButton.icon(
-                    icon: const Icon(Icons.reply_outlined),
-                    label: Text(widget.item.replyCount.toString()),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => PublishDialog(
-                          parent: widget.item,
-                        ),
-                      );
-                    },
+      child: sections.post.tappable
+          ? InkWell(
+              onTap: () {
+                // Redirect to post
+                context.push(
+                  UrlBuilder.post(
+                    item.author.handle,
+                    item.uri.rkey,
                   ),
-                  TextButton.icon(
-                    icon: _userReposted
-                        ? const Icon(Icons.autorenew)
-                        : const Icon(Icons.autorenew_outlined),
-                    label: Text(
-                      _reposts.toString(),
-                    ),
-                    style: TextButton.styleFrom(
-                      foregroundColor: _userReposted ? Colors.green : null,
-                    ),
-                    onPressed: _handleRepost,
-                  ),
-                  TextButton.icon(
-                    icon: _userLiked
-                        ? const Icon(Icons.favorite)
-                        : const Icon(Icons.favorite_outline),
-                    label: Text(
-                      _likes.toString(),
-                    ),
-                    style: TextButton.styleFrom(
-                      foregroundColor: _userLiked ? Colors.red : null,
-                    ),
-                    onPressed: _handleLike,
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) => PostContextDialog(
-                          post: widget.item,
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.more_vert),
-                  ),
-                ],
-              ),
-            // END interaction buttons
-          ],
-        ),
-      ),
+                );
+              },
+              child: col,
+            )
+          : col,
     );
   }
 }

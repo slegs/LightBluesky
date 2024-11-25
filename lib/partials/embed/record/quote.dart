@@ -40,6 +40,7 @@ class QuoteRecordEmbed extends StatelessWidget {
                 children: [
                   Actor(
                     actor: record!.data.author,
+                    createdAt: record!.data.indexedAt,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
