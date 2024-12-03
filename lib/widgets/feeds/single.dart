@@ -1,25 +1,45 @@
+/// Imports required for Bluesky API integration and Flutter widgets
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/models/feedwithcursor.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 
-/// Single Bluesky feed widget
+/// SingleFeed widget handles displaying a single Bluesky feed stream
+/// with infinite scrolling and pagination support.
+/// 
+/// Type parameter T allows for different feed response types
 class SingleFeed<T> extends StatefulWidget {
+  /// Creates a SingleFeed widget
+  /// 
+  /// [func] - Async function that fetches feed data with optional cursor
+  /// for pagination
+  /// [controller] - ScrollController to manage scroll position and 
+  /// trigger loading of more content
   const SingleFeed({
     super.key,
     required this.func,
     required this.controller,
   });
 
+  /// Function that fetches feed data from Bluesky API
+  /// Returns XRPCResponse containing feed items and pagination cursor
   final Future<XRPCResponse<bsky.Feed>> Function({String? cursor}) func;
+  
+  /// Controller for managing scroll position and detecting when
+  /// user has scrolled to bottom to load more content
   final ScrollController controller;
 
   @override
   State<SingleFeed> createState() => _SingleFeedState();
 }
 
+/// Maintains state for SingleFeed widget including:
+/// - Current feed items
+/// - Pagination cursor
+/// - Loading states
 class _SingleFeedState extends State<SingleFeed> {
+  /// Feed state container with empty but growable list of items
   final FeedWithCursor feed = FeedWithCursor(
     items: List.empty(
       growable: true,
@@ -72,7 +92,9 @@ class _SingleFeedState extends State<SingleFeed> {
     });
   }
 
-  /// Scroll hook, loads data if scroll close to bottom
+  /// Handles scroll events by checking if user has reached the bottom
+  /// of the list. Triggers loading of more content when scroll position
+  /// matches maximum scroll extent
   void _onScroll() {
     if (widget.controller.position.pixels ==
         widget.controller.position.maxScrollExtent) {
@@ -82,16 +104,23 @@ class _SingleFeedState extends State<SingleFeed> {
 
   @override
   Widget build(BuildContext context) {
+    /// Build the feed UI with pull-to-refresh and infinite scroll
+    /// Returns a RefreshIndicator wrapped ListView
     return RefreshIndicator(
+      // Trigger refresh when pulled down
       onRefresh: _loadMore,
       child: ListView.builder(
+        // Attach scroll controller for infinite scroll
         controller: widget.controller,
+        // Dynamic item count based on loaded feed items
         itemCount: feed.items.length,
+        // Build individual post items
         itemBuilder: (context, i) {
           return PostItem(
-            item: feed.items[i].post,
-            reason: feed.items[i].reason,
-            reply: feed.items[i].reply,
+            // Pass post data and metadata to PostItem widget
+            item: feed.items[i].post,    // Main post content
+            reason: feed.items[i].reason, // Why post appears in feed
+            reply: feed.items[i].reply,   // Parent post if this is a reply
           );
         },
       ),
