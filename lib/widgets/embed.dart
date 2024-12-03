@@ -61,22 +61,22 @@ class EmbedRoot extends StatelessWidget {
     }
 
     switch (visibility) {
-      case ContentLabelVisibility.hide:
-        root = const IconText(
-          icon: Icons.warning,
-          text: 'Adult content',
-        );
-        break;
-      case ContentLabelVisibility.warn:
-        root = ExpansionTile(
-          leading: const Icon(Icons.warning),
-          title: const Text("Adult content"),
-          subtitle: Text('Type: $type'),
-          children: [
-            child,
-          ],
-        );
-        break;
+      // case ContentLabelVisibility.hide:
+      //   root = const IconText(
+      //     icon: Icons.warning,
+      //     text: 'Adult content',
+      //   );
+      //   break;
+      // case ContentLabelVisibility.warn:
+      //   root = ExpansionTile(
+      //     leading: const Icon(Icons.warning),
+      //     title: const Text("Adult content"),
+      //     subtitle: Text('Type: $type'),
+      //     children: [
+      //       child,
+      //     ],
+      //   );
+      //   break;
       default:
         root = child;
     }

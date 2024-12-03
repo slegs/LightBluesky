@@ -18,7 +18,7 @@ class _AuthPageState extends State<AuthPage> {
   bool _needsFactor = false;
 
   final _serviceController = TextEditingController(
-    text: 'bsky.social',
+    text: 'pds.gael.social',
   );
   final _identityController = TextEditingController();
   final _passwordController = TextEditingController();
