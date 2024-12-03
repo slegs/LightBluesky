@@ -57,35 +57,51 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
     bool reset = false,
   }) async {
     final index = widget.tabController.index;
+    
+    // Validate index bounds
+    if (index < 0 || index >= _feeds.length) {
+      return;
+    }
+
+    // Check if more data available
     if (!_feeds[index].hasMore) {
       return;
     }
 
-    if (reset) {
-      _feeds[index].cursor = null;
-    }
-
-    final res = await widget.tabs[index].func(
-      cursor: _feeds[index].cursor,
-    );
-
-    if (res.data.cursor == null) {
-      _feeds[index].hasMore = false;
-    }
-
-    _feeds[index].cursor = res.data.cursor;
-
-    if (!mounted) {
-      // User disposed widget before API request could finish
-      return;
-    }
-
-    setState(() {
+    try {
       if (reset) {
         _feeds[index].items.clear();
+        _feeds[index].cursor = null;
       }
-      _feeds[index].items.addAll(res.data.feed);
-    });
+
+      final res = await widget.tabs[index].func(
+        cursor: _feeds[index].cursor,
+      );
+
+      if (res != null) {
+        if (reset) {
+          _feeds[index].items.clear();
+          _feeds[index].items.addAll(res.data.feed);
+        } else {
+          _feeds[index].items.addAll(res.data.feed);
+        }
+        _feeds[index].cursor = res.data.cursor;
+        //_feeds[index].hasMore = res.data.hasMore;
+      }
+
+    } catch (e) {
+      // Handle blocked user error
+      if (e.toString().contains('Requester has blocked actor')) {
+        _feeds[index].hasMore = false;
+        _feeds[index].isBlocked = true; // Add this field to FeedWithCursor
+      } else if (e.toString().contains('400')) {
+        // Handle other 400 errors
+        _feeds[index].hasError = true; // Add this field to FeedWithCursor
+      }
+      debugPrint('Feed load error: $e');
+    }
+
+    setState(() {});
   }
 
   /// Tab change hook
