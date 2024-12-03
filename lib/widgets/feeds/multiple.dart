@@ -1,11 +1,22 @@
+/// Import required packages for Bluesky API integration and Flutter widgets
 import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/models/customtab.dart';
 import 'package:lightbluesky/models/feedwithcursor.dart';
 import 'package:lightbluesky/widgets/postitem.dart';
 
-/// Multiple Bluesky feed widget
+/// MultipleFeeds widget manages multiple tabbed Bluesky feeds with:
+/// - Tab-based navigation
+/// - Infinite scrolling
+/// - Pagination support
+/// - Error handling for blocked users
 class MultipleFeeds extends StatefulWidget {
+  /// Creates a MultipleFeeds widget
+  /// 
+  /// Parameters:
+  /// [tabController] - Manages tab switching and animation
+  /// [scrollController] - Handles scroll position and load triggers
+  /// [tabs] - List of feed configurations to display
   const MultipleFeeds({
     super.key,
     required this.tabController,
@@ -13,15 +24,31 @@ class MultipleFeeds extends StatefulWidget {
     required this.tabs,
   });
 
+  /// Controls tab selection and animation
   final TabController tabController;
+  
+  /// Controls scroll position and detects when to load more content
   final ScrollController scrollController;
+  
+  /// Defines the feed configurations for each tab
   final List<CustomTab> tabs;
 
   @override
   State<MultipleFeeds> createState() => _MultipleFeedsState();
 }
 
+/// Maintains state for MultipleFeeds including:
+/// - Feed data for each tab
+/// - Loading states
+/// - Pagination cursors
+/// - Error states
 class _MultipleFeedsState extends State<MultipleFeeds> {
+  /// List of feed states corresponding to each tab
+  /// Each FeedWithCursor contains:
+  /// - List of feed items
+  /// - Pagination cursor
+  /// - Loading state
+  /// - Error state
   late List<FeedWithCursor> _feeds;
 
   @override
@@ -52,32 +79,31 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
     super.dispose();
   }
 
-  /// Get data from API
-  Future<void> _loadMore({
-    bool reset = false,
-  }) async {
+  /// Loads more feed items for current tab
+  /// 
+  /// Parameters:
+  /// [reset] - If true, clears existing items before loading
+  Future<void> _loadMore({bool reset = false}) async {
     final index = widget.tabController.index;
     
-    // Validate index bounds
-    if (index < 0 || index >= _feeds.length) {
-      return;
-    }
-
-    // Check if more data available
+    // Early return if no more items available
     if (!_feeds[index].hasMore) {
       return;
     }
 
     try {
+      // Clear existing items if reset requested
       if (reset) {
         _feeds[index].items.clear();
         _feeds[index].cursor = null;
       }
 
+      // Fetch new feed items using tab-specific function
       final res = await widget.tabs[index].func(
         cursor: _feeds[index].cursor,
       );
 
+      // Update feed state with new items
       if (res != null) {
         if (reset) {
           _feeds[index].items.clear();
@@ -85,18 +111,15 @@ class _MultipleFeedsState extends State<MultipleFeeds> {
         } else {
           _feeds[index].items.addAll(res.data.feed);
         }
+        // Update pagination cursor for next load
         _feeds[index].cursor = res.data.cursor;
-        //_feeds[index].hasMore = res.data.hasMore;
       }
 
     } catch (e) {
-      // Handle blocked user error
+      // Handle specific error cases
       if (e.toString().contains('Requester has blocked actor')) {
         _feeds[index].hasMore = false;
-        _feeds[index].isBlocked = true; // Add this field to FeedWithCursor
-      } else if (e.toString().contains('400')) {
-        // Handle other 400 errors
-        _feeds[index].hasError = true; // Add this field to FeedWithCursor
+        _feeds[index].isBlocked = true;
       }
       debugPrint('Feed load error: $e');
     }

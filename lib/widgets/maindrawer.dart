@@ -1,27 +1,45 @@
+/// Standard Flutter Material Design widgets import
+library;
 import 'package:flutter/material.dart';
+/// Navigation routing package import
 import 'package:go_router/go_router.dart';
+/// App-wide common utilities and widgets
 import 'package:lightbluesky/common.dart';
+/// Application constants and configuration
 import 'package:lightbluesky/constants/app.dart';
+/// UI helper functions and utilities
 import 'package:lightbluesky/helpers/ui.dart';
+/// URL construction helpers
 import 'package:lightbluesky/helpers/urlbuilder.dart';
+/// Custom notification counter widget
 import 'package:lightbluesky/partials/notificationscounter.dart';
+/// Package for accessing app version information
 import 'package:package_info_plus/package_info_plus.dart';
+/// Auto-generated localization support
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-/// Drawer, shown only on home page
+/// MainDrawer is a navigation drawer widget that appears on the home page
+/// It provides the main navigation structure for the app
 class MainDrawer extends StatelessWidget {
+  /// Default constructor with optional key parameter
   const MainDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    /// Get access to localized strings for current locale
     final locale = AppLocalizations.of(context)!;
 
+    /// Build the main drawer structure
     return Drawer(
+      /// ListView allows scrolling if content exceeds screen height
       child: ListView(
+        /// Remove default padding from ListView
         padding: EdgeInsets.zero,
         children: [
+          /// Drawer header section containing app branding
           DrawerHeader(
             decoration: BoxDecoration(
+              /// Use theme's inverse primary color for header background
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
             child: Column(
