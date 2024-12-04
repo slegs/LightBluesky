@@ -3,7 +3,6 @@ import 'package:bluesky/core.dart';
 import 'package:flutter/material.dart';
 import 'package:lightbluesky/common.dart';
 import 'package:lightbluesky/partials/postcard.dart';
-import 'package:lightbluesky/widgets/exceptionhandler.dart';
 import 'package:bluesky/ids.dart' as ns;
 
 /// Individual post page, shows full thread
@@ -22,31 +21,47 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  late Future<XRPCResponse<bsky.PostThread>> _futurePost;
+  final List<bsky.Post> posts = List.empty(
+    growable: true,
+  );
 
   @override
   void initState() {
     super.initState();
 
+    _init();
+  }
+
+  Future<void> _init() async {
     final uri = AtUri.make(widget.handle, ns.appBskyFeedPost, widget.rkey);
-    _futurePost = api.c.feed.getPostThread(
+
+    final res = await api.c.feed.getPostThread(
       uri: uri,
       depth: 10,
     );
+
+    final thread = res.data.thread as bsky.UPostThreadViewRecord;
+
+    final parents = _handleParent(thread);
+    final root = thread.data.post;
+    final children = _handleChildren(thread);
+
+    setState(() {
+      posts.addAll([...parents, root, ...children]);
+    });
   }
 
-  List<Widget> _handleParent(bsky.UPostThreadViewRecord thread) {
-    List<Widget> parents = [];
+  List<bsky.Post> _handleParent(bsky.UPostThreadViewRecord thread) {
+    if (thread.data.parent == null) {
+      return [];
+    }
 
+    List<bsky.Post> parents = [];
     bool done = false;
     var current = thread.data.parent! as bsky.UPostThreadViewRecord;
     while (!done) {
       // Add Post
-      parents.add(
-        PostCard(
-          item: current.data.post,
-        ),
-      );
+      parents.add(current.data.post);
 
       if (current.data.parent == null) {
         done = true;
@@ -58,19 +73,27 @@ class _PostPageState extends State<PostPage> {
     return parents.reversed.toList();
   }
 
-  List<Widget> _handleChildren(bsky.UPostThreadViewRecord thread) {
-    List<Widget> widgets = [];
-
-    for (var reply in thread.data.replies!) {
-      final item = reply as bsky.UPostThreadViewRecord;
-      widgets.add(
-        PostCard(
-          item: item.data.post,
-        ),
-      );
+  List<bsky.Post> _handleChildren(bsky.UPostThreadViewRecord thread) {
+    if (thread.data.replies == null) {
+      return [];
     }
 
-    return widgets;
+    List<bsky.Post> children = [];
+
+    for (final reply in thread.data.replies!) {
+      final item = reply as bsky.UPostThreadViewRecord;
+      children.add(item.data.post);
+
+      // Load replies nested only if...
+      // There are nested replies available
+      // The author is replying to themselves (a thread)
+      if (reply.data.post.author.did == thread.data.post.author.did &&
+          reply.data.replies != null) {
+        children.addAll(_handleChildren(item));
+      }
+    }
+
+    return children;
   }
 
   @override
@@ -79,33 +102,11 @@ class _PostPageState extends State<PostPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: FutureBuilder(
-        future: _futurePost,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final thread =
-                snapshot.data!.data.thread as bsky.UPostThreadViewRecord;
-
-            return ListView(
-              children: [
-                // Parent
-                if (thread.data.parent != null) ..._handleParent(thread),
-                // Main
-                PostCard(
-                  item: thread.data.post,
-                ),
-                // Children
-                if (thread.data.replies != null) ..._handleChildren(thread),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return ExceptionHandler(
-              exception: snapshot.error!,
-            );
-          }
-
-          return const Center(
-            child: CircularProgressIndicator(),
+      body: ListView.builder(
+        itemCount: posts.length,
+        itemBuilder: (context, index) {
+          return PostCard(
+            item: posts[index],
           );
         },
       ),
