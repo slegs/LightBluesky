@@ -1,75 +1,121 @@
+/// Import core Dart async functionality for Timer
+library;
 import 'dart:async';
 
-import 'package:bluesky/app_bsky_embed_video.dart';
-import 'package:bluesky/atproto.dart';
-import 'package:bluesky/bluesky.dart';
-import 'package:bluesky/core.dart';
-import 'package:file_picker/file_picker.dart';
+/// Import Bluesky-specific packages for API integration
+import 'package:bluesky/app_bsky_embed_video.dart';  // Video embedding support
+import 'package:bluesky/atproto.dart';              // AT Protocol core
+import 'package:bluesky/bluesky.dart';              // Main Bluesky client
+import 'package:bluesky/core.dart';                 // Core Bluesky types
+
+/// Import file handling support
+import 'package:file_picker/file_picker.dart';      // File selection dialogs
+
+/// Import app-wide utilities
 import 'package:lightbluesky/common.dart';
 
-/// Helper class for specific bluesky API functions
+/// SkyApi provides a wrapper around the Bluesky client with additional
+/// functionality for:
+/// - Session management
+/// - Content filtering
+/// - Feed customization
+/// - Media uploads 
 class SkyApi {
-  /// Bluesky client instance
+  /// Internal Bluesky client instance
+  /// Starts in anonymous mode until login
   Bluesky c = Bluesky.anonymous();
 
-  /// Has adult content enabled
+  /// Flag for adult content visibility
+  /// When false, adult content is filtered out
   bool adult = false;
 
-  /// List of feed generators
+  /// Cached list of user's saved feed generators
+  /// Updated when feeds are added/removed
   List<SavedFeed> feeds = List.empty(
     growable: true,
   );
 
-  /// List content preferance labels, used for deciding if an item should
-  /// be hidden or not
+  /// User's content label preferences
+  /// Controls visibility of different content types
+  /// Example: hide nsfw, show nudity, etc
   List<ContentLabelPreference> labels = List.empty(
     growable: true,
   );
 
-  /// Timer used for refreshing session
+  /// Timer for automatic session refresh
+  /// Prevents token expiration by refreshing before timeout
+  /// Initialized when session is created, cleared on logout
   Timer? _refreshTimer;
 
-  /// Save user preferences
+  /// Initializes user preferences by fetching from Bluesky API
+  /// Handles:
+  /// - Adult content settings 
+  /// - Saved feed preferences
+  /// - Content label visibility settings
+  /// Throws if API call fails or session is invalid
   Future<void> initPreferences() async {
+    // Fetch current preferences from server
     final res = await c.actor.getPreferences();
 
+    // Process each preference type from server response
     for (final p in res.data.preferences) {
       if (p is UPreferenceAdultContent) {
+        // Update local adult content visibility flag based on user preference
+        // Controls filtering of NSFW and sensitive content
         adult = p.data.isEnabled;
       } else if (p is UPreferenceSavedFeedsV2) {
+        // Process saved feed generator preferences
+        // Each item represents a custom feed the user has saved
         for (var item in p.data.items) {
           if (item.type == "feed") {
+            // Add valid feed items to local cache
+            // Only store items of type "feed" for custom timeline support
             feeds.add(item);
           }
         }
       } else if (p is UPreferenceContentLabel) {
+        // Store content label visibility preferences
         labels.add(p.data);
       }
     }
   }
 
-  /// Handle file upload, returns Embed of type selected
+  /// Handles media file uploads and creates appropriate embeds
+  /// Parameters:
+  /// - files: List of files selected for upload 
+  /// - type: Type of media being uploaded (image, video, etc)
+  /// Returns an Embed object if successful, null otherwise
   Future<Embed?> upload(List<PlatformFile> files, FileType type) async {
+    // Initialize empty embed container
     Embed? embed;
 
+    // Process files based on media type
     switch (type) {
       case FileType.image:
+        // Initialize empty list for processed images
+        // Growable to allow adding images as they're processed
         final List<Image> images = List.empty(
           growable: true,
         );
 
+        // Process each image file and create Image objects
         for (var file in files) {
+          // Read file bytes for upload
           final bytes = await file.xFile.readAsBytes();
 
+          // Upload bytes to Bluesky blob storage and get reference
           final uploaded = await c.atproto.repo.uploadBlob(
             bytes,
           );
 
+          // Create image object with uploaded blob reference
+          // Alt text left empty for accessibility - should be added later
           images.add(
             Image(alt: '', image: uploaded.data.blob),
           );
         }
 
+        // Create final embed containing all processed images
         embed = Embed.images(
           data: EmbedImages(
             images: images,
@@ -77,34 +123,45 @@ class SkyApi {
         );
         break;
       case FileType.video:
+        // Handle video upload and embedding
+        // Process only first video file
+        // Multiple video uploads not supported
         final bytes = await files[0].xFile.readAsBytes();
 
+        // Upload video bytes to Bluesky blob storage
         final uploaded = await c.atproto.repo.uploadBlob(
           bytes,
         );
 
+        // Create video embed with blob reference
         embed = Embed.video(
           data: EmbedVideo(
             video: uploaded.data.blob,
           ),
         );
         break;
+
       default:
+        // Return null for unsupported media types
         embed = null;
     }
 
     return embed;
   }
 
-  /// Try restoring session is valid
+  /// Attempts to restore and validate a saved session
+  /// Returns true if session restored successfully
   Future<bool> init() async {
+    // Try loading saved session from storage
     final session = storage.session.get();
+    
+    // Return false if no session found
     if (session == null) {
-      // New user or refresh token is expired
       return false;
     }
 
-    _save(session, disk: false);
+    // Initialize client with saved session
+    c = Bluesky.fromSession(session);
 
     final now = DateTime.now();
 
